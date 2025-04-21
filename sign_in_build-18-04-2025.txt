@@ -1,0 +1,122 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\00AA\flutter_projects\my_ad> flutter doctor -v
+[√] Flutter (Channel stable, 3.29.1, on Microsoft Windows [Version 10.0.19045.5737], locale en-US) [3.3s]
+    • Flutter version 3.29.1 on channel stable at C:\00AA\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 09de023485 (7 weeks ago), 2025-02-28 13:44:05 -0800
+    • Engine revision 871f65ac1b
+    • Dart version 3.7.0
+    • DevTools version 2.42.2
+
+[√] Windows Version (10 Pro 64-bit, 22H2, 2009) [15.3s]
+
+[!] Android toolchain - develop for Android devices (Android SDK version 35.0.1) [1,217ms]
+    • Android SDK at C:\Users\DeepBhakat\AppData\Local\Android\sdk
+    X cmdline-tools component is missing
+      Run `path/to/sdkmanager --install "cmdline-tools;latest"`
+      See https://developer.android.com/studio/command-line for more details.
+    X Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/windows-android-setup for more details.
+
+[√] Chrome - develop for the web [83ms]
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[X] Visual Studio - develop Windows apps [73ms]
+    X Visual Studio not installed; this is necessary to develop Windows apps.
+      Download at https://visualstudio.microsoft.com/downloads/.
+      Please install the "Desktop development with C++" workload, including all of its default components
+
+[√] Android Studio (version 2024.3) [59ms]
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 21.0.5+-13047016-b750.29)
+
+[√] VS Code (version 1.97.2) [54ms]
+    • Flutter extension version 3.108.0
+
+[√] Connected device (4 available) [3.5s]
+    • RMX1901 (mobile)  • 2aebd642 • android-arm64  • Android 11 (API 30)
+    • Windows (desktop) • windows  • windows-x64    • Microsoft Windows [Version 10.0.19045.5737]
+    • Chrome (web)      • chrome   • web-javascript • Google Chrome 135.0.7049.95
+    • Edge (web)        • edge     • web-javascript • Microsoft Edge 135.0.3179.73
+
+[√] Network resources [2.5s]
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.
+PS C:\00AA\flutter_projects\my_ad> keytool -help
+Key and Certificate Management Tool
+
+Commands:
+
+ -certreq            Generates a certificate request
+ -changealias        Changes an entry's alias
+ -delete             Deletes an entry
+ -exportcert         Exports certificate
+ -genkeypair         Generates a key pair
+ -genseckey          Generates a secret key
+ -gencert            Generates certificate from a certificate request
+ -importcert         Imports a certificate or a certificate chain
+ -list               Lists entries in a keystore
+ -printcert          Prints the content of a certificate
+ -printcertreq       Prints the content of a certificate request
+ -printcrl           Prints the content of a CRL file
+ -storepasswd        Changes the store password of a keystore
+ -showinfo           Displays security-related information
+ -version            Prints the program version
+Use "keytool -?, -h, or --help" for this help message
+Use "keytool -command_name --help" for usage of command_name.
+Use the -conf <url> option to specify a pre-configured options file.
+PS C:\00AA\flutter_projects\my_ad> keytool -genkey -v -keystore $env:USERPROFILE\upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+Enter keystore password:
+Re-enter new password:
+Enter the distinguished name. Provide a single dot (.) to leave a sub-component empty or press ENTER to use the default value in braces.
+What is your first and last name?
+  [Unknown]:  Bishnu Bhakat
+What is the name of your organizational unit?
+What is the name of your organization?
+  [Unknown]:  EazyTechno
+What is the name of your City or Locality?
+  [Unknown]:  Kolkata
+What is the name of your State or Province?
+  [Unknown]:  West Bengal
+What is the two-letter country code for this unit?
+  [Unknown]:  91
+Is CN=Bishnu Bhakat, OU=Eazytechno, O=EazyTechno, L=Kolkata, ST=West Bengal, C=91 correct?
+  [no]:  Yes
+
+Generating 2,048 bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 10,000 days
+        for: CN=Bishnu Bhakat, OU=Eazytechno, O=EazyTechno, L=Kolkata, ST=West Bengal, C=91
+Enter key password for <upload>
+        (RETURN if same as keystore password):
+Re-enter new password:
+[Storing C:\Users\DeepBhakat\upload-keystore.jks]
+
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore C:\Users\DeepBhakat\upload-keystore.jks -destkeystore C:\Users\DeepBhakat\upload-keystore.jks -deststoretype pkcs12".
+PS C:\00AA\flutter_projects\my_ad> flutter clean
+Deleting build...                                                  31.6s
+Deleting .dart_tool...                                              59ms
+Deleting Generated.xcconfig...                                       1ms
+Deleting flutter_export_environment.sh...                            6ms
+Deleting ephemeral...                                                4ms
+Deleting ephemeral...                                                1ms
+Deleting ephemeral...                                                4ms
+Deleting .flutter-plugins-dependencies...                            1ms
+Deleting .flutter-plugins...                                         1ms
+PS C:\00AA\flutter_projects\my_ad> flutter clean
+PS C:\00AA\flutter_projects\my_ad>
+
+
+
+
+
+

@@ -1,0 +1,2088 @@
+-- phpMyAdmin SQL Dump
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Mar 09, 2025 at 09:13 AM
+-- Server version: 10.1.36-MariaDB
+-- PHP Version: 7.0.32
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `ead`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_user`
+--
+
+CREATE TABLE `admin_user` (
+  `user_id` int(11) NOT NULL,
+  `emp_id` varchar(255) NOT NULL,
+  `user_role` enum('Admin','User') NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `email` varchar(1000) NOT NULL,
+  `phone` varchar(1000) NOT NULL,
+  `father_name` varchar(1000) NOT NULL,
+  `address` text NOT NULL,
+  `username` varchar(1000) NOT NULL,
+  `password` varchar(1000) NOT NULL,
+  `file_name` varchar(1000) NOT NULL,
+  `aadhar_no` varchar(1000) NOT NULL,
+  `pan_no` varchar(1000) NOT NULL,
+  `aadhar_file` varchar(1000) NOT NULL,
+  `pan_file` varchar(1000) NOT NULL,
+  `status` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `admin_user`
+--
+
+INSERT INTO `admin_user` (`user_id`, `emp_id`, `user_role`, `name`, `email`, `phone`, `father_name`, `address`, `username`, `password`, `file_name`, `aadhar_no`, `pan_no`, `aadhar_file`, `pan_file`, `status`) VALUES
+(1, '', 'Admin', 'ead', 'ead@gmail.com', '87868686', 'abd', '', 'ead', '202cb962ac59075b964b07152d234b70', '407710.jpg', '3535336363', '46647474', '', '', 'Active'),
+(2, '', 'User', 'Raju', 'raju@gmail.com', '1212121212', 'Lalu', 'sadasdasdasdasdasdasd', 'raju', '202cb962ac59075b964b07152d234b70', '6667apiece3.png', 'RS2324242', 'DS2323', '1963apiece3.png', '2946apiece3.png', 'Active'),
+(3, '', 'User', 'Ram', 'ram@gmail.com', '2233223322', 'Shamm', 'sad', 'ram', '202cb962ac59075b964b07152d234b70', '3128apiece3.png', 'asd', 'we', '622apiece3.png', '3657apiece3.png', 'Active'),
+(4, '', 'User', 'RTA', 'FF@gmail.com', '2233445566', 'TRT', 'asdas', 'aaa', '202cb962ac59075b964b07152d234b70', '4602apiece3.png', 'sad', 'sad', '8619apiece3.png', '4329apiece3.png', 'Active'),
+(5, '5', 'User', 'RRR', 'asd@gmailo.com', '1111111111', 'sad', 'sada', 'aaa', '202cb962ac59075b964b07152d234b70', '197apiece3.png', 'sd', 'asd', '9533apiece3.png', '2996apiece3.png', 'Active'),
+(6, '6', 'User', 'sad', 'ads2@asd', '2233442211', 'sad', 'asd', 'asd', 'a9b7ba70783b617e9998dc4dd82eb3c5', '3592apiece3.png', 'asd', 'sad', '8972apiece3.png', '406apiece3.png', 'Active'),
+(7, 'EAD7', 'User', 'asd', 'asd2@ada', '1111111222', 'asd', 'asd', 'asd', 'a9b7ba70783b617e9998dc4dd82eb3c5', '4849apiece3.png', '123', 'asd', '3384apiece3.png', '7083apiece3.png', 'Active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `business_with_us`
+--
+
+CREATE TABLE `business_with_us` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email_id` varchar(255) NOT NULL,
+  `mobile_no` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `interested_area` varchar(255) NOT NULL,
+  `date_added` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `business_with_us`
+--
+
+INSERT INTO `business_with_us` (`id`, `name`, `email_id`, `mobile_no`, `city`, `message`, `interested_area`, `date_added`) VALUES
+(1, 'Kalam', 'k@gmail.com', '1010101010', '5kolkkk', 'hjgbhujgbj', '0', '2020-02-03'),
+(2, 'TEST', 'test@gmail.com', '1231231232', 'kolkata', 'testing', 'test', '03-06-2020');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `career_with_us`
+--
+
+CREATE TABLE `career_with_us` (
+  `id` int(10) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `date` varchar(255) NOT NULL,
+  `status` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `career_with_us`
+--
+
+INSERT INTO `career_with_us` (`id`, `title`, `description`, `date`, `status`) VALUES
+(2, 'TESTING', '<p>WE NEED MORE WORKERS FOR EAD</p>\r\n\r\n<ul>\r\n	<li><strong>Qualification- </strong>12th Pass</li>\r\n	<li><strong>Salary</strong>- Rs 5000&nbsp;</li>\r\n	<li><strong>Working Hours-</strong> 10am-5pm</li>\r\n</ul>\r\n', '01-06-2020', 1),
+(17, 'asdasdasd', '<p>asdsadsadasd</p>\r\n', '01-06-2020', 0),
+(18, 'BACK-OFFICE JOB', '<p>ALL ARE REQUESTED TO ATTAIN FOR INTERVIEW DATED - 0909090 WIHT LATEST BIODATA.</p>\r\n', '01-06-2020', 1),
+(19, 'TELE CALLER', '<p>URGENTLY 5 TELE CALLER REQUIRE</p>\r\n\r\n<p>QUALIFICATION - MINIMUM - CLASS - 10</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>QUALIFICATION - MINIMUM - CLASS - 10</p>\r\n\r\n<p>QUALIFICATION - MINIMUM - CLASS - 10</p>\r\n', '02-06-2020', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chatting`
+--
+
+CREATE TABLE `chatting` (
+  `id` int(200) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `send_by` enum('merchant','customer') NOT NULL,
+  `reply_status` int(1) NOT NULL DEFAULT '0',
+  `message` text NOT NULL,
+  `dated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `chatting`
+--
+
+INSERT INTO `chatting` (`id`, `sender_id`, `receiver_id`, `send_by`, `reply_status`, `message`, `dated`) VALUES
+(1, 1, 37, 'customer', 1, 'hello sir', '2020-06-03 07:12:21'),
+(2, 1, 37, 'customer', 0, 'happy', '2020-06-03 07:14:15'),
+(3, 22, 44, 'customer', 1, 'HI want to know more about your service', '2020-06-04 05:10:40'),
+(4, 22, 44, 'customer', 1, 'About the quality of your product...Are they spicy or sweet or salty?', '2020-06-04 05:13:45'),
+(5, 22, 46, 'customer', 0, 'fdgfdg fg fgf', '2020-06-05 16:09:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chat_reply`
+--
+
+CREATE TABLE `chat_reply` (
+  `id` int(200) NOT NULL,
+  `chat_id` int(200) NOT NULL,
+  `reply_msg` text NOT NULL,
+  `reply_by` enum('merchant','customer') NOT NULL,
+  `sender_id` int(200) NOT NULL,
+  `dated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `chat_reply`
+--
+
+INSERT INTO `chat_reply` (`id`, `chat_id`, `reply_msg`, `reply_by`, `sender_id`, `dated`) VALUES
+(1, 1, 'hi sir', 'merchant', 37, '2020-06-03 07:13:08'),
+(2, 3, 'What do you want to know ..Ask', 'merchant', 44, '2020-06-04 05:12:41'),
+(3, 4, 'We sell all types of chanachur...we have spicy...sweet & salty....as well as normal flavoured products!', 'merchant', 44, '2020-06-04 05:15:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cities`
+--
+
+CREATE TABLE `cities` (
+  `id` int(11) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `state_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cities`
+--
+
+INSERT INTO `cities` (`id`, `city`, `state_id`) VALUES
+(1, 'North and Middle Andaman', 32),
+(2, 'South Andaman', 32),
+(3, 'Nicobar', 32),
+(4, 'Adilabad', 1),
+(5, 'Anantapur', 1),
+(6, 'Chittoor', 1),
+(7, 'East Godavari', 1),
+(8, 'Guntur', 1),
+(9, 'Hyderabad', 1),
+(10, 'Kadapa', 1),
+(11, 'Karimnagar', 1),
+(12, 'Khammam', 1),
+(13, 'Krishna', 1),
+(14, 'Kurnool', 1),
+(15, 'Mahbubnagar', 1),
+(16, 'Medak', 1),
+(17, 'Nalgonda', 1),
+(18, 'Nellore', 1),
+(19, 'Nizamabad', 1),
+(20, 'Prakasam', 1),
+(21, 'Rangareddi', 1),
+(22, 'Srikakulam', 1),
+(23, 'Vishakhapatnam', 1),
+(24, 'Vizianagaram', 1),
+(25, 'Warangal', 1),
+(26, 'West Godavari', 1),
+(27, 'Anjaw', 3),
+(28, 'Changlang', 3),
+(29, 'East Kameng', 3),
+(30, 'Lohit', 3),
+(31, 'Lower Subansiri', 3),
+(32, 'Papum Pare', 3),
+(33, 'Tirap', 3),
+(34, 'Dibang Valley', 3),
+(35, 'Upper Subansiri', 3),
+(36, 'West Kameng', 3),
+(37, 'Barpeta', 2),
+(38, 'Bongaigaon', 2),
+(39, 'Cachar', 2),
+(40, 'Darrang', 2),
+(41, 'Dhemaji', 2),
+(42, 'Dhubri', 2),
+(43, 'Dibrugarh', 2),
+(44, 'Goalpara', 2),
+(45, 'Golaghat', 2),
+(46, 'Hailakandi', 2),
+(47, 'Jorhat', 2),
+(48, 'Karbi Anglong', 2),
+(49, 'Karimganj', 2),
+(50, 'Kokrajhar', 2),
+(51, 'Lakhimpur', 2),
+(52, 'Marigaon', 2),
+(53, 'Nagaon', 2),
+(54, 'Nalbari', 2),
+(55, 'North Cachar Hills', 2),
+(56, 'Sibsagar', 2),
+(57, 'Sonitpur', 2),
+(58, 'Tinsukia', 2),
+(59, 'Araria', 4),
+(60, 'Aurangabad', 4),
+(61, 'Banka', 4),
+(62, 'Begusarai', 4),
+(63, 'Bhagalpur', 4),
+(64, 'Bhojpur', 4),
+(65, 'Buxar', 4),
+(66, 'Darbhanga', 4),
+(67, 'Purba Champaran', 4),
+(68, 'Gaya', 4),
+(69, 'Gopalganj', 4),
+(70, 'Jamui', 4),
+(71, 'Jehanabad', 4),
+(72, 'Khagaria', 4),
+(73, 'Kishanganj', 4),
+(74, 'Kaimur', 4),
+(75, 'Katihar', 4),
+(76, 'Lakhisarai', 4),
+(77, 'Madhubani', 4),
+(78, 'Munger', 4),
+(79, 'Madhepura', 4),
+(80, 'Muzaffarpur', 4),
+(81, 'Nalanda', 4),
+(82, 'Nawada', 4),
+(83, 'Patna', 4),
+(84, 'Purnia', 4),
+(85, 'Rohtas', 4),
+(86, 'Saharsa', 4),
+(87, 'Samastipur', 4),
+(88, 'Sheohar', 4),
+(89, 'Sheikhpura', 4),
+(90, 'Saran', 4),
+(91, 'Sitamarhi', 4),
+(92, 'Supaul', 4),
+(93, 'Siwan', 4),
+(94, 'Vaishali', 4),
+(95, 'Pashchim Champaran', 4),
+(96, 'Bastar', 36),
+(97, 'Bilaspur', 36),
+(98, 'Dantewada', 36),
+(99, 'Dhamtari', 36),
+(100, 'Durg', 36),
+(101, 'Jashpur', 36),
+(102, 'Janjgir-Champa', 36),
+(103, 'Korba', 36),
+(104, 'Koriya', 36),
+(105, 'Kanker', 36),
+(106, 'Kawardha', 36),
+(107, 'Mahasamund', 36),
+(108, 'Raigarh', 36),
+(109, 'Rajnandgaon', 36),
+(110, 'Raipur', 36),
+(111, 'Surguja', 36),
+(112, 'Diu', 29),
+(113, 'Daman', 29),
+(114, 'Central Delhi', 25),
+(115, 'East Delhi', 25),
+(116, 'New Delhi', 25),
+(117, 'North Delhi', 25),
+(118, 'North East Delhi', 25),
+(119, 'North West Delhi', 25),
+(120, 'South Delhi', 25),
+(121, 'South West Delhi', 25),
+(122, 'West Delhi', 25),
+(123, 'North Goa', 26),
+(124, 'South Goa', 26),
+(125, 'Ahmedabad', 5),
+(126, 'Amreli District', 5),
+(127, 'Anand', 5),
+(128, 'Banaskantha', 5),
+(129, 'Bharuch', 5),
+(130, 'Bhavnagar', 5),
+(131, 'Dahod', 5),
+(132, 'The Dangs', 5),
+(133, 'Gandhinagar', 5),
+(134, 'Jamnagar', 5),
+(135, 'Junagadh', 5),
+(136, 'Kutch', 5),
+(137, 'Kheda', 5),
+(138, 'Mehsana', 5),
+(139, 'Narmada', 5),
+(140, 'Navsari', 5),
+(141, 'Patan', 5),
+(142, 'Panchmahal', 5),
+(143, 'Porbandar', 5),
+(144, 'Rajkot', 5),
+(145, 'Sabarkantha', 5),
+(146, 'Surendranagar', 5),
+(147, 'Surat', 5),
+(148, 'Vadodara', 5),
+(149, 'Valsad', 5),
+(150, 'Ambala', 6),
+(151, 'Bhiwani', 6),
+(152, 'Faridabad', 6),
+(153, 'Fatehabad', 6),
+(154, 'Gurgaon', 6),
+(155, 'Hissar', 6),
+(156, 'Jhajjar', 6),
+(157, 'Jind', 6),
+(158, 'Karnal', 6),
+(159, 'Kaithal', 6),
+(160, 'Kurukshetra', 6),
+(161, 'Mahendragarh', 6),
+(162, 'Mewat', 6),
+(163, 'Panchkula', 6),
+(164, 'Panipat', 6),
+(165, 'Rewari', 6),
+(166, 'Rohtak', 6),
+(167, 'Sirsa', 6),
+(168, 'Sonepat', 6),
+(169, 'Yamuna Nagar', 6),
+(170, 'Palwal', 6),
+(171, 'Bilaspur', 7),
+(172, 'Chamba', 7),
+(173, 'Hamirpur', 7),
+(174, 'Kangra', 7),
+(175, 'Kinnaur', 7),
+(176, 'Kulu', 7),
+(177, 'Lahaul and Spiti', 7),
+(178, 'Mandi', 7),
+(179, 'Shimla', 7),
+(180, 'Sirmaur', 7),
+(181, 'Solan', 7),
+(182, 'Una', 7),
+(183, 'Anantnag', 8),
+(184, 'Badgam', 8),
+(185, 'Bandipore', 8),
+(186, 'Baramula', 8),
+(187, 'Doda', 8),
+(188, 'Jammu', 8),
+(189, 'Kargil', 8),
+(190, 'Kathua', 8),
+(191, 'Kupwara', 8),
+(192, 'Leh', 8),
+(193, 'Poonch', 8),
+(194, 'Pulwama', 8),
+(195, 'Rajauri', 8),
+(196, 'Srinagar', 8),
+(197, 'Samba', 8),
+(198, 'Udhampur', 8),
+(199, 'Bokaro', 34),
+(200, 'Chatra', 34),
+(201, 'Deoghar', 34),
+(202, 'Dhanbad', 34),
+(203, 'Dumka', 34),
+(204, 'Purba Singhbhum', 34),
+(205, 'Garhwa', 34),
+(206, 'Giridih', 34),
+(207, 'Godda', 34),
+(208, 'Gumla', 34),
+(209, 'Hazaribagh', 34),
+(210, 'Koderma', 34),
+(211, 'Lohardaga', 34),
+(212, 'Pakur', 34),
+(213, 'Palamu', 34),
+(214, 'Ranchi', 34),
+(215, 'Sahibganj', 34),
+(216, 'Seraikela and Kharsawan', 34),
+(217, 'Pashchim Singhbhum', 34),
+(218, 'Ramgarh', 34),
+(219, 'Bidar', 9),
+(220, 'Belgaum', 9),
+(221, 'Bijapur', 9),
+(222, 'Bagalkot', 9),
+(223, 'Bellary', 9),
+(224, 'Bangalore Rural District', 9),
+(225, 'Bangalore Urban District', 9),
+(226, 'Chamarajnagar', 9),
+(227, 'Chikmagalur', 9),
+(228, 'Chitradurga', 9),
+(229, 'Davanagere', 9),
+(230, 'Dharwad', 9),
+(231, 'Dakshina Kannada', 9),
+(232, 'Gadag', 9),
+(233, 'Gulbarga', 9),
+(234, 'Hassan', 9),
+(235, 'Haveri District', 9),
+(236, 'Kodagu', 9),
+(237, 'Kolar', 9),
+(238, 'Koppal', 9),
+(239, 'Mandya', 9),
+(240, 'Mysore', 9),
+(241, 'Raichur', 9),
+(242, 'Shimoga', 9),
+(243, 'Tumkur', 9),
+(244, 'Udupi', 9),
+(245, 'Uttara Kannada', 9),
+(246, 'Ramanagara', 9),
+(247, 'Chikballapur', 9),
+(248, 'Yadagiri', 9),
+(249, 'Alappuzha', 10),
+(250, 'Ernakulam', 10),
+(251, 'Idukki', 10),
+(252, 'Kollam', 10),
+(253, 'Kannur', 10),
+(254, 'Kasaragod', 10),
+(255, 'Kottayam', 10),
+(256, 'Kozhikode', 10),
+(257, 'Malappuram', 10),
+(258, 'Palakkad', 10),
+(259, 'Pathanamthitta', 10),
+(260, 'Thrissur', 10),
+(261, 'Thiruvananthapuram', 10),
+(262, 'Wayanad', 10),
+(263, 'Alirajpur', 11),
+(264, 'Anuppur', 11),
+(265, 'Ashok Nagar', 11),
+(266, 'Balaghat', 11),
+(267, 'Barwani', 11),
+(268, 'Betul', 11),
+(269, 'Bhind', 11),
+(270, 'Bhopal', 11),
+(271, 'Burhanpur', 11),
+(272, 'Chhatarpur', 11),
+(273, 'Chhindwara', 11),
+(274, 'Damoh', 11),
+(275, 'Datia', 11),
+(276, 'Dewas', 11),
+(277, 'Dhar', 11),
+(278, 'Dindori', 11),
+(279, 'Guna', 11),
+(280, 'Gwalior', 11),
+(281, 'Harda', 11),
+(282, 'Hoshangabad', 11),
+(283, 'Indore', 11),
+(284, 'Jabalpur', 11),
+(285, 'Jhabua', 11),
+(286, 'Katni', 11),
+(287, 'Khandwa', 11),
+(288, 'Khargone', 11),
+(289, 'Mandla', 11),
+(290, 'Mandsaur', 11),
+(291, 'Morena', 11),
+(292, 'Narsinghpur', 11),
+(293, 'Neemuch', 11),
+(294, 'Panna', 11),
+(295, 'Rewa', 11),
+(296, 'Rajgarh', 11),
+(297, 'Ratlam', 11),
+(298, 'Raisen', 11),
+(299, 'Sagar', 11),
+(300, 'Satna', 11),
+(301, 'Sehore', 11),
+(302, 'Seoni', 11),
+(303, 'Shahdol', 11),
+(304, 'Shajapur', 11),
+(305, 'Sheopur', 11),
+(306, 'Shivpuri', 11),
+(307, 'Sidhi', 11),
+(308, 'Singrauli', 11),
+(309, 'Tikamgarh', 11),
+(310, 'Ujjain', 11),
+(311, 'Umaria', 11),
+(312, 'Vidisha', 11),
+(313, 'Ahmednagar', 12),
+(314, 'Akola', 12),
+(315, 'Amrawati', 12),
+(316, 'Aurangabad', 12),
+(317, 'Bhandara', 12),
+(318, 'Beed', 12),
+(319, 'Buldhana', 12),
+(320, 'Chandrapur', 12),
+(321, 'Dhule', 12),
+(322, 'Gadchiroli', 12),
+(323, 'Gondiya', 12),
+(324, 'Hingoli', 12),
+(325, 'Jalgaon', 12),
+(326, 'Jalna', 12),
+(327, 'Kolhapur', 12),
+(328, 'Latur', 12),
+(329, 'Mumbai City', 12),
+(330, 'Mumbai suburban', 12),
+(331, 'Nandurbar', 12),
+(332, 'Nanded', 12),
+(333, 'Nagpur', 12),
+(334, 'Nashik', 12),
+(335, 'Osmanabad', 12),
+(336, 'Parbhani', 12),
+(337, 'Pune', 12),
+(338, 'Raigad', 12),
+(339, 'Ratnagiri', 12),
+(340, 'Sindhudurg', 12),
+(341, 'Sangli', 12),
+(342, 'Solapur', 12),
+(343, 'Satara', 12),
+(344, 'Thane', 12),
+(345, 'Wardha', 12),
+(346, 'Washim', 12),
+(347, 'Yavatmal', 12),
+(348, 'Bishnupur', 13),
+(349, 'Churachandpur', 13),
+(350, 'Chandel', 13),
+(351, 'Imphal East', 13),
+(352, 'Senapati', 13),
+(353, 'Tamenglong', 13),
+(354, 'Thoubal', 13),
+(355, 'Ukhrul', 13),
+(356, 'Imphal West', 13),
+(357, 'East Garo Hills', 14),
+(358, 'East Khasi Hills', 14),
+(359, 'Jaintia Hills', 14),
+(360, 'Ri-Bhoi', 14),
+(361, 'South Garo Hills', 14),
+(362, 'West Garo Hills', 14),
+(363, 'West Khasi Hills', 14),
+(364, 'Aizawl', 15),
+(365, 'Champhai', 15),
+(366, 'Kolasib', 15),
+(367, 'Lawngtlai', 15),
+(368, 'Lunglei', 15),
+(369, 'Mamit', 15),
+(370, 'Saiha', 15),
+(371, 'Serchhip', 15),
+(372, 'Dimapur', 16),
+(373, 'Kohima', 16),
+(374, 'Mokokchung', 16),
+(375, 'Mon', 16),
+(376, 'Phek', 16),
+(377, 'Tuensang', 16),
+(378, 'Wokha', 16),
+(379, 'Zunheboto', 16),
+(380, 'Angul', 17),
+(381, 'Boudh', 17),
+(382, 'Bhadrak', 17),
+(383, 'Bolangir', 17),
+(384, 'Bargarh', 17),
+(385, 'Baleswar', 17),
+(386, 'Cuttack', 17),
+(387, 'Debagarh', 17),
+(388, 'Dhenkanal', 17),
+(389, 'Ganjam', 17),
+(390, 'Gajapati', 17),
+(391, 'Jharsuguda', 17),
+(392, 'Jajapur', 17),
+(393, 'Jagatsinghpur', 17),
+(394, 'Khordha', 17),
+(395, 'Kendujhar', 17),
+(396, 'Kalahandi', 17),
+(397, 'Kandhamal', 17),
+(398, 'Koraput', 17),
+(399, 'Kendrapara', 17),
+(400, 'Malkangiri', 17),
+(401, 'Mayurbhanj', 17),
+(402, 'Nabarangpur', 17),
+(403, 'Nuapada', 17),
+(404, 'Nayagarh', 17),
+(405, 'Puri', 17),
+(406, 'Rayagada', 17),
+(407, 'Sambalpur', 17),
+(408, 'Subarnapur', 17),
+(409, 'Sundargarh', 17),
+(410, 'Karaikal', 27),
+(411, 'Mahe', 27),
+(412, 'Puducherry', 27),
+(413, 'Yanam', 27),
+(414, 'Amritsar', 18),
+(415, 'Bathinda', 18),
+(416, 'Firozpur', 18),
+(417, 'Faridkot', 18),
+(418, 'Fatehgarh Sahib', 18),
+(419, 'Gurdaspur', 18),
+(420, 'Hoshiarpur', 18),
+(421, 'Jalandhar', 18),
+(422, 'Kapurthala', 18),
+(423, 'Ludhiana', 18),
+(424, 'Mansa', 18),
+(425, 'Moga', 18),
+(426, 'Mukatsar', 18),
+(427, 'Nawan Shehar', 18),
+(428, 'Patiala', 18),
+(429, 'Rupnagar', 18),
+(430, 'Sangrur', 18),
+(431, 'Ajmer', 19),
+(432, 'Alwar', 19),
+(433, 'Bikaner', 19),
+(434, 'Barmer', 19),
+(435, 'Banswara', 19),
+(436, 'Bharatpur', 19),
+(437, 'Baran', 19),
+(438, 'Bundi', 19),
+(439, 'Bhilwara', 19),
+(440, 'Churu', 19),
+(441, 'Chittorgarh', 19),
+(442, 'Dausa', 19),
+(443, 'Dholpur', 19),
+(444, 'Dungapur', 19),
+(445, 'Ganganagar', 19),
+(446, 'Hanumangarh', 19),
+(447, 'Juhnjhunun', 19),
+(448, 'Jalore', 19),
+(449, 'Jodhpur', 19),
+(450, 'Jaipur', 19),
+(451, 'Jaisalmer', 19),
+(452, 'Jhalawar', 19),
+(453, 'Karauli', 19),
+(454, 'Kota', 19),
+(455, 'Nagaur', 19),
+(456, 'Pali', 19),
+(457, 'Pratapgarh', 19),
+(458, 'Rajsamand', 19),
+(459, 'Sikar', 19),
+(460, 'Sawai Madhopur', 19),
+(461, 'Sirohi', 19),
+(462, 'Tonk', 19),
+(463, 'Udaipur', 19),
+(464, 'East Sikkim', 20),
+(465, 'North Sikkim', 20),
+(466, 'South Sikkim', 20),
+(467, 'West Sikkim', 20),
+(468, 'Ariyalur', 21),
+(469, 'Chennai', 21),
+(470, 'Coimbatore', 21),
+(471, 'Cuddalore', 21),
+(472, 'Dharmapuri', 21),
+(473, 'Dindigul', 21),
+(474, 'Erode', 21),
+(475, 'Kanchipuram', 21),
+(476, 'Kanyakumari', 21),
+(477, 'Karur', 21),
+(478, 'Madurai', 21),
+(479, 'Nagapattinam', 21),
+(480, 'The Nilgiris', 21),
+(481, 'Namakkal', 21),
+(482, 'Perambalur', 21),
+(483, 'Pudukkottai', 21),
+(484, 'Ramanathapuram', 21),
+(485, 'Salem', 21),
+(486, 'Sivagangai', 21),
+(487, 'Tiruppur', 21),
+(488, 'Tiruchirappalli', 21),
+(489, 'Theni', 21),
+(490, 'Tirunelveli', 21),
+(491, 'Thanjavur', 21),
+(492, 'Thoothukudi', 21),
+(493, 'Thiruvallur', 21),
+(494, 'Thiruvarur', 21),
+(495, 'Tiruvannamalai', 21),
+(496, 'Vellore', 21),
+(497, 'Villupuram', 21),
+(498, 'Dhalai', 22),
+(499, 'North Tripura', 22),
+(500, 'South Tripura', 22),
+(501, 'West Tripura', 22),
+(502, 'Almora', 33),
+(503, 'Bageshwar', 33),
+(504, 'Chamoli', 33),
+(505, 'Champawat', 33),
+(506, 'Dehradun', 33),
+(507, 'Haridwar', 33),
+(508, 'Nainital', 33),
+(509, 'Pauri Garhwal', 33),
+(510, 'Pithoragharh', 33),
+(511, 'Rudraprayag', 33),
+(512, 'Tehri Garhwal', 33),
+(513, 'Udham Singh Nagar', 33),
+(514, 'Uttarkashi', 33),
+(515, 'Agra', 23),
+(516, 'Allahabad', 23),
+(517, 'Aligarh', 23),
+(518, 'Ambedkar Nagar', 23),
+(519, 'Auraiya', 23),
+(520, 'Azamgarh', 23),
+(521, 'Barabanki', 23),
+(522, 'Badaun', 23),
+(523, 'Bagpat', 23),
+(524, 'Bahraich', 23),
+(525, 'Bijnor', 23),
+(526, 'Ballia', 23),
+(527, 'Banda', 23),
+(528, 'Balrampur', 23),
+(529, 'Bareilly', 23),
+(530, 'Basti', 23),
+(531, 'Bulandshahr', 23),
+(532, 'Chandauli', 23),
+(533, 'Chitrakoot', 23),
+(534, 'Deoria', 23),
+(535, 'Etah', 23),
+(536, 'Kanshiram Nagar', 23),
+(537, 'Etawah', 23),
+(538, 'Firozabad', 23),
+(539, 'Farrukhabad', 23),
+(540, 'Fatehpur', 23),
+(541, 'Faizabad', 23),
+(542, 'Gautam Buddha Nagar', 23),
+(543, 'Gonda', 23),
+(544, 'Ghazipur', 23),
+(545, 'Gorkakhpur', 23),
+(546, 'Ghaziabad', 23),
+(547, 'Hamirpur', 23),
+(548, 'Hardoi', 23),
+(549, 'Mahamaya Nagar', 23),
+(550, 'Jhansi', 23),
+(551, 'Jalaun', 23),
+(552, 'Jyotiba Phule Nagar', 23),
+(553, 'Jaunpur District', 23),
+(554, 'Kanpur Dehat', 23),
+(555, 'Kannauj', 23),
+(556, 'Kanpur Nagar', 23),
+(557, 'Kaushambi', 23),
+(558, 'Kushinagar', 23),
+(559, 'Lalitpur', 23),
+(560, 'Lakhimpur Kheri', 23),
+(561, 'Lucknow', 23),
+(562, 'Mau', 23),
+(563, 'Meerut', 23),
+(564, 'Maharajganj', 23),
+(565, 'Mahoba', 23),
+(566, 'Mirzapur', 23),
+(567, 'Moradabad', 23),
+(568, 'Mainpuri', 23),
+(569, 'Mathura', 23),
+(570, 'Muzaffarnagar', 23),
+(571, 'Pilibhit', 23),
+(572, 'Pratapgarh', 23),
+(573, 'Rampur', 23),
+(574, 'Rae Bareli', 23),
+(575, 'Saharanpur', 23),
+(576, 'Sitapur', 23),
+(577, 'Shahjahanpur', 23),
+(578, 'Sant Kabir Nagar', 23),
+(579, 'Siddharthnagar', 23),
+(580, 'Sonbhadra', 23),
+(581, 'Sant Ravidas Nagar', 23),
+(582, 'Sultanpur', 23),
+(583, 'Shravasti', 23),
+(584, 'Unnao', 23),
+(585, 'Varanasi', 23),
+(586, 'Birbhum', 24),
+(587, 'Bankura', 24),
+(588, 'Bardhaman', 24),
+(589, 'Darjeeling', 24),
+(590, 'Dakshin Dinajpur', 24),
+(591, 'Hooghly', 24),
+(592, 'Howrah', 24),
+(593, 'Jalpaiguri', 24),
+(594, 'Cooch Behar', 24),
+(595, 'Kolkata', 24),
+(596, 'Malda', 24),
+(597, 'Midnapore', 24),
+(598, 'Murshidabad', 24),
+(599, 'Nadia', 24),
+(600, 'North 24 Parganas', 24),
+(601, 'South 24 Parganas', 24),
+(602, 'Purulia', 24),
+(603, 'Uttar Dinajpur', 24);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `countries`
+--
+
+CREATE TABLE `countries` (
+  `id` int(5) NOT NULL,
+  `countryCode` char(2) NOT NULL DEFAULT '',
+  `name` varchar(45) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `countries`
+--
+
+INSERT INTO `countries` (`id`, `countryCode`, `name`) VALUES
+(105, 'IN', 'India');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customers`
+--
+
+CREATE TABLE `customers` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `mobile` varchar(17) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `otp` varchar(19) NOT NULL,
+  `otp_verify` int(1) NOT NULL DEFAULT '1',
+  `password` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `latitude` varchar(100) NOT NULL,
+  `longitude` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`id`, `username`, `email`, `mobile`, `gender`, `image`, `otp`, `otp_verify`, `password`, `address`, `latitude`, `longitude`) VALUES
+(1, 'md kalam', 'k@gmail.com', '8825294631', 'female', '', '756014', 1, 'e10adc3949ba59abbe56e057f20f883e', 'Dhanbad', '23.7956531', '86.43038589999999'),
+(2, 'subham', 'ino@gmail.com', '9231520717', 'male', '', '510219', 1, 'e10adc3949ba59abbe56e057f20f883e', 'kol', '44.081424', '-103.230497'),
+(3, 'nandu', 'nandu@gmail.com', '9231665466', 'male', '', '753206', 1, 'e10adc3949ba59abbe56e057f20f883e', 'Uttarpara', '22.6700938', '88.3354998'),
+(4, 'bisu', 'uttam@gmail.com', '8697444166', 'male', '', '719164', 1, 'e10adc3949ba59abbe56e057f20f883e', 'kol', '44.081424', '-103.230497'),
+(5, 'kamal', 'kamal@gmail.com', '9854584587', 'male', '', '595667', 1, 'e10adc3949ba59abbe56e057f20f883e', '77 lala lane', '28.72761299999999', '-96.8438996'),
+(6, 'raghudada', 'raghu@gmail.com', '9587458745', 'male', '', '653444', 1, 'e10adc3949ba59abbe56e057f20f883e', 'kol', '44.081424', '-103.230497'),
+(7, 'gangaram', 'ganga@gmail.com', '7458745874', 'male', '', '415918', 1, 'e10adc3949ba59abbe56e057f20f883e', 'madham para', '', ''),
+(8, 'asdas', 'adsa@gmail.com', '1212121212', 'male', '', '562885', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asdasd', '39.9144444', '-75.3730556'),
+(9, 'aaas', 'adsad@gmailc.com', '2222222222', 'male', '', '764379', 1, 'e10adc3949ba59abbe56e057f20f883e', 'sadasdas', '34.1667203', '-118.3751849'),
+(10, 'adsadas', 'asd@gmailc.om', '1323232323', 'male', '', '538521', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asdasdasd', '39.9144444', '-75.3730556'),
+(17, 'Sososadasd', 'dsad@gm,ail.com', '2323232323', 'male', '', '384884', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asdsad', '', ''),
+(18, 'asdasdasd', 'asdsa@gmail.com', '2323212341', 'male', '', '216248', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asda', '', ''),
+(19, 'Soso123123', 'sdasd@gmail.com', '1234561234', 'male', '', '247875', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asdas', '39.9144444', '-75.3730556'),
+(20, 'Soso123123', 'sdadsd@gmail.com', '1234561238', 'male', '', '320346', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asdas', '', ''),
+(21, 'Soso123123', 'sdadfsd@gmail.com', '1234561277', 'male', '', '585298', 1, 'e10adc3949ba59abbe56e057f20f883e', 'asdas', '', ''),
+(22, 'Soso111', 'sad@gmail.com', '1234512345', 'male', '', '719772', 1, 'e10adc3949ba59abbe56e057f20f883e', 'sda', '37.0358993', '-95.6537912'),
+(23, 'jagai bai', 'jagai@gmail.com', '95845847458', 'male', '', '590820', 1, 'e10adc3949ba59abbe56e057f20f883e', '44 jagai road', '37.0070707', '-94.5523589'),
+(24, 'wasim akram', 'wasim@gmail.com', '9564581257', 'male', '', '398839', 1, 'e10adc3949ba59abbe56e057f20f883e', '77 raja lane', '35.5894878', '-80.8707196');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_visits`
+--
+
+CREATE TABLE `customer_visits` (
+  `id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL,
+  `merchant_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `contact_type` varchar(100) NOT NULL,
+  `message` text NOT NULL,
+  `dated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` int(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `customer_visits`
+--
+
+INSERT INTO `customer_visits` (`id`, `service_id`, `merchant_id`, `customer_id`, `contact_type`, `message`, `dated`, `status`) VALUES
+(1, 1, 3, 1, 'email', 'khkhh', '2020-02-19 13:50:40', 0),
+(2, 1, 3, 4, 'email', 'test', '2020-02-22 14:35:16', 0),
+(3, 8, 7, 4, 'email', 'happy happy', '2020-02-22 14:37:00', 0),
+(4, 10, 9, 5, 'email', 'happy happy', '2020-02-25 15:17:25', 0),
+(5, 24, 13, 7, 'email', 'trgryryhtr', '2020-03-02 16:01:42', 0),
+(8, 8, 7, 22, 'email', 'TEST TEST', '2020-05-20 10:54:50', 0),
+(9, 8, 7, 21, 'email', 'TEST TEST TEST ', '2020-05-20 10:56:47', 0),
+(10, 8, 7, 10, 'email', 'TEST', '2020-05-20 11:08:31', 0),
+(11, 8, 7, 20, 'email', 'asdasdasd', '2020-05-22 11:49:47', 0),
+(14, 8, 7, 23, 'email', 'TEST', '2020-05-24 07:06:12', 0),
+(16, 8, 7, 22, 'mobile', '', '2020-06-01 13:15:57', 0),
+(17, 8, 7, 24, 'mobile', '', '2020-06-01 13:30:04', 0),
+(18, 27, 20, 22, 'mobile', '', '2020-06-03 07:37:49', 0),
+(19, 43, 42, 22, 'mobile', '', '2020-06-03 07:44:59', 0),
+(20, 42, 44, 22, 'mobile', '', '2020-06-04 05:10:19', 0),
+(21, 60, 46, 22, 'mobile', '', '2020-06-05 16:08:58', 0),
+(22, 59, 41, 22, 'mobile', '', '2020-06-10 14:23:16', 0),
+(23, 2, 4, 22, 'mobile', '', '2020-06-15 06:37:00', 0),
+(24, 1, 3, 22, 'mobile', '', '2020-06-15 06:37:03', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ead_banners`
+--
+
+CREATE TABLE `ead_banners` (
+  `id` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ead_banners`
+--
+
+INSERT INTO `ead_banners` (`id`, `image`, `status`) VALUES
+(3, '943travel1.png', 1),
+(4, '3500education1.png', 1),
+(5, '907hospital1.png', 1),
+(6, '6464house2.png', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ead_categories`
+--
+
+CREATE TABLE `ead_categories` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `fav_icon` varchar(255) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ead_categories`
+--
+
+INSERT INTO `ead_categories` (`id`, `category`, `title`, `image`, `fav_icon`, `status`) VALUES
+(1, 'Home Services', 'Home', '9666mobile.png', '', 1),
+(2, 'Financial Services', 'Financial', '5615fashion.png', '', 1),
+(3, 'Event', 'Event', '2018mobile.png', '', 1),
+(4, 'Travel', 'Travel', '2047fashion.png', '56862.jfif', 1),
+(5, 'Beauty & Wellness', 'Beauty', '2500mobile.png', '', 1),
+(6, 'Business Opportunities', 'Business', '3695hair-raizer.png', '', 1),
+(7, 'Security, Legal & Agencies ', 'Security', '9034cb71-cloud-security-family.jpg', '9270security.png', 1),
+(8, 'Salon At Home', 'Salon', '2389salon_coronavirus_1200.jpg', '8381FAV ICON.png', 1),
+(9, 'Astrology & Devotional', 'Astrology', '8356painter.jpg', '', 1),
+(10, 'Commercial Services', 'Commercial', '709garments.jfif', '', 1),
+(11, 'Healthcare Services', 'Health', '820download.jfif', '', 1),
+(12, 'Hobbies & Personal Development', 'Personal Development', '7296barbar.jfif', '', 1),
+(13, 'Rental Services', 'Rental', '9028room1.jpg', '', 1),
+(14, 'Green Living & Social Welfare', 'Social Welfare', '3413room.jpg', '', 1),
+(15, 'B2B Suppliers', 'B2B Suppliers', '9830carpenter.jpg', '', 1),
+(16, 'PROPERTIES', 'PROPERTIES SALES AND FINANCE', '857582de40_f5a9d9a7a99744c194a905ba46021fe4.jpg', '5785sagittarius.png', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ead_plans`
+--
+
+CREATE TABLE `ead_plans` (
+  `id` int(11) NOT NULL,
+  `plan_name` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `banner` varchar(255) NOT NULL,
+  `plan_rate` float NOT NULL,
+  `show_validity` varchar(100) NOT NULL,
+  `validity` int(5) NOT NULL,
+  `offer` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `profile_access` tinytext NOT NULL,
+  `number_of_services` int(11) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ead_plans`
+--
+
+INSERT INTO `ead_plans` (`id`, `plan_name`, `image`, `banner`, `plan_rate`, `show_validity`, `validity`, `offer`, `description`, `profile_access`, `number_of_services`, `status`) VALUES
+(1, 'PLATINUM', '567PLATINUM.png', '3624travel.jpg', 8000, '45', 60, '2000', 'KarunaMayi, Tollyguange 700041<br />Phone no :787 8978 897<br />Email: info.mithlesharya@gmail.com<br />Category : ABc type<br />Company : Apiece Solution', '5,7,8,9,10,13,14,17,19,21,22,23', 18, 1),
+(2, 'DIAMOND', '8156diamond-Membership.png', '8354travel.jpg', 4000, '45', 60, '1000', '     KarunaMayi, Tollyguange 700041<br />Phone no :787 8978 897<br />Email: info.mithlesharya@gmail.com<br />Category : ABc type<br />Company : Apiece Solution', '5,7,8,9,10,12,13,14,18,19,20,24', 15, 1),
+(3, 'GOLD', '8563download-1.png', '6594travel.jpg', 2000, '45', 60, '500', ' KarunaMayi, Tollyguange 700041<br />Phone no :787 8978 897<br />Email: info.mithlesharya@gmail.com<br />Category : ABc type<br />Company : Apiece Solution', '4,7,8,9,10,13,14,15,16,26', 10, 1),
+(4, 'SILVER', '2695Event-Banners86.jpg', '7882ead-final.jpg', 500, '30 days', 30, '0', '  KarunaMayi, Tollyguange 700041<br />Phone no :787 8978 897<br />Email: info.mithlesharya@gmail.com<br />Category : ABc type<br />Company : Apiece Solution', '4,7,8,9,10', 5, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ead_products`
+--
+
+CREATE TABLE `ead_products` (
+  `id` int(100) NOT NULL,
+  `merchant_id` int(100) NOT NULL,
+  `category` int(11) NOT NULL,
+  `subcategory` int(11) NOT NULL,
+  `service` int(11) NOT NULL,
+  `service_name` varchar(255) NOT NULL,
+  `video` varchar(255) NOT NULL,
+  `quantity` int(5) NOT NULL,
+  `description` text NOT NULL,
+  `offers` text NOT NULL,
+  `offer_status` int(1) NOT NULL DEFAULT '1',
+  `plan_rate` float NOT NULL,
+  `city` int(10) NOT NULL,
+  `city_name` varchar(50) NOT NULL,
+  `state` int(10) NOT NULL,
+  `state_name` varchar(50) NOT NULL,
+  `address` text NOT NULL,
+  `lat` float NOT NULL,
+  `lon` float NOT NULL,
+  `close_reason` text,
+  `status` int(1) NOT NULL DEFAULT '1' COMMENT '0 for Inactive, 1 for active, 2 for close',
+  `update_limits` int(1) NOT NULL DEFAULT '0',
+  `video_status` int(100) NOT NULL,
+  `business_partner_approve` int(10) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ead_products`
+--
+
+INSERT INTO `ead_products` (`id`, `merchant_id`, `category`, `subcategory`, `service`, `service_name`, `video`, `quantity`, `description`, `offers`, `offer_status`, `plan_rate`, `city`, `city_name`, `state`, `state_name`, `address`, `lat`, `lon`, `close_reason`, `status`, `update_limits`, `video_status`, `business_partner_approve`) VALUES
+(1, 7, 1, 1, 306, 'TEST LOAN', '', 0, 'VEVTVCBURVNUIFRFU1QgVEVTQVQgVFNFQUVUIFJUQQ==', 'MTA=', 1, 8000, 595, 'Kolkata', 0, '', 'KOLKATA', 22.5726, 88.3639, NULL, 1, 0, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ead_service_images`
+--
+
+CREATE TABLE `ead_service_images` (
+  `id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ead_service_images`
+--
+
+INSERT INTO `ead_service_images` (`id`, `service_id`, `image`) VALUES
+(1, 2, '64746.jpg'),
+(2, 2, '71719.jpg'),
+(4, 4, '6441kitchen.jpg'),
+(6, 6, '7777flooring.jpg'),
+(8, 8, '51442.jpg'),
+(9, 9, '2640security.jpg'),
+(10, 9, '7800security.jpg'),
+(14, 1, '1934photo-1534067783941-51c9c23ecefd.jpg'),
+(15, 2, '62082.jpg'),
+(16, 2, '2063.jpg'),
+(17, 3, '52872.jpg'),
+(18, 3, '60393.jpg'),
+(19, 3, '22204.jpg'),
+(20, 3, '83695.webp'),
+(21, 3, '31376.jpg'),
+(22, 3, '63847.jpg'),
+(23, 3, '2546q.jpg'),
+(25, 7, '83737.jpg'),
+(26, 7, '3160q.jpg'),
+(27, 7, '59084.jpg'),
+(28, 3, '8842.jpg'),
+(29, 3, '43643.jpg'),
+(30, 3, '55984.jpg'),
+(31, 3, '8635.webp'),
+(32, 3, '44336.jpg'),
+(33, 3, '32447.jpg'),
+(34, 3, '36q.jpg'),
+(78, 23, '67325228Rfc1394-Blue-Sofa[1].png'),
+(79, 23, '29825333financial services.jpg'),
+(80, 23, '83507370Acer_AS5733Z-P624G64Mnkk[1].jpg'),
+(81, 23, '35977588security.jpg'),
+(82, 23, '65648085home services.jpg'),
+(83, 23, '13718944salon.jpg'),
+(84, 23, '52089157green.jpg'),
+(85, 23, '21939722hobbies.jpg'),
+(86, 23, '182334441.jpg'),
+(87, 23, '103538762009-03-20_Red_car_NB_on_S_Lasalle_St_in_Durham[1].jpg'),
+(88, 24, '49916-167195_medical-cross-symbol-png-clipart.png'),
+(89, 24, '1119abc.png'),
+(90, 24, '4600adonalogo1.png'),
+(92, 24, '3871download.png'),
+(93, 26, '8210shutterstock_193320344-750x419.jpeg'),
+(94, 26, '6241slider.jpg'),
+(95, 26, '8809slider.png'),
+(96, 29, '7720beauty1.png'),
+(97, 29, '8937fourth.png'),
+(98, 29, '8298hospital.png'),
+(99, 29, '6208house.png'),
+(100, 60, '4945450-4501964_doctor-icon-png-clipart-physician-computer-icons-clip.png'),
+(101, 1, '58871597127244_aa.jpg'),
+(102, 1, '981597140809_bjp-png-7282.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ead_sub_categories`
+--
+
+CREATE TABLE `ead_sub_categories` (
+  `id` int(11) NOT NULL,
+  `category` int(11) NOT NULL,
+  `subcategory` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ead_sub_categories`
+--
+
+INSERT INTO `ead_sub_categories` (`id`, `category`, `subcategory`, `image`, `status`) VALUES
+(1, 1, 'TESTING INSTANT LOAN', '', 1),
+(2, 1, 'Interior Designing', '', 1),
+(3, 2, 'Loan', '', 1),
+(4, 2, 'Credit Card Insurance', '', 1),
+(5, 2, 'CA Services', '', 1),
+(6, 2, 'Banking Services', '', 1),
+(7, 2, 'Investment & Financial Planning', '', 1),
+(8, 3, 'Event Venues', '', 1),
+(9, 3, 'Wedding & Event Planners', '', 1),
+(10, 3, 'Photographers & Videographers', '', 1),
+(11, 3, 'Event Arrangements', '', 1),
+(12, 4, 'Travel Agents & Planners', '', 1),
+(13, 4, 'Hotel-Resorts', '', 1),
+(14, 4, 'International Travel', '', 1),
+(15, 6, 'Franchising, Distribution & Dealership', '', 1),
+(16, 6, 'New Business Opportunities', '', 1),
+(17, 1, 'Home Help', '', 1),
+(18, 1, 'Home Repair', '', 1),
+(19, 1, 'Appliance Repair', '', 1),
+(20, 1, 'Packers & Movers', '', 1),
+(21, 1, 'Home Cleaning', '', 1),
+(22, 1, 'Kitchen Appliance Repair', '', 1),
+(23, 1, 'Mobile - Tablet Repair', '', 1),
+(24, 1, 'Laundry & Dry Cleaning', '', 1),
+(25, 1, 'Courier Services', '', 1),
+(26, 7, 'Security Services', '', 1),
+(27, 8, 'Beauty', '', 1),
+(28, 8, 'Hair', '', 1),
+(29, 8, 'Make Up/Bridal Make Up Services', '', 1),
+(30, 5, 'Beauty', '', 1),
+(31, 5, 'Personal Fitness', '', 1),
+(32, 7, 'Lawyers & Legal Consultants', '', 1),
+(33, 7, 'Certificates & Documents', '', 1),
+(34, 7, 'RTO Consultants', '', 1),
+(35, 7, 'Licenses ', '', 1),
+(36, 7, 'Fire & Safety Services', '', 1),
+(37, 9, 'Astrology - Numerology', '', 1),
+(38, 9, 'Vaastu & Feng Sui', '', 1),
+(39, 9, 'Pooja & Devotional Services', '', 1),
+(40, 10, 'Software Development', '', 1),
+(41, 10, 'Marketing Services', '', 1),
+(42, 10, 'Architects & Civil Contractors', '', 1),
+(43, 10, 'Gardening & Landscaping', '', 1),
+(44, 10, 'Cargo - Warehouse - Logistics', '', 1),
+(45, 10, 'Other Corporate Services', '', 1),
+(46, 10, 'Industrial Services ', '', 1),
+(47, 11, 'Doctor Consultation', '', 1),
+(48, 11, 'Medical Diagnostics - Lab Tests', '', 1),
+(49, 11, 'Nursing', '', 1),
+(50, 11, 'Emergency Services', '', 1),
+(51, 11, 'Physiotherapy ', '', 1),
+(52, 11, 'Cosmetic Healthcare', '', 1),
+(53, 11, 'Medical Equipment', '', 1),
+(54, 12, 'Music', '', 1),
+(55, 12, 'Dance', '', 1),
+(56, 12, 'Arts', '', 1),
+(57, 12, 'Foreign Language', '', 1),
+(58, 12, 'Hobby Classes', '', 1),
+(59, 12, 'Training Services', '', 1),
+(60, 13, 'Appliance Rental', '', 1),
+(61, 13, 'Power Devices Rental', '', 1),
+(62, 13, 'Computer Peripheral Rental', '', 1),
+(63, 14, 'Waste Management', '', 1),
+(64, 14, 'NGOs And Charitable Trusts', '', 1),
+(65, 14, 'Green Energy', '', 1),
+(66, 15, 'Industrial Machinery', '', 1),
+(67, 15, 'EPABX Dealers/Manufacturers', '', 1),
+(68, 15, 'Photocopier Dealers/Manufacturers', '', 1),
+(69, 15, 'Pump Dealers', '', 1),
+(70, 15, 'Generator Dealers', '', 1),
+(71, 15, 'Pipe Dealers/Manufacturers', '', 1),
+(72, 15, 'Packaging Materials & Adhesive Tapes', '', 1),
+(73, 15, 'Cable & Wire Dealers/Manufacturers', '', 1),
+(74, 15, 'Bolt Nut Fastener Dealers/Manufacturers', '', 1),
+(75, 15, 'Leather Products Dealers/Manufacturers', '', 1),
+(76, 15, 'Stabilizer Dealers/Manufacturers', '', 1),
+(77, 15, 'Prefabricated Cabin Dealers', '', 1),
+(78, 15, 'UPS Dealers/Manufacturers', '', 1),
+(79, 15, 'Oils & Lubricants', '', 1),
+(80, 15, 'Electronics & Instrumentation', '', 1),
+(81, 15, 'Rolling Shutter Dealers/Manufacturers', '', 1),
+(82, 15, 'Sign Board Dealers/Manufacturers', '', 1),
+(83, 17, 'FOR SALE', '', 1),
+(84, 17, 'FOR RENT', '', 1),
+(85, 17, 'LAND', '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gst_master`
+--
+
+CREATE TABLE `gst_master` (
+  `id` int(11) NOT NULL,
+  `gst_amount` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `gst_master`
+--
+
+INSERT INTO `gst_master` (`id`, `gst_amount`) VALUES
+(1, 18);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `merchant`
+--
+
+CREATE TABLE `merchant` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `gstin` varchar(40) NOT NULL,
+  `pan` varchar(40) NOT NULL,
+  `company_name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `mobile` varchar(19) NOT NULL,
+  `state` int(4) NOT NULL,
+  `city` int(5) NOT NULL,
+  `pincode` int(9) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `business_start_year` varchar(10) NOT NULL,
+  `mobile_status` enum('public','private') NOT NULL DEFAULT 'private',
+  `receive_options` varchar(50) NOT NULL,
+  `business_location` varchar(100) NOT NULL,
+  `company_logo` varchar(255) DEFAULT NULL,
+  `kyc` varchar(255) DEFAULT NULL,
+  `latitude` varchar(100) NOT NULL,
+  `longitude` varchar(100) NOT NULL,
+  `otp_verify` int(1) NOT NULL DEFAULT '0',
+  `otp` varchar(50) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `dated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `added_by` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `merchant`
+--
+
+INSERT INTO `merchant` (`id`, `username`, `gstin`, `pan`, `company_name`, `email`, `mobile`, `state`, `city`, `pincode`, `password`, `address`, `gender`, `business_start_year`, `mobile_status`, `receive_options`, `business_location`, `company_logo`, `kyc`, `latitude`, `longitude`, `otp_verify`, `otp`, `status`, `dated`, `added_by`) VALUES
+(1, 'test', '213', '123', 'test', 'sad@gmail.com', '1122334455', 24, 595, 700101, 'e10adc3949ba59abbe56e057f20f883e', 'Soso', 'male', '2020', 'private', 'email', 'asd', NULL, NULL, '', '', 1, '241514', 1, '2020-08-21 16:02:41', 'EAD7'),
+(2, 'test', '123', '123', 'test', 'dadad@gmail.com', '2222222222', 24, 595, 123, 'e10adc3949ba59abbe56e057f20f883e', 'Soso', 'male', '12213', 'private', 'email', 'asd', NULL, NULL, '', '', 1, '830689', 1, '2020-08-21 16:09:05', 'EAD7'),
+(3, 'asdsad', '213', '123', 'asdasd', 'asdasda@gmail.com', '1231231232', 24, 595, 1231, 'e10adc3949ba59abbe56e057f20f883e', 'Soso', 'male', '2020', 'private', 'email', 'dsa', NULL, NULL, '', '', 1, '981034', 1, '2020-08-27 14:10:09', 'EAD7'),
+(4, 'fdsf', '213', '123123', 'sdfdsf', 'sfdsa@gmail.com', '2343242342', 24, 595, 213, '25f9e794323b453885f5181f1b624d0b', 'Soso', 'male', '3123', 'private', 'email', '123', NULL, NULL, '', '', 1, '807392', 1, '2020-08-27 14:45:08', 'EAD7'),
+(5, 'Bijoy Shaw', '7d89sfds98f9s8', 'd8f9d8s9f8', 'Bijoy Electronic', 'bijoy@gmail.com', '9090909990', 24, 595, 700039, 'e10adc3949ba59abbe56e057f20f883e', '14 p pg road', 'male', '2001', 'public', 'email', 'picic garden', NULL, NULL, '', '', 1, '679905', 1, '2020-08-27 15:13:18', '6'),
+(6, 'SUDIP BHAKAT', '4894895458444', '541654564564', 'APIECE SOLUTIONS', 'SUDIP@GMAIL.COM', '9051403649', 24, 595, 700021, 'e10adc3949ba59abbe56e057f20f883e', ' 172/5, PICNIC GARDEN ROAD', 'male', '2011', 'public', 'email', 'PICNIC GARDEN', NULL, NULL, '', '', 1, '471840', 1, '2020-08-27 15:39:38', '6'),
+(7, 'TEST2', '123', '21', 'asdasd', 'asdsad@gmail.com', '7539156482', 24, 595, 123, 'e10adc3949ba59abbe56e057f20f883e', 'Soso', 'male', '2222', 'private', 'email', '222', NULL, NULL, '', '', 1, '311174', 1, '2020-08-28 06:49:27', 'EAD7');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `merchant_reviews`
+--
+
+CREATE TABLE `merchant_reviews` (
+  `id` int(10) NOT NULL,
+  `merchant_id` int(100) NOT NULL,
+  `customer_id` int(100) NOT NULL,
+  `service_name` varchar(255) NOT NULL,
+  `review` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `merchant_reviews`
+--
+
+INSERT INTO `merchant_reviews` (`id`, `merchant_id`, `customer_id`, `service_name`, `review`) VALUES
+(3, 7, 22, 'LOAN', 'TEST$'),
+(4, 7, 24, 'LOAN', 'TESTING '),
+(5, 7, 24, 'LOAN', 'Your service is not goodYour service is not good Your service is not good Your service is not good'),
+(6, 7, 22, 'LOAN', 'happy happy, welcome to our corona world, all are welcome, ready for fight with corona  '),
+(7, 46, 22, 'loan', 'i am fully satisfied with money master, I will always refer this company'),
+(8, 3, 22, 'EMERGENCY INSTANT LOAN', 'Good product'),
+(9, 4, 22, 'INSTANT LOAN ', 'not a good service');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `merchant_subscription`
+--
+
+CREATE TABLE `merchant_subscription` (
+  `subscription_id` int(11) NOT NULL,
+  `merchant_id` varchar(1000) NOT NULL,
+  `plan_id` varchar(1000) NOT NULL,
+  `plan_name` varchar(1000) NOT NULL,
+  `gst` varchar(10) NOT NULL,
+  `amount` varchar(1000) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `renew_date` varchar(100) NOT NULL,
+  `expend_date` varchar(100) NOT NULL,
+  `validity` varchar(20) NOT NULL,
+  `signature` varchar(255) NOT NULL,
+  `received_by` varchar(100) NOT NULL,
+  `transaction_id` varchar(100) NOT NULL,
+  `order_id` varchar(255) NOT NULL,
+  `payment_status` varchar(100) DEFAULT NULL,
+  `payment_date` varchar(100) NOT NULL,
+  `status` varchar(1000) NOT NULL,
+  `subscription_type` enum('new','renew') NOT NULL DEFAULT 'new',
+  `plan_status` enum('active','inactive') NOT NULL DEFAULT 'active'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `merchant_subscription`
+--
+
+INSERT INTO `merchant_subscription` (`subscription_id`, `merchant_id`, `plan_id`, `plan_name`, `gst`, `amount`, `start_date`, `end_date`, `renew_date`, `expend_date`, `validity`, `signature`, `received_by`, `transaction_id`, `order_id`, `payment_status`, `payment_date`, `status`, `subscription_type`, `plan_status`) VALUES
+(1, '1', '1', 'PLATINUM', '', '2000', '2020-08-21', '2020-10-19', '', '', '60', '', '', '', '', NULL, '', '0', 'new', 'active'),
+(2, '2', '1', 'PLATINUM', '', '2000', '2020-08-21', '2020-10-19', '', '', '60', '', '', '', '', NULL, '', '0', 'new', 'active'),
+(3, '3', '1', 'PLATINUM', '18', '2305', '2020-08-27', '2020-10-25', '', '', '60', '79be175eb7ff64512b6589d831e38feed3936de244302b1da9fa63fe0848f02d', '', 'pay_FVod7moUbXEMAC', 'order_FVobHphaBbnyJ6', 'Success', '2020-08-27', '1', 'new', 'active'),
+(4, '4', '1', 'PLATINUM', '18', '2305', '2020-08-27', '2020-10-25', '', '', '60', 'e4a730ca1a04e4eeac256470918e1f454b949af7fada42104553eee2b90a51d3', '', 'pay_FVpCS871qOQRld', 'order_FVpCAW6BqFbUPQ', 'Success', '2020-08-27', '1', 'new', 'active'),
+(5, '5', '2', 'DIAMOND', '18', '1153', '2020-08-27', '2020-10-25', '', '', '60', 'dc68ac23cdedac833cef85d31f251040238bb6bd0e7cfb4b12df4e0524fb35f0', '', 'pay_FVpiJV8yTFOxX5', 'order_FVphiMr0aElAtn', 'Success', '2020-08-27', '1', 'new', 'active'),
+(6, '6', '2', 'DIAMOND', '18', '1153', '2020-08-27', '2020-10-25', '', '', '60', 'd81fe6124291d2cee467f551775581c11cd713fa2bde8837a729b8aa7e6e9544', '', 'pay_FVqHmj3u5XAdGL', 'order_FVqH6MvVmrsAqs', 'Success', '2020-08-27', '1', 'new', 'active'),
+(7, '7', '1', 'PLATINUM', '18', '2360', '2020-08-28', '2020-10-26', '', '', '60', 'd22c2e1d633c6c12434d3d4c7109aa8a393916beafc23663319a59110e7df83b', '', 'pay_FW5dGKvYAcaJ8C', 'order_FW5cnQjT7IHdIa', 'Success', '2020-08-28', '1', 'new', 'active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `plan_master_activities`
+--
+
+CREATE TABLE `plan_master_activities` (
+  `id` int(11) NOT NULL,
+  `activities` varchar(255) NOT NULL,
+  `access_type` varchar(255) NOT NULL,
+  `length` int(11) NOT NULL,
+  `activity_type` varchar(100) NOT NULL,
+  `demo` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `plan_master_activities`
+--
+
+INSERT INTO `plan_master_activities` (`id`, `activities`, `access_type`, `length`, `activity_type`, `demo`) VALUES
+(2, '2 Second Video', 'small video', 1, 'video', 'demo.mp4'),
+(4, '1 Photo', 'single photo', 1, 'photo', 'maid.jpg'),
+(5, '10 Photos', 'photo', 10, 'photo', 'maid.jpg,maid2.jpg,maid3.jpg,maid4.jpg,nurse.jpg'),
+(6, 'Unlimited Photos', 'unlimited photo', 200, 'text', 'Yes'),
+(7, 'Category', 'category', 1, 'text', 'Maid'),
+(8, 'Mobile Number', 'mobile', 0, 'text', '+918766565444'),
+(9, 'Location', 'address', 0, 'text', 'Kolkata'),
+(10, 'View Visiting & Business', 'view', 0, 'text', 'Yes'),
+(12, 'Description (300 characters)', 'description', 300, 'text', 'Assisted with the valuable support of our accomplished employees, we are indulged in rendering Domestic Maid Servant Services. The presented services are tremendously recognized amid our clients for their low rate and consistency.'),
+(13, 'Edit Profile', 'profile', 0, 'text', 'Yes'),
+(14, 'Email & SMS*', 'email', 0, 'text', 'Yes'),
+(15, '2 Service Provide', '2 service', 0, 'text', 'Yes'),
+(16, 'Photo (Shop 1)', 'logo', 1, 'photo', 'maid2.jpg'),
+(17, '	Change Offer & Discount (600 Characters)', 'unlimited description', 5000, 'text', 'we are offering an enormous assortment of services including Maid Services, Cook Placement Services, Home Servant Services, Kids Babysitter Services, Nursing Service, Domestic Maid Servant Services. We are establishment in 2003. These services are delivered under the guidance of nimble personnel to maintain their consistency and excellence at the premises of valued clients. To add, these services are generally appreciated owing to their promptness, trustworthiness and customer centric approach. By providing these services to the customers appropriately, we are experienced of preserving enduring relations with them'),
+(18, '5 Service Provide', '5 service', 0, 'text', 'Yes'),
+(19, 'Review Option', 'review', 0, 'text', 'Yes'),
+(20, 'Change Offer & Discount (150 Characters)', 'low offer', 150, 'text', 'Yes (Upto 5 times)'),
+(21, 'Video 30 Sec', 'big video', 30, 'video', 'demo.mp4'),
+(22, 'Banner Advt in App', 'banner', 1, 'photo', 'maid2.jpg'),
+(23, 'Change Offer & Discount (300 Characters)', 'high offer', 300, 'text', 'Unlimited'),
+(24, 'Update Limits 5', '', 5, 'text', 'Yes'),
+(26, '150 Characters', '150 Characters', 150, 'text', 'Yes'),
+(27, '600 Characters', '600 Characters', 600, 'text', 'Yes');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `service_master`
+--
+
+CREATE TABLE `service_master` (
+  `id` int(11) NOT NULL,
+  `category` int(11) NOT NULL,
+  `subcategory` int(11) NOT NULL,
+  `service_name` varchar(255) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `service_master`
+--
+
+INSERT INTO `service_master` (`id`, `category`, `subcategory`, `service_name`, `status`) VALUES
+(1, 1, 1, 'Furniture', 1),
+(2, 1, 1, 'Interior Design', 1),
+(3, 2, 2, 'Car & Bike Loan', 1),
+(4, 2, 2, 'Home Loan', 1),
+(5, 2, 2, 'Personal Loan', 1),
+(6, 2, 2, 'Education Loan', 1),
+(7, 2, 2, 'Mortgage Loan', 1),
+(8, 2, 2, 'Business Loan', 1),
+(9, 2, 3, 'Car & Bike Insurance', 1),
+(10, 2, 3, 'Health Insurance', 1),
+(11, 2, 3, 'Life Insurance', 1),
+(12, 2, 3, 'Term Insurance', 1),
+(13, 2, 3, 'Unit Linked Insurance Plan', 1),
+(14, 2, 3, 'Travel Insurance', 1),
+(15, 2, 4, 'Tax Filing & Audits', 1),
+(16, 2, 4, 'Tax Registration of Businesses', 1),
+(17, 2, 4, 'Audit & Assurance', 1),
+(18, 2, 4, 'GST Compliance', 1),
+(19, 2, 4, 'Accounting Services', 1),
+(20, 2, 5, 'Bank Accounts', 1),
+(21, 2, 5, 'PoS Payment Solutions', 1),
+(22, 2, 6, 'Investment Planning & Advice', 1),
+(23, 2, 6, 'Trading Accounts', 1),
+(24, 2, 6, 'Credit Score Management', 1),
+(25, 3, 7, 'Wedding Banquet Halls & Venues', 1),
+(26, 3, 7, 'Corporate Functions Venues', 1),
+(27, 3, 7, 'Small Function Venues', 1),
+(28, 3, 8, 'Wedding Planners', 1),
+(29, 3, 8, 'Party Planners', 1),
+(30, 3, 8, 'Corporate Event Planners', 1),
+(31, 3, 9, 'Pre Wedding Shoot', 1),
+(32, 3, 9, 'Wedding Photographers', 1),
+(33, 3, 9, 'Event Photographers', 1),
+(34, 3, 9, 'Maternal & Baby Photoshoot', 1),
+(35, 3, 9, 'Modelling Portfolio Photographers', 1),
+(36, 3, 10, 'Florists & Decorators', 1),
+(37, 3, 10, 'Bar Counter', 1),
+(38, 3, 10, 'Valet Parking', 1),
+(39, 3, 10, 'Sound Arrangement & DJs', 1),
+(40, 3, 10, 'Live Musicians', 1),
+(41, 3, 10, 'Tents', 1),
+(42, 3, 10, 'Music Bands', 1),
+(43, 4, 11, 'Domestic Tour Packages', 1),
+(44, 4, 11, 'Car Rentals', 1),
+(45, 4, 11, 'Out Station Drivers', 1),
+(46, 4, 11, 'Bus-Train Tickets', 1),
+(47, 4, 11, 'Flight Tickets', 1),
+(48, 4, 11, 'Bike Rentals', 1),
+(49, 4, 11, 'Bus - Mini Bus Rental', 1),
+(50, 4, 11, 'International Tour Packages', 1),
+(51, 4, 13, 'Visa & Immigration', 1),
+(52, 4, 13, 'Passport Agent', 1),
+(53, 4, 13, 'International SIM Cards', 1),
+(54, 4, 13, 'Forex - Currency Exchange', 1),
+(55, 4, 12, 'Domestic Hotels- Resorts', 1),
+(56, 4, 12, 'International Hotels - Resorts', 1),
+(57, 6, 14, 'Franchising', 1),
+(58, 6, 14, 'Distribution', 1),
+(59, 6, 14, 'Dealership', 1),
+(60, 6, 15, 'Start Your Own Business', 1),
+(61, 6, 15, 'Partnership Opportunities', 1),
+(62, 6, 15, 'Investment Opportunities', 1),
+(63, 6, 15, 'Part-TIme Working Opportunities', 1),
+(64, 1, 1, 'Modular Kitchen', 1),
+(65, 1, 1, 'Painting', 1),
+(66, 1, 1, 'Flooring', 1),
+(67, 1, 1, 'Metal Fabrication', 1),
+(68, 1, 1, 'Home Automation', 1),
+(69, 1, 16, 'Cook', 1),
+(70, 1, 16, 'Baby Sitter', 1),
+(71, 1, 16, 'Driver', 1),
+(72, 1, 16, 'Home Nurse', 1),
+(73, 1, 17, 'Carpenter', 1),
+(74, 1, 17, 'Waterprofing', 1),
+(75, 1, 17, 'Plumber', 1),
+(76, 1, 17, 'Electrician', 1),
+(77, 1, 18, 'Air Conditioner', 1),
+(78, 1, 18, 'Washing Machine', 1),
+(79, 1, 18, 'Television', 1),
+(80, 1, 18, 'Refrigerator', 1),
+(81, 1, 18, 'Air Cooler', 1),
+(82, 1, 18, 'Geyser Repair', 1),
+(83, 1, 19, 'Within City', 1),
+(84, 1, 19, 'Between Cities', 1),
+(85, 1, 19, 'International', 1),
+(86, 1, 20, 'Full Home Deep Cleaning', 1),
+(87, 1, 20, 'Bathroom Cleaning', 1),
+(88, 1, 20, 'Basic Home Cleaning', 1),
+(89, 1, 20, 'Kitchen Cleaning', 1),
+(90, 1, 20, 'Sofa - Carpet Cleaning', 1),
+(91, 1, 20, 'Water Tank Cleaning', 1),
+(92, 1, 21, 'Microwave', 1),
+(93, 1, 21, 'RO - Water Purifier', 1),
+(94, 1, 21, 'Electric Chimney', 1),
+(95, 1, 22, 'Mobile Repair', 1),
+(96, 1, 22, 'Tablet Repair', 1),
+(97, 1, 22, 'Iphone - Ipad Repair', 1),
+(98, 1, 23, 'Wash Only', 1),
+(99, 1, 23, 'Wash & Iron', 1),
+(100, 1, 23, 'Dry Cleaning', 1),
+(101, 1, 23, 'Commercial Laundry ', 1),
+(102, 1, 24, 'Local Courier', 1),
+(103, 1, 24, 'National Courier', 1),
+(104, 1, 24, 'International Courier', 1),
+(105, 8, 26, 'Facial', 1),
+(106, 8, 26, 'Normal Waxing ', 1),
+(107, 8, 26, 'RICA Waxing', 1),
+(108, 8, 26, 'Threading', 1),
+(109, 8, 27, 'Hair Cut', 1),
+(110, 8, 27, 'Hair Spa', 1),
+(111, 8, 27, 'Hair Colouring', 1),
+(112, 8, 28, 'Bridal Make Over', 1),
+(113, 8, 28, 'Corporate Make Over', 1),
+(114, 8, 28, 'Friends Of Bride', 1),
+(115, 8, 28, 'Beauty Pakages', 1),
+(116, 8, 28, 'Pre-Bridal Packages', 1),
+(117, 5, 29, 'Parlors & Salons ', 1),
+(118, 5, 29, 'Mehendi & Make-up Artists', 1),
+(119, 5, 29, 'Tattoo - Body Art', 1),
+(120, 5, 29, 'Spa Salons', 1),
+(121, 5, 30, 'Yoga & Meditation', 1),
+(122, 5, 30, 'Dietitians & Weight Loss', 1),
+(123, 5, 30, 'Fitness & Gym Trainers', 1),
+(124, 5, 30, 'Sports Coach', 1),
+(125, 5, 30, 'Zumma Classes', 1),
+(126, 5, 30, 'Aerobic Classes', 1),
+(127, 5, 30, 'Martial Arts', 1),
+(128, 7, 25, 'Security Guards', 1),
+(129, 7, 25, 'Other Security Devices Installation', 1),
+(130, 7, 25, 'Security Devices Repair', 1),
+(131, 7, 25, 'Detective Services', 1),
+(132, 7, 25, 'Event Security', 1),
+(133, 7, 25, 'GPS Tracking System', 1),
+(134, 7, 25, 'CCTV', 1),
+(135, 7, 25, 'Access Control System', 1),
+(136, 7, 25, 'Alarm System', 1),
+(137, 7, 31, 'Property/RERA Lawyer', 1),
+(138, 7, 31, 'Divorce Lawyer', 1),
+(139, 7, 31, 'Corporate Lawyer - Company Law', 1),
+(140, 7, 31, 'IP - Patents - Copyrights Lawyer', 1),
+(141, 7, 31, 'Customer Court Lawyers', 1),
+(142, 7, 31, 'Child Adoption', 1),
+(143, 7, 31, 'Criminal Law', 1),
+(144, 7, 31, 'Labour Law Consultant', 1),
+(145, 7, 31, 'Cyber Crime Lawyers', 1),
+(146, 7, 31, 'Marriage Lawyers', 1),
+(147, 7, 31, 'Civil Lawyers', 1),
+(148, 7, 32, 'New Certificate', 1),
+(149, 7, 32, 'Correction Of Certificate', 1),
+(150, 7, 32, 'Digital Signature Certificate', 1),
+(151, 7, 32, 'Rental Agreements', 1),
+(152, 7, 32, 'Certificates Attestation', 1),
+(153, 7, 33, 'NOC(No Objection Certificate)', 1),
+(154, 7, 33, 'Duplicate RC', 1),
+(155, 7, 33, 'Ownership Transfer', 1),
+(156, 7, 33, 'Registration - Re-registration', 1),
+(157, 7, 33, 'Hypothecation Removal', 1),
+(158, 7, 33, 'Tax Payment - Tax Refund', 1),
+(159, 7, 33, 'Commercial RTO Services ', 1),
+(160, 7, 34, 'Shop - Gumasta License', 1),
+(161, 7, 34, 'Labour Registration', 1),
+(162, 7, 34, 'Food License Consultants ', 1),
+(163, 7, 34, 'Import - Export Licenses', 1),
+(164, 7, 34, 'Company Secretarial Services', 1),
+(165, 7, 35, 'Fire Safety Audit', 1),
+(166, 7, 35, 'Fire Safety Consultation', 1),
+(167, 7, 35, 'Fire Fighting System', 1),
+(168, 7, 35, 'Fire & Safety Devices', 1),
+(169, 9, 36, 'General Astrology Consultation', 1),
+(170, 9, 36, 'Numerology', 1),
+(171, 9, 36, 'Tarot Card - Psychic Reading', 1),
+(172, 9, 36, 'Horoscope Services', 1),
+(173, 9, 36, 'Muslim Astrologer', 1),
+(174, 9, 37, 'Vaastu Consultation', 1),
+(175, 9, 37, 'Feng Sui Consultation', 1),
+(176, 9, 37, 'Vaastu & Feng Sui Products', 1),
+(177, 9, 38, 'Pooja Services', 1),
+(178, 9, 38, 'Yagna - Havan - Homa ', 1),
+(179, 9, 38, 'Pandit - Pujari - Ceremonies', 1),
+(180, 9, 38, 'Pilgrimage - Theerth Yatra', 1),
+(181, 10, 39, 'Website Developer', 1),
+(182, 10, 39, 'Mobile App Developer', 1),
+(183, 10, 39, 'StandAlone Software', 1),
+(184, 10, 40, 'Digital Marketing', 1),
+(185, 10, 40, 'Advertising Solutions', 1),
+(186, 10, 40, 'Printer & Printing Services', 1),
+(187, 10, 40, 'Stalls & Canopy ', 1),
+(188, 10, 40, 'Graphics & Logo Designer', 1),
+(189, 10, 41, 'Architects', 1),
+(190, 10, 41, 'Civil Contractors', 1),
+(191, 10, 41, 'Building Plan - Design & Sanction', 1),
+(192, 10, 41, 'Construction Material Supply', 1),
+(193, 10, 41, 'Borewell Drilling', 1),
+(194, 10, 41, 'Interior Designing Material Supply', 1),
+(195, 10, 41, 'Structural Auditors', 1),
+(196, 10, 41, 'Home Renovation', 1),
+(197, 10, 42, 'Residential Gardening', 1),
+(198, 10, 42, 'Commercial Gardening', 1),
+(199, 10, 43, 'Warehouse', 1),
+(200, 10, 43, 'Cargo - Shipping', 1),
+(201, 10, 43, 'Trucks - Mini Trucks for Hire', 1),
+(202, 10, 44, 'Corporate Gifting Solutions', 1),
+(203, 10, 44, 'Facility Management', 1),
+(204, 10, 44, 'Audio Video Equipment', 1),
+(205, 10, 45, 'Material Handling Services', 1),
+(206, 10, 45, 'FRP Lining Work', 1),
+(207, 11, 46, 'Doctor on Call - Home Visits', 1),
+(208, 11, 46, 'Hospitals & Clinics', 1),
+(209, 11, 46, 'Chemists', 1),
+(210, 11, 46, 'Alternate Medicines', 1),
+(211, 11, 47, 'Diagnostic Labs', 1),
+(212, 11, 47, 'Diagnostics At Home', 1),
+(213, 11, 48, 'Ward Boy - Attendant', 1),
+(214, 11, 49, 'Ambulance Services', 1),
+(215, 11, 49, 'Blood Bank', 1),
+(216, 11, 50, 'Physiotherapy Clinic', 1),
+(217, 11, 50, 'Physiotherapy At Home', 1),
+(218, 11, 51, 'Cosmetic Dentists', 1),
+(219, 11, 51, 'Skin Clinic', 1),
+(220, 11, 51, 'Hair Clinic', 1),
+(221, 11, 51, 'Opticians', 1),
+(222, 11, 52, 'Ambulatory Aid', 1),
+(223, 11, 52, 'Hospital Bed', 1),
+(224, 11, 52, 'Oxygen Cylinder ', 1),
+(225, 11, 52, 'Home ICU Setup', 1),
+(226, 11, 52, 'Other Medical Equipment', 1),
+(227, 12, 53, 'Vocal - Indian', 1),
+(228, 12, 53, 'Vocal - Western', 1),
+(229, 12, 53, 'Musical Instrument - Indian', 1),
+(230, 12, 53, 'Musical Instrument - Western', 1),
+(231, 12, 54, 'Indian Dance Forms', 1),
+(232, 12, 54, 'Western Dance', 1),
+(233, 12, 55, 'Drawing - Painting', 1),
+(234, 12, 55, 'Performing Arts', 1),
+(235, 12, 56, 'Foreign Language Classes', 1),
+(236, 12, 57, 'Cooking Classes', 1),
+(237, 12, 57, 'Baking Classes', 1),
+(238, 12, 57, 'Jewel Making Classes', 1),
+(239, 12, 57, 'Craft & Modelling', 1),
+(240, 12, 58, 'Driving Classes', 1),
+(241, 12, 58, 'Beautician Training', 1),
+(242, 13, 59, 'Projector Rental', 1),
+(243, 13, 59, 'Computer Rental', 1),
+(244, 13, 59, 'Tv - Screen Rental', 1),
+(245, 13, 59, 'Refrigerator Rental', 1),
+(246, 13, 59, 'Washing Machine Rental', 1),
+(247, 13, 59, 'Air Conditioner Rental', 1),
+(248, 13, 59, 'Server Rental', 1),
+(249, 13, 60, 'Inverter & Battery Rental', 1),
+(250, 13, 60, 'Generator Rental', 1),
+(251, 13, 61, 'Xerox Machine Rental', 1),
+(252, 13, 61, 'Printer Scanner Rental', 1),
+(253, 14, 62, 'Scrap Dealers', 1),
+(254, 14, 62, 'Waste Collection - Garbage Disposal ', 1),
+(255, 14, 62, 'Septic Tank - Drainage Cleaning', 1),
+(256, 14, 62, 'Sewage Water Treatment Plant', 1),
+(257, 14, 63, 'NGOs & Charitable Trusts', 1),
+(258, 14, 64, 'Solar Panels ', 1),
+(259, 14, 64, 'Solar Water Heater', 1),
+(260, 1, 16, 'Maid', 1),
+(261, 8, 26, 'Pedicure', 1),
+(262, 8, 26, 'Manicure', 1),
+(263, 15, 65, 'General Machines', 1),
+(264, 15, 65, 'Printing Machines & Equipments ', 1),
+(265, 15, 65, 'Industrial Furnaces & Ovens', 1),
+(266, 15, 65, 'Hydraulic & Pneumatic Machines', 1),
+(267, 15, 65, 'CNC & Lathe Machines', 1),
+(268, 15, 65, 'Food Processing Machines', 1),
+(269, 15, 65, 'Industrial Burners', 1),
+(270, 15, 65, 'Industrial Gases', 1),
+(271, 15, 65, 'Industrial Boilers & Accessories', 1),
+(272, 15, 65, 'Plastic Making Machines', 1),
+(273, 15, 65, 'Industrial Dryers', 1),
+(274, 15, 65, 'Industrial Water Treatment Plants', 1),
+(275, 15, 65, 'Industrial Heaters', 1),
+(276, 15, 65, 'Industrial Refrigeration Equipments', 1),
+(277, 15, 66, 'EPABX Dealers & Manufacturers', 1),
+(278, 15, 66, 'Call Center Solutions', 1),
+(279, 15, 66, 'IP PBX Solutions', 1),
+(280, 15, 67, 'Photocopier Dealers & Manufacturers', 1),
+(281, 15, 68, 'Pumps', 1),
+(282, 15, 69, 'Generators', 1),
+(283, 15, 70, 'Pipe Dealers & Manufacturers', 1),
+(284, 15, 71, 'Packaging Materials ', 1),
+(285, 15, 71, 'Adhesive Tapes', 1),
+(286, 15, 71, 'Packaging Machines', 1),
+(287, 15, 72, 'Cable & Wire', 1),
+(288, 15, 73, 'Bolt Dealers', 1),
+(289, 15, 73, 'Nut Dealers', 1),
+(290, 15, 73, 'Jaws & Chucks Dealers', 1),
+(291, 15, 74, 'Leather Products', 1),
+(292, 15, 74, 'Gym Equipment Dealers', 1),
+(293, 15, 75, 'Stabilizer Dealers & Manufacturers', 1),
+(294, 15, 77, 'UPS Dealers & Manufacturers', 1),
+(295, 15, 76, 'Prefabricated Cabins', 1),
+(296, 15, 76, 'Prefabricated Buildings', 1),
+(297, 15, 76, 'Industrial Safety Products', 1),
+(298, 15, 78, 'Industrial Oils', 1),
+(299, 15, 78, 'Industrial Lubricants ', 1),
+(300, 15, 79, 'Control Panels', 1),
+(301, 15, 79, 'Electrical Equipments ', 1),
+(302, 15, 79, 'Mobile Phone Accessories ', 1),
+(303, 15, 80, 'Rolling Shutters', 1),
+(304, 15, 81, 'Sign Boards ', 1),
+(305, 15, 81, 'Safety Sign Boards', 1),
+(306, 1, 1, 'TESTING EMERGENCY LOAN', 1),
+(307, 17, 83, 'HOUSE AND APPARTMENTS', 1),
+(308, 17, 84, 'HOUSE RENT', 1),
+(309, 17, 84, 'CAR', 1),
+(310, 17, 84, 'GODOWN', 1),
+(311, 17, 84, 'SHOP', 1),
+(312, 17, 85, 'LAND SALE', 1),
+(313, 17, 85, 'LAND PURCHASE', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `states`
+--
+
+CREATE TABLE `states` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `country_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `states`
+--
+
+INSERT INTO `states` (`id`, `name`, `country_id`) VALUES
+(1, 'ANDHRA PRADESH', 105),
+(2, 'ASSAM', 105),
+(3, 'ARUNACHAL PRADESH', 105),
+(4, 'BIHAR', 105),
+(5, 'GUJRAT', 105),
+(6, 'HARYANA', 105),
+(7, 'HIMACHAL PRADESH', 105),
+(8, 'JAMMU & KASHMIR', 105),
+(9, 'KARNATAKA', 105),
+(10, 'KERALA', 105),
+(11, 'MADHYA PRADESH', 105),
+(12, 'MAHARASHTRA', 105),
+(13, 'MANIPUR', 105),
+(14, 'MEGHALAYA', 105),
+(15, 'MIZORAM', 105),
+(16, 'NAGALAND', 105),
+(17, 'ORISSA', 105),
+(18, 'PUNJAB', 105),
+(19, 'RAJASTHAN', 105),
+(20, 'SIKKIM', 105),
+(21, 'TAMIL NADU', 105),
+(22, 'TRIPURA', 105),
+(23, 'UTTAR PRADESH', 105),
+(24, 'WEST BENGAL', 105),
+(25, 'DELHI', 105),
+(26, 'GOA', 105),
+(27, 'PONDICHERY', 105),
+(28, 'LAKSHDWEEP', 105),
+(29, 'DAMAN & DIU', 105),
+(30, 'DADRA & NAGAR', 105),
+(31, 'CHANDIGARH', 105),
+(32, 'ANDAMAN & NICOBAR', 105),
+(33, 'UTTARANCHAL', 105),
+(34, 'JHARKHAND', 105),
+(35, 'CHATTISGARH', 105);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subscribe`
+--
+
+CREATE TABLE `subscribe` (
+  `subscribe_id` int(11) NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `email` varchar(1000) NOT NULL,
+  `date_added` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `subscribe`
+--
+
+INSERT INTO `subscribe` (`subscribe_id`, `name`, `email`, `date_added`) VALUES
+(1, '', 'fff@gmail.com', '2020-01-16'),
+(2, '', 'ghfgj@gmail.com', '2020-01-16'),
+(0, '', 't@gmail.com', '2020-02-03'),
+(0, '', 'dsfdsgg', '2020-02-05'),
+(0, '', 'munilalbhakat3238@gmail.com', '2020-02-05'),
+(0, '', 'munilalbhakat@3238@gmail.com', '2020-02-05'),
+(1, '', 'fff@gmail.com', '2020-01-16'),
+(2, '', 'ghfgj@gmail.com', '2020-01-16'),
+(0, '', 't@gmail.com', '2020-02-03'),
+(0, '', 'dsfdsgg', '2020-02-05'),
+(0, '', 'munilalbhakat3238@gmail.com', '2020-02-05'),
+(0, '', 'munilalbhakat@3238@gmail.com', '2020-02-05');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `viewerclick_details`
+--
+
+CREATE TABLE `viewerclick_details` (
+  `id` int(11) NOT NULL,
+  `customer_id` varchar(100) NOT NULL,
+  `merchant_id` varchar(100) NOT NULL,
+  `service_id` varchar(100) NOT NULL,
+  `service_click` int(10) NOT NULL,
+  `contact_click` int(10) NOT NULL,
+  `email_click` int(10) NOT NULL,
+  `sms_click` int(10) NOT NULL,
+  `dated` varchar(255) NOT NULL,
+  `status` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `viewerclick_details`
+--
+
+INSERT INTO `viewerclick_details` (`id`, `customer_id`, `merchant_id`, `service_id`, `service_click`, `contact_click`, `email_click`, `sms_click`, `dated`, `status`) VALUES
+(1, '22', '33', '75', 1, 0, 0, 0, '2020-06-04', 1),
+(2, '22', '46', '9', 3, 0, 0, 0, '2020-06-15', 1),
+(3, '22', '7', '306', 4, 0, 0, 0, '2020-08-28', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admin_user`
+--
+ALTER TABLE `admin_user`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `business_with_us`
+--
+ALTER TABLE `business_with_us`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `career_with_us`
+--
+ALTER TABLE `career_with_us`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `chatting`
+--
+ALTER TABLE `chatting`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `chat_reply`
+--
+ALTER TABLE `chat_reply`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cities`
+--
+ALTER TABLE `cities`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `state_id` (`state_id`);
+
+--
+-- Indexes for table `countries`
+--
+ALTER TABLE `countries`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `customers`
+--
+ALTER TABLE `customers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `customer_visits`
+--
+ALTER TABLE `customer_visits`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ead_banners`
+--
+ALTER TABLE `ead_banners`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ead_categories`
+--
+ALTER TABLE `ead_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ead_plans`
+--
+ALTER TABLE `ead_plans`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ead_products`
+--
+ALTER TABLE `ead_products`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ead_service_images`
+--
+ALTER TABLE `ead_service_images`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ead_sub_categories`
+--
+ALTER TABLE `ead_sub_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `gst_master`
+--
+ALTER TABLE `gst_master`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `merchant`
+--
+ALTER TABLE `merchant`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `merchant_reviews`
+--
+ALTER TABLE `merchant_reviews`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `merchant_subscription`
+--
+ALTER TABLE `merchant_subscription`
+  ADD PRIMARY KEY (`subscription_id`);
+
+--
+-- Indexes for table `plan_master_activities`
+--
+ALTER TABLE `plan_master_activities`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `service_master`
+--
+ALTER TABLE `service_master`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `states`
+--
+ALTER TABLE `states`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `viewerclick_details`
+--
+ALTER TABLE `viewerclick_details`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admin_user`
+--
+ALTER TABLE `admin_user`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `business_with_us`
+--
+ALTER TABLE `business_with_us`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `career_with_us`
+--
+ALTER TABLE `career_with_us`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `chatting`
+--
+ALTER TABLE `chatting`
+  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `chat_reply`
+--
+ALTER TABLE `chat_reply`
+  MODIFY `id` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `customer_visits`
+--
+ALTER TABLE `customer_visits`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `ead_banners`
+--
+ALTER TABLE `ead_banners`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `ead_categories`
+--
+ALTER TABLE `ead_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `ead_products`
+--
+ALTER TABLE `ead_products`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `ead_service_images`
+--
+ALTER TABLE `ead_service_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+
+--
+-- AUTO_INCREMENT for table `ead_sub_categories`
+--
+ALTER TABLE `ead_sub_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+
+--
+-- AUTO_INCREMENT for table `gst_master`
+--
+ALTER TABLE `gst_master`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `merchant`
+--
+ALTER TABLE `merchant`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `merchant_reviews`
+--
+ALTER TABLE `merchant_reviews`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `merchant_subscription`
+--
+ALTER TABLE `merchant_subscription`
+  MODIFY `subscription_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `plan_master_activities`
+--
+ALTER TABLE `plan_master_activities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `service_master`
+--
+ALTER TABLE `service_master`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=314;
+
+--
+-- AUTO_INCREMENT for table `states`
+--
+ALTER TABLE `states`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- AUTO_INCREMENT for table `viewerclick_details`
+--
+ALTER TABLE `viewerclick_details`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
