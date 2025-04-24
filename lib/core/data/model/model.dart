@@ -14,6 +14,6 @@ export 'merchant/merchant.dart';
 export 'user/user_model.dart';
 export 'product/products_model.dart';
 export 'merchant_dashboard_items.dart';
-export 'request/request.dart';
+export 'payload/request.dart';
 export 'response/responses.dart';
 export 'referral/refferal_model.dart';

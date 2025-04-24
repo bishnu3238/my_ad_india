@@ -1,6 +1,4 @@
-// lib/core/data/model/response/merchant_registration_response.dart
 import 'dart:developer' as dev;
-
 import 'package:pack/pack.dart';
 import '../model.dart';
 
@@ -18,10 +16,11 @@ class MerchantRegistrationResponse {
   final String message;
   final MerchantModel? merchant;
   final MerchantSubscriptionModel? subscription;
+  final MerchantServiceDetailsModel? serviceDetails;
   final String timestamp;
   final Map<String, dynamic>? errors;
-  final Map<String, dynamic>? data; // Add data field for OTP case
-  final String? otp; // Add explicit OTP field
+  final Map<String, dynamic>? data;
+  final String? otp;
 
   MerchantRegistrationResponse._({
     required this.status,
@@ -29,6 +28,7 @@ class MerchantRegistrationResponse {
     required this.message,
     this.merchant,
     this.subscription,
+    this.serviceDetails,
     required this.timestamp,
     this.errors,
     this.data,
@@ -40,6 +40,7 @@ class MerchantRegistrationResponse {
     required String message,
     required MerchantModel merchant,
     required MerchantSubscriptionModel subscription,
+    required MerchantServiceDetailsModel serviceDetails,
     required String timestamp,
   }) {
     return MerchantRegistrationResponse._(
@@ -48,6 +49,7 @@ class MerchantRegistrationResponse {
       message: message,
       merchant: merchant,
       subscription: subscription,
+      serviceDetails: serviceDetails,
       timestamp: timestamp,
       errors: null,
       data: null,
@@ -66,6 +68,7 @@ class MerchantRegistrationResponse {
       message: message,
       merchant: null,
       subscription: null,
+      serviceDetails: null,
       timestamp: timestamp,
       errors: null,
       data: null,
@@ -85,6 +88,7 @@ class MerchantRegistrationResponse {
       message: message,
       merchant: null,
       subscription: null,
+      serviceDetails: null,
       timestamp: timestamp,
       errors: errors,
       data: null,
@@ -104,6 +108,7 @@ class MerchantRegistrationResponse {
       message: message,
       merchant: null,
       subscription: null,
+      serviceDetails: null,
       timestamp: timestamp,
       errors: errors,
       data: null,
@@ -122,11 +127,14 @@ class MerchantRegistrationResponse {
       status: MerchantRegistrationStatus.otpRequired,
       statusCode: statusCode,
       message: message,
-      merchant: data['merchant'] != null 
-          ? MerchantModel.fromJson(data['merchant'] as Map<String, dynamic>) 
+      merchant: data['merchant'] != null
+          ? MerchantModel.fromJson(data['merchant'] as Map<String, dynamic>)
           : null,
-      subscription: data['subscription'] != null 
-          ? MerchantSubscriptionModel.fromJson(data['subscription'] as Map<String, dynamic>) 
+      subscription: data['subscription'] != null
+          ? MerchantSubscriptionModel.fromJson(data['subscription'] as Map<String, dynamic>)
+          : null,
+      serviceDetails: data['service_details'] != null
+          ? MerchantServiceDetailsModel.fromJson(data['service_details'] as Map<String, dynamic>)
           : null,
       timestamp: timestamp,
       errors: null,
@@ -141,19 +149,16 @@ class MerchantRegistrationResponse {
     final message = json.getString('message');
     final timestamp = json.getString('timestamp');
     final data = json['data'] != null ? Map<String, dynamic>.from(json['data']) : null;
-    
-    // Extract OTP if available
+
     String? otp;
     if (data != null && data.containsKey('otp')) {
       otp = data['otp'].toString();
     }
 
-    // Check if this is an OTP verification required response
-    if (statusCode == 201 && data != null && 
-        (message.toLowerCase().contains('otp') || 
-         message.toLowerCase().contains('verify') || 
-         data.containsKey('otp'))) {
-      
+    if (statusCode == 201 && data != null &&
+        (message.toLowerCase().contains('otp') ||
+            message.toLowerCase().contains('verify') ||
+            data.containsKey('otp'))) {
       return MerchantRegistrationResponse.otpRequired(
         statusCode: statusCode,
         message: message,
@@ -161,53 +166,43 @@ class MerchantRegistrationResponse {
         timestamp: timestamp,
         otp: otp,
       );
-    } 
-    // Handle successful registration with merchant and subscription data
-    else if ((statusCode == 200 || statusCode == 201) && 
-             data != null && 
-             data.containsKey('merchant') && 
-             data.containsKey('subscription')) {
-      
+    } else if ((statusCode == 200 || statusCode == 201) &&
+        data != null &&
+        data.containsKey('merchant') &&
+        data.containsKey('subscription') &&
+        data.containsKey('service_details')) {
       final merchantJson = data['merchant'] as Map<String, dynamic>;
       final subscriptionJson = data['subscription'] as Map<String, dynamic>;
-      
+      final serviceDetailsJson = data['service_details'] as Map<String, dynamic>;
+
       return MerchantRegistrationResponse.success(
         statusCode: statusCode,
         message: message,
         merchant: MerchantModel.fromJson(merchantJson),
         subscription: MerchantSubscriptionModel.fromJson(subscriptionJson),
+        serviceDetails: MerchantServiceDetailsModel.fromJson(serviceDetailsJson),
         timestamp: timestamp,
       );
-    } 
-    // Handle conflict (duplicate email/username)
-    else if (statusCode == 409) {
+    } else if (statusCode == 409) {
       return MerchantRegistrationResponse.conflict(
         statusCode: statusCode,
         message: message,
         timestamp: timestamp,
       );
-    } 
-    // Handle validation errors
-    else if (statusCode == 400 && data != null) {
+    } else if (statusCode == 400 && data != null) {
       Map<String, dynamic> errors = {};
-      
-      // Handle different error formats
       if (data is List) {
         errors = {'missing_fields': data};
       } else {
         errors = data;
       }
-
-      
       return MerchantRegistrationResponse.invalidInput(
         statusCode: statusCode,
         message: message,
         errors: errors,
         timestamp: timestamp,
       );
-    } 
-    // Handle all other errors
-    else {
+    } else {
       return MerchantRegistrationResponse.error(
         statusCode: statusCode,
         message: message,
@@ -218,15 +213,15 @@ class MerchantRegistrationResponse {
   }
 
   T fold<T>({
-      T Function(MerchantModel merchant, MerchantSubscriptionModel subscription)? onSuccess,
+    T Function(MerchantModel merchant, MerchantSubscriptionModel subscription, MerchantServiceDetailsModel serviceDetails)? onSuccess,
     T Function()? onConflict,
     T Function(Map<String, dynamic> errors)? onInvalidInput,
     required T Function(String message) onError,
-    T Function(Map<String, dynamic> data, String? otp, MerchantModel? merchant)? onOtpRequired,
+    T Function(Map<String, dynamic> data, String? otp, MerchantModel? merchant, MerchantSubscriptionModel? subscription, MerchantServiceDetailsModel? serviceDetails)? onOtpRequired,
   }) {
     switch (status) {
       case MerchantRegistrationStatus.success:
-        return onSuccess?.call(merchant!, subscription!) ?? onError(message);
+        return onSuccess?.call(merchant!, subscription!, serviceDetails!) ?? onError(message);
       case MerchantRegistrationStatus.conflict:
         return onConflict?.call() ?? onError(message);
       case MerchantRegistrationStatus.invalidInput:
@@ -234,11 +229,10 @@ class MerchantRegistrationResponse {
       case MerchantRegistrationStatus.error:
         return onError(message);
       case MerchantRegistrationStatus.otpRequired:
-        return onOtpRequired?.call(data!, otp, merchant) ?? onError(message);
+        return onOtpRequired?.call(data!, otp, merchant, subscription, serviceDetails) ?? onError(message);
     }
   }
 
-  // Get merchant ID from response
   String? getMerchantId() {
     if (merchant != null) {
       return merchant!.id.toString();
@@ -254,6 +248,6 @@ class MerchantRegistrationResponse {
 
   @override
   String toString() {
-    return 'MerchantRegistrationResponse{status: $status, statusCode: $statusCode, message: $message, merchant: $merchant, subscription: $subscription, timestamp: $timestamp, errors: $errors, data: $data, otp: $otp}';
+    return 'MerchantRegistrationResponse{status: $status, statusCode: $statusCode, message: $message, merchant: $merchant, subscription: $subscription, serviceDetails: $serviceDetails, timestamp: $timestamp, errors: $errors, data: $data, otp: $otp}';
   }
 }

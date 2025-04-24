@@ -1,5 +1,6 @@
 // src/presentation/widgets/auth_text_field.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AuthTextField extends StatefulWidget {
   final String label;
@@ -43,10 +44,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+        Text(widget.label, style: Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height: 8),
         TextFormField(
           controller: widget.controller,
@@ -57,24 +55,29 @@ class _AuthTextFieldState extends State<AuthTextField> {
           focusNode: widget.focusNode,
           textInputAction: widget.textInputAction,
           onEditingComplete: widget.onEditingComplete,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(
+              widget.keyboardType == TextInputType.phone ? 10 : 200,
+            ),
+          ],
           decoration: InputDecoration(
             hintText: widget.hint,
             prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.isPassword
-                ? IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility : Icons.visibility_off,
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
-            )
-                : widget.suffixIcon,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+
+            suffixIcon:
+                widget.isPassword
+                    ? IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                    : widget.suffixIcon,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
@@ -107,5 +110,3 @@ class _AuthTextFieldState extends State<AuthTextField> {
     );
   }
 }
-
-

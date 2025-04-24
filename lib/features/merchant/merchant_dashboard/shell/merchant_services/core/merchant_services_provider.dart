@@ -59,7 +59,9 @@ class MerchantServicesProvider extends BaseProviderModel {
   bool get canShowOffers => _featureManager?.canShowOffers ?? false;
 
   Future<void> _initialize() async {
-    await Future.wait([_fetchServices(), _fetchPlanAccess()]);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async => await Future.wait([_fetchServices(), _fetchPlanAccess()]),
+    );
   }
 
   Future<void> _fetchServices() async {

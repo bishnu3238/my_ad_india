@@ -1,12 +1,10 @@
-// lib/core/model/merchant_login_response.dart
 import 'dart:developer' as dev;
 
 import 'package:pack/pack.dart';
-
 import '../merchant/merchant.dart';
+import '../merchant/merchant_service_details_model.dart';
 
 enum MerchantLoginResponseType { success, otpRequired, error }
-
 
 class MerchantLoginResponse {
   final MerchantLoginResponseType type;
@@ -83,23 +81,33 @@ class MerchantLoginResponse {
         json['data'] != null ? Map<String, dynamic>.from(json['data']) : null;
     final timestamp = json.getString('timestamp');
 
-    if (status == 200) {
+    if (status == 200 &&
+        data != null &&
+        data.containsKey('merchant') &&
+        data.containsKey('subscription') &&
+        data.containsKey('service_details')) {
       return MerchantLoginResponse.success(
         status: status,
         message: message,
         data: MerchantData(
-          merchant: MerchantModel.fromJson(data!['merchant']),
+          merchant: MerchantModel.fromJson(data['merchant']),
           subscription: MerchantSubscriptionModel.fromJson(
             data['subscription'],
           ),
-        ), // Assumes data is present for 200
+          serviceDetails: MerchantServiceDetailsModel.fromJson(
+            data['service_details'] ?? {},
+          ),
+        ),
         timestamp: timestamp,
       );
-    } else if (status == 201) {
+    } else if (status == 201 &&
+        data != null &&
+        data.containsKey('merchant_id') &&
+        data.containsKey('otp')) {
       return MerchantLoginResponse.otpRequired(
         status: status,
         message: message,
-        data: data!, // Assumes data contains merchant_id and otp for 403
+        data: data,
         timestamp: timestamp,
       );
     } else {

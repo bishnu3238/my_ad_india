@@ -10,7 +10,10 @@ import 'package:my_ad/core/domain/data_store/category_store.dart';
 import 'package:my_ad/core/domain/data_store/service_store.dart';
 import 'package:my_ad/core/domain/data_store/sub_category_store.dart';
 import 'package:my_ad/features/merchant/merchant_add_service/core/merchant_add_service_provider.dart';
+import 'package:pack/extensions/extensions.dart';
 import 'package:provider/provider.dart';
+
+import 'details_form.dart';
 
 class BasicInfoForm extends StatelessWidget {
   const BasicInfoForm({super.key});
@@ -20,10 +23,18 @@ class BasicInfoForm extends StatelessWidget {
     final theme = Theme.of(context).colorScheme;
     return Consumer<MerchantAddServiceProvider>(
       builder: (context, provider, _) {
-        final categoryStore = Provider.of<CategoryStore>(context);
-        final subCategoryStore = Provider.of<SubCategoryStore>(context);
-        final serviceStore = Provider.of<ServiceStore>(context);
+        final theme = Theme.of(context).colorScheme;
+        final provider = Provider.of<MerchantAddServiceProvider>(context);
         final canAddMoreServices = provider.canAddMoreServices;
+        final maxDescriptionLength = provider.maxDescriptionLength;
+        final canWriteDescription = provider.canWriteDescription;
+        final maxOfferLength = provider.maxOfferLength;
+        final canShowOffers = provider.canShowOffers;
+        final canShowPhoneNumber = provider.canShowPhoneNumber;
+        // final categoryStore = Provider.of<CategoryStore>(context);
+        // final subCategoryStore = Provider.of<SubCategoryStore>(context);
+        // final serviceStore = Provider.of<ServiceStore>(context);
+        // final canAddMoreServices = provider.canAddMoreServices;
         // dev.log('Category Id${provider.selectedCategory!}');
         return Card(
           elevation: 2,
@@ -43,123 +54,117 @@ class BasicInfoForm extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Category Dropdown
-                _buildLabel('Category *'),
-                _buildDropdown<CategoryModel>(
-                  context: context,
-                  items: categoryStore.items,
-                  value: provider.selectedCategory,
-                  hint: 'Select Category',
-                  onChanged:
-                      canAddMoreServices
-                          ? (value) {
-                            if (value != null) {
-                              final category = categoryStore.items.firstWhere(
-                                (cat) => cat.category == value,
-                                orElse: () => categoryStore.items.first,
-                              );
-                              provider.setCategory(
-                                category.category,
-                                int.parse(category.id),
-                              );
-                            }
-                          }
-                          : null,
-                  getDisplayValue: (item) => item.category,
-                ),
-                const SizedBox(height: 16),
-
-                // Subcategory Dropdown
-                _buildLabel('Subcategory *'),
-                _buildDropdown<SubCategoryModel>(
-                  context: context,
-                  items:
-                      subCategoryStore.items
-                          .where(
-                            (e) => e.categoryId == '${provider.categoryId}',
-                          )
-                          .toList(),
-                  value: provider.selectedSubCategory,
-                  hint: 'Select Subcategory',
-                  onChanged:
-                      canAddMoreServices && provider.selectedCategory != null
-                          ? (value) {
-                            if (value != null) {
-                              final subCategory = subCategoryStore.items
-                                  .firstWhere(
-                                    (sub) => sub.name == value,
-                                    orElse: () => subCategoryStore.items.first,
-                                  );
-                              provider.setSubCategory(
-                                subCategory.name,
-                                int.parse(subCategory.id),
-                              );
-                            }
-                          }
-                          : null,
-                  getDisplayValue: (item) => item.name,
-                ),
-                const SizedBox(height: 16),
-
-                // Service Type Dropdown
-                _buildLabel('Service Type *'),
-                _buildDropdown<ServiceModel>(
-                  context: context,
-                  items:
-                      serviceStore.items
-                          .where(
-                            (e) =>
-                                e.subcategoryId == provider.subCategoryId &&
-                                e.categoryId == provider.categoryId,
-                          )
-                          .toList(),
-                  value: provider.selectedService,
-                  hint: 'Select Service Type',
-                  onChanged:
-                      canAddMoreServices && provider.selectedSubCategory != null
-                          ? (value) {
-                            if (value != null) {
-                              final service = serviceStore.items.firstWhere(
-                                (service) => service.serviceName == value,
-                                orElse: () => serviceStore.items.first,
-                              );
-                              provider.setService(
-                                service.serviceName,
-                                int.parse(service.id),
-                              );
-                            }
-                          }
-                          : null,
-                  getDisplayValue: (item) => item.serviceName,
-                ),
-                const SizedBox(height: 16),
+                // _buildLabel('Category *'),
+                // _buildDropdown<CategoryModel>(
+                //   context: context,
+                //   items: categoryStore.items,
+                //   value: provider.selectedCategory,
+                //   hint: 'Select Category',
+                //   onChanged:
+                //       canAddMoreServices
+                //           ? (value) {
+                //             if (value != null) {
+                //               final category = categoryStore.items.firstWhere(
+                //                 (cat) => cat.category == value,
+                //                 orElse: () => categoryStore.items.first,
+                //               );
+                //               provider.setCategory(
+                //                 category.category,
+                //                 int.parse(category.id),
+                //               );
+                //             }
+                //           }
+                //           : null,
+                //   getDisplayValue: (item) => item.category,
+                // ),
+                // const SizedBox(height: 16),
+                //
+                // // Subcategory Dropdown
+                // _buildLabel('Subcategory *'),
+                // _buildDropdown<SubCategoryModel>(
+                //   context: context,
+                //   items:
+                //       subCategoryStore.items
+                //           .where(
+                //             (e) => e.categoryId == '${provider.categoryId}',
+                //           )
+                //           .toList(),
+                //   value: provider.selectedSubCategory,
+                //   hint: 'Select Subcategory',
+                //   onChanged:
+                //       canAddMoreServices && provider.selectedCategory != null
+                //           ? (value) {
+                //             if (value != null) {
+                //               final subCategory = subCategoryStore.items
+                //                   .firstWhere(
+                //                     (sub) => sub.name == value,
+                //                     orElse: () => subCategoryStore.items.first,
+                //                   );
+                //               provider.setSubCategory(
+                //                 subCategory.name,
+                //                 int.parse(subCategory.id),
+                //               );
+                //             }
+                //           }
+                //           : null,
+                //   getDisplayValue: (item) => item.name,
+                // ),
+                // const SizedBox(height: 16),
+                //
+                // // Service Type Dropdown
+                // _buildLabel('Service Type *'),
+                // _buildDropdown<ServiceModel>(
+                //   context: context,
+                //   items:
+                //       serviceStore.items
+                //           .where(
+                //             (e) =>
+                //                 e.subcategoryId == provider.subCategoryId &&
+                //                 e.categoryId == provider.categoryId,
+                //           )
+                //           .toList(),
+                //   value: provider.selectedService,
+                //   hint: 'Select Service Type',
+                //   onChanged:
+                //       canAddMoreServices && provider.selectedSubCategory != null
+                //           ? (value) {
+                //             if (value != null) {
+                //               final service = serviceStore.items.firstWhere(
+                //                 (service) => service.serviceName == value,
+                //                 orElse: () => serviceStore.items.first,
+                //               );
+                //               provider.setService(
+                //                 service.serviceName,
+                //                 int.parse(service.id),
+                //               );
+                //             }
+                //           }
+                //           : null,
+                //   getDisplayValue: (item) => item.serviceName,
+                // ),
+                // const SizedBox(height: 16),
 
                 // Service Name TextField
                 _buildLabel('Service Name *'),
                 CupertinoTextField(
                   controller: provider.serviceNameController,
                   placeholder: 'Enter service name',
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  padding: 16.symmetricHV(12),
                   decoration: BoxDecoration(
                     color: CupertinoColors.systemBackground,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: CupertinoColors.systemGrey4),
                   ),
-                  enabled: canAddMoreServices,
+                  // enabled: canAddMoreServices,
                 ),
                 const SizedBox(height: 16),
 
                 // Rate TextField
-                _buildLabel('Rate (₹) *'),
+                _buildLabel('Rate (₹) '),
                 CupertinoTextField(
                   controller: provider.rateController,
                   placeholder: 'Enter rate',
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  padding: 16.symmetricHV(12),
                   decoration: BoxDecoration(
                     color: CupertinoColors.systemBackground,
                     borderRadius: BorderRadius.circular(8),
@@ -168,8 +173,8 @@ class BasicInfoForm extends StatelessWidget {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  prefix: const Padding(
-                    padding: EdgeInsets.only(left: 16),
+                  prefix: Padding(
+                    padding: 16.left,
                     child: Text(
                       '₹',
                       style: TextStyle(
@@ -178,38 +183,78 @@ class BasicInfoForm extends StatelessWidget {
                       ),
                     ),
                   ),
-                  enabled: canAddMoreServices,
+                  // enabled: canAddMoreServices,
                 ),
 
-                if (!canAddMoreServices)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: CupertinoColors.systemRed.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            CupertinoIcons.exclamationmark_triangle,
-                            color: CupertinoColors.systemRed,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'You have reached the maximum number of services allowed by your plan. Please upgrade to add more services.',
-                              style: TextStyle(
-                                color: CupertinoColors.systemRed,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                //
+                _buildLabel(
+                  'Description ${() {
+                    return maxDescriptionLength > 30 ? '$maxDescriptionLength characters max' : '(30 characters max)';
+                  }()}',
+                ),
+                buildTextArea(
+                  controller: provider.descriptionController,
+                  placeholder: 'Enter service description',
+                  maxLength:
+                      maxDescriptionLength > 0 ? maxDescriptionLength : null,
+                  // enabled: canAddMoreServices,
+                  semanticsLabel: 'Description input field',
+                ),
+                const SizedBox(height: 24),
 
+                buildToggleOption(
+                  label: 'Show Phone Number',
+                  value: provider.showPhoneNumber,
+                  onChanged:
+                      canAddMoreServices
+                          ? (value) => provider.setShowPhoneNumber(value)
+                          : null,
+                  description: 'Allow customers to see your phone number',
+                  semanticsLabel: 'Show phone number toggle',
+                ),
+
+                // Enable Chat Toggle
+                buildToggleOption(
+                  label: 'Enable Chat',
+                  value: provider.enableChat,
+                  onChanged:
+                      canAddMoreServices
+                          ? (value) => provider.setEnableChat(value)
+                          : null,
+                  description: 'Allow customers to chat with you',
+                  semanticsLabel: 'Enable chat toggle',
+                ),
+
+                const SizedBox(height: 24),
+
+                // if (!canAddMoreServices)
+                //   Padding(
+                //     padding: const EdgeInsets.only(top: 16),
+                //     child: Container(
+                //       padding: const EdgeInsets.all(12),
+                //       decoration: BoxDecoration(
+                //         color: CupertinoColors.systemRed.withOpacity(0.1),
+                //         borderRadius: BorderRadius.circular(8),
+                //       ),
+                //       child: Row(
+                //         children: [
+                //           const Icon(
+                //             CupertinoIcons.exclamationmark_triangle,
+                //             color: CupertinoColors.systemRed,
+                //           ),
+                //           const SizedBox(width: 8),
+                //           Expanded(
+                //             child: Text(
+                //               'You have reached the maximum number of services allowed by your plan. Please upgrade to add more services.',
+                //               style: TextStyle(
+                //                 color: CupertinoColors.systemRed,
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
                 const SizedBox(height: 24),
 
                 // Next Button
@@ -219,10 +264,10 @@ class BasicInfoForm extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     color: CupertinoColors.activeBlue,
                     borderRadius: BorderRadius.circular(8),
-                    onPressed:
-                        canAddMoreServices
-                            ? () => provider.nextStep(context)
-                            : null,
+                    onPressed: () => provider.nextStep(context),
+                    // canAddMoreServices
+                    //     ? () => provider.nextStep(context)
+                    //     : null,
                     child: Text(
                       'Next',
                       style: TextStyle(

@@ -13,7 +13,7 @@ import '../../all_category/core/all_category_route.dart';
 import '../../merchant/merchant_registration/merchant_registration_screen.dart';
 import '../home_page.dart';
 import '../shell/home_screen/home_screen.dart';
-import '../shell/profile_settings_screen/settings/setting_screen.dart';
+import '../shell/profile_settings_screen/settings/profile_setting_screen.dart';
 import '../shell/search/search_screen.dart';
   import 'home_provider.dart';
 

@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pack/pack.dart';
 import 'package:pack/services/snack_bar_service/notify_service.dart';
-import '../../../../core/data/model/merchant/merchant_model.dart';
-import '../../../../core/data/model/request/POST/post_merchant_login.dart';
-import '../../../../core/data/model/response/merchant_login_response.dart';
+import '../../../../core/data/model/model.dart';
 import '../../../../core/services/service.dart';
-import '../../core/merchant_auth_provider.dart';
 import '../../core/merchant_navigation.dart';
 import '../../merchant_dashboard/core/merchant_dashboard_route.dart';
 
@@ -80,7 +77,7 @@ class MerchantLoginScreenViewModel extends ChangeNotifier {
     return null;
   }
 
-  login(BuildContext context) async {
+  void login(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       setLoading(true);
 
@@ -105,9 +102,10 @@ class MerchantLoginScreenViewModel extends ChangeNotifier {
         (merchant) {
           dev.log('MERCHANT-LOGIN-VIEW-MODEL:=> $merchant');
           setLoading(false);
+          reset();
           if (merchant.type == MerchantLoginResponseType.otpRequired) {
-            context.push(
-              '${MerchantRoute.merchantOtp}/${merchant.data!['merchant_id']}',
+            context.go(
+              '${MerchantRoute.merchantOtp}/${merchant.data!['merchant_id']}/${merchant.data!['mobile']}',
             );
             return;
           } else {

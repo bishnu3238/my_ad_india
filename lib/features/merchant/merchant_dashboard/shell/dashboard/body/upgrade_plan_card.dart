@@ -185,21 +185,21 @@ class UpgradePlanCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
-                  Card(
-                    margin: edgeInsets,
-                    color:
-                        merchantPlan.remainingServices != 0
-                            ? theme.primary
-                            : theme.onErrorContainer,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                      child: AutoSizeText(
-                        'Service available ${merchantPlan.remainingServices}/${plan.numberOfServices}',
-                        style: GoogleFonts.padauk(color: theme.surface),
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(height: 5),
+                  // Card(
+                  //   margin: edgeInsets,
+                  //   color:
+                  //       merchantPlan.remainingServices != 0
+                  //           ? theme.primary
+                  //           : theme.onErrorContainer,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                  //     child: AutoSizeText(
+                  //       'Service available ${merchantPlan.remainingServices}/${plan.numberOfServices}',
+                  //       style: GoogleFonts.padauk(color: theme.surface),
+                  //     ),
+                  //   ),
+                  // ),
                 ] else ...[
                   const Text(
                     'No active subscription',

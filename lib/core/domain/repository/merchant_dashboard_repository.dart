@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_ad/core/data/model/model.dart';
 import 'package:pack/services/service.dart';
 
-
 abstract class MerchantDashboardRepository implements IRepository {
   /// Fetch merchant dashboard data
   Future<Either<Failure, List<MerchantServiceModel>>> fetchMerchantServices(
@@ -42,4 +41,10 @@ abstract class MerchantDashboardRepository implements IRepository {
     required dynamic Function(int, int)? onSendProgress,
   });
   Future<Either<Failure, bool>> uploadServiceVideos();
+
+  uploadMerchantBusinessImage({
+    required int merchantId,
+    required File imageFile,
+    Function(int p1, int p2)? onSendProgress,
+  }) ;
 }

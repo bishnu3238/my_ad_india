@@ -43,14 +43,14 @@ class MerchantAuthService {
 
   // Registration method
   Future<Either<NetworkFailure, MerchantRegistrationResponse>> registerMerchant(
-    PostMerchantRegistration merchant,
+    MerchantRegistrationPayload merchant,
   ) async {
     try {
       final requestBody = merchant;
       var result = await _repository.registration(requestBody);
       return result.fold((failure) => left(failure), (data) {
         data.fold(
-          onSuccess: (merchant, subscription) {
+          onSuccess: (merchant, subscription, service) {
             _store.saveToLocalStorage();
             _authStatusController.add(AuthStatus.authenticated);
           },
@@ -68,7 +68,7 @@ class MerchantAuthService {
             dev.log('Invalid input: $errors');
             return Left(NetworkFailure(message: 'Invalid input'));
           },
-          onOtpRequired: (data, otp, merchant) {
+          onOtpRequired: (data, otp, merchant, sub, ser) {
             dev.log(
               'Welcome ${merchant!.username} your otp is sent to register no ${merchant.mobile},Your Verification Code is $otp',
             );
@@ -88,16 +88,17 @@ class MerchantAuthService {
     try {
       final response = await _repository.login(request);
       return response.fold((failure) => Left(failure), (merchant) {
-        _store.setEntity(MerchantDashboardModel.formLogin(merchant));
-
         if (merchant.type == MerchantLoginResponseType.otpRequired) {
           _authStatusController.add(AuthStatus.otpRequired);
           NotificationService.showOTPNotification(
             merchant.data!['otp'],
+
           ); // Use OTP from response
           return Right(merchant);
         }
         if (merchant.type == MerchantLoginResponseType.success) {
+          _store.setEntity(MerchantDashboardModel.formLogin(merchant));
+
           _store.saveToLocalStorage();
           _authStatusController.add(AuthStatus.authenticated);
           return Right(merchant);

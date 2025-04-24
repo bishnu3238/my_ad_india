@@ -307,7 +307,7 @@ class SuggestionItem extends StatelessWidget {
 
   Widget _buildLeadingIcon(BuildContext context) {
     // Try to use the actual image if it's a CategoryModel with imageUrl
-    if (item is CategoryModel && (item as CategoryModel).searchImageUrl.isNotEmpty) {
+    if (item is CategoryModel && (item as CategoryModel).imageUrl.isNotEmpty) {
       return _buildCategoryIcon(context);
     }
 

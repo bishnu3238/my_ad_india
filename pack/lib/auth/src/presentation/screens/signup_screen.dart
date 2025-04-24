@@ -22,12 +22,22 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/social_login_button.dart';
 import 'login_screen.dart';
 
+class SignupSuccessResult {
+  final String id, name, phone, otp;
+  SignupSuccessResult({
+    required this.id,
+    required this.name,
+    required this.phone,
+    this.otp = '',
+  });
+}
+
 class SignupScreen<T extends UserEntity> extends StatefulWidget {
   final bool enableSocialLogin;
   final String? logoAsset;
   final String title;
   final String subtitle;
-  final Function(String)? onSignupSuccess;
+  final Function(SignupSuccessResult)? onSignupSuccess;
   final VoidCallback? onLoginTap;
   final bool requireName;
 
@@ -62,6 +72,7 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
   @override
   void dispose() {
     _nameController.dispose();
+    _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -102,10 +113,23 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
       body: BlocListener<AuthBloc<T>, AuthState<T>>(
         listener: (context, state) {
           if (state is OTPSentState<T>) {
-            widget.onSignupSuccess?.call(state.userId);
+            final result = SignupSuccessResult(
+              id: state.userId,
+              name: _nameController.text,
+              phone: _phoneController.text,
+              otp: state.otp,
+            );
+
+            widget.onSignupSuccess?.call(result);
           }
           if (state is AuthenticatedState<T>) {
-            widget.onSignupSuccess?.call('');
+            widget.onSignupSuccess?.call(
+              SignupSuccessResult(
+                id: state.authResponse.user!.id,
+                name: state.authResponse.user!.name,
+                phone: '',
+              ),
+            );
           } else if (state is AuthErrorState<T>) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -167,6 +191,7 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
                       hint: 'Enter your phone no',
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
+
                       prefixIcon: const Icon(Icons.person_outline),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -174,6 +199,7 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
                         }
                         return null;
                       },
+
                       focusNode: _phoneFocusNode,
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () {
@@ -187,17 +213,17 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       prefixIcon: const Icon(Icons.email_outlined),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!RegExp(
-                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                        ).hasMatch(value)) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
+                      // validator: (value) {
+                      //   if (value == null || value.isEmpty) {
+                      //     return 'Please enter your email';
+                      //   }
+                      //   if (!RegExp(
+                      //     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      //   ).hasMatch(value)) {
+                      //     return 'Please enter a valid email';
+                      //   }
+                      //   return null;
+                      // },
                       focusNode: _emailFocusNode,
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () {
@@ -215,8 +241,8 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a password';
                         }
-                        if (value.length < 8) {
-                          return 'Password must be at least 8 characters';
+                        if (value.length < 3) {
+                          return 'Password must be at least 3 characters';
                         }
                         return null;
                       },
@@ -263,17 +289,20 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
                       const SizedBox(height: 16),
                       SocialLoginButton(
                         provider: SocialLoginProvider.google,
-                        onPressed: () => _socialLogin(SocialLoginProvider.google),
+                        onPressed:
+                            () => _socialLogin(SocialLoginProvider.google),
                       ),
                       const SizedBox(height: 12),
                       SocialLoginButton(
                         provider: SocialLoginProvider.facebook,
-                        onPressed: () => _socialLogin(SocialLoginProvider.facebook),
+                        onPressed:
+                            () => _socialLogin(SocialLoginProvider.facebook),
                       ),
                       const SizedBox(height: 12),
                       SocialLoginButton(
                         provider: SocialLoginProvider.twitter,
-                        onPressed: () => _socialLogin(SocialLoginProvider.twitter),
+                        onPressed:
+                            () => _socialLogin(SocialLoginProvider.twitter),
                       ),
                     ],
                     const SizedBox(height: 24),
@@ -285,8 +314,9 @@ class _SignupScreenState<T extends UserEntity> extends State<SignupScreen<T>> {
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextButton(
-                          onPressed: widget.onLoginTap ??
-                                  () {
+                          onPressed:
+                              widget.onLoginTap ??
+                              () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

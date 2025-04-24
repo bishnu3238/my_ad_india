@@ -31,11 +31,11 @@ class SearchResultItem extends StatelessWidget {
           child: Row(
             children: [
               // Image or icon
-              if (result.searchImageUrl != null)
+              if (result.imageUrl != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    result.searchImageUrl!,
+                    result.imageUrl!,
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,

@@ -114,8 +114,8 @@ class NotifyService {
     // Configure based on type
     switch (type) {
       case NotificationType.success:
-        backgroundColor = Theme.of(context).colorScheme.primary;
-        textColor = Theme.of(context).colorScheme.onPrimary;
+        backgroundColor = Colors.greenAccent.shade700;// Theme.of(context).colorScheme.primary;
+        textColor = Colors.white ; //Theme.of(context).colorScheme.onPrimary;
         icon = Icons.check_circle;
         break;
       case NotificationType.error:
@@ -129,8 +129,8 @@ class NotifyService {
         icon = Icons.warning;
         break;
       case NotificationType.info:
-        backgroundColor = Theme.of(context).colorScheme.secondary;
-        textColor = Theme.of(context).colorScheme.onSecondary;
+        backgroundColor = Theme.of(context).colorScheme.primary;
+        textColor = Theme.of(context).colorScheme.onPrimary;
         icon = Icons.info;
         break;
       case NotificationType.custom:

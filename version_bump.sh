@@ -678,8 +678,11 @@ function handle_git {
         info "Git repository initialized."
 
         # Initial commit
-        if git add "$PUBSPEC" && git commit -m "🚀 Initial commit with version $NEW_VERSION+$NEW_BUILD"; then
-          info "Initial commit created."
+         # Initial commit - MODIFY THIS PART
+        if git add . && git commit -m "🚀 Initial commit with version $NEW_VERSION+$NEW_BUILD"; then
+          info "Initial commit created with all project files."
+#        if git add "$PUBSPEC" && git commit -m "🚀 Initial commit with version $NEW_VERSION+$NEW_BUILD"; then
+#          info "Initial commit created."
 
           # Offer GitHub setup
           read -rp "Would you like to set up GitHub for this project? (y/n): " SETUP_GITHUB

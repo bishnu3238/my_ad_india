@@ -37,12 +37,17 @@ class AuthRoutes {
           (context, state) => BlocProvider.value(
             value: getIt<AuthBloc<UserModel>>(),
             child: SignupScreen<UserModel>(
-              onSignupSuccess: (String userId) {
-                dev.log(userId);
+              onSignupSuccess: (SignupSuccessResult userId) {
+                dev.log(userId.otp);
 
                 return context.pushNamed(
                   '/OTP',
-                  pathParameters: {'userID': userId},
+                  pathParameters: {
+                    'userID': userId.id,
+                    'userName': userId.name,
+                    'phoneNo': userId.phone,
+                    'otp': userId.otp,
+                  },
                 );
               },
               onLoginTap: () => context.push(login),
@@ -74,16 +79,16 @@ class AuthRoutes {
           ),
     ),
     GoRoute(
-      path: '$otp/:userID',
+      path: '$otp/:userID/:userName/:phoneNo/:otp',
       name: otp.toUpperCase(),
       builder:
           (context, state) => BlocProvider.value(
             value: getIt<AuthBloc<UserModel>>(), // Fetch AuthBloc from getIt
             child: OTPScreen<UserModel>(
               userId: state.pathParameters['userID']!,
-              otp: 'OTP',
-              phoneNo: 'PHONE',
-              userName: 'USERNAME',
+              otp: state.pathParameters['otp']!,
+              phoneNo: state.pathParameters['phoneNo']!,
+              userName: state.pathParameters['userName']!,
               onVerifySuccess: () {
                 dev.log('OTP verified successfully');
                 context.go(HomeRoute.home);

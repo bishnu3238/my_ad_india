@@ -7,6 +7,13 @@ import 'package:pack/services/search_service/search_utility.dart';
 class SubCategoryStore extends CollectionStore<SubCategoryModel>
     with SortableMixin<SubCategoryModel>
     implements SearchDataStore {
+
+
+
+
+  SubCategoryModel getById(String id)=> items.firstWhere((element) => element.id == id);
+
+
   @override
   Future<List<Searchable>> getAll() async => Future.value(items);
 

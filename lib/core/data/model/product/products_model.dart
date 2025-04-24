@@ -248,7 +248,7 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
   String get displayName => serviceName;
 
   @override
-  String? get searchImageUrl => images[0].image;
+  String? get imageUrl => images[0].image;
 
   @override
   bool matchesQuery(String query) {

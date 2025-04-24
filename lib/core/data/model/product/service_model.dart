@@ -174,7 +174,7 @@ class ServiceModel extends BaseModel<ServiceModel> implements Searchable {
   String get displayName => serviceName;
 
   @override
-  String? get searchImageUrl => fullImageUrl;
+  String? get imageUrl => fullImageUrl;
 
   @override
   bool matchesQuery(String query) {
@@ -190,6 +190,8 @@ class ServiceModel extends BaseModel<ServiceModel> implements Searchable {
     'service_name': serviceName,
     'description': description,
   };
+
+  bool get isEmpty   => this == empty();
 
   static ServiceModel empty() =>
       ServiceModel(id: '', serviceName: '', categoryId: 0, subcategoryId: 0);

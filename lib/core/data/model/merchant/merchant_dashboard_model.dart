@@ -2,7 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:my_ad/core/data/model/response/merchant_otp_response.dart';
 import 'package:pack/pack.dart';
- import 'package:pack/services/base_services/base_model.dart';
+import 'package:pack/services/base_services/base_model.dart';
 
 import '../response/merchant_login_response.dart';
 import 'merchant.dart';
@@ -60,6 +60,7 @@ class MerchantDashboardModel extends BaseModel<MerchantDashboardModel> {
       'tokenExpiry': tokenExpiry,
       'merchant': merchantData.merchant.toJson(),
       'subscription': merchantData.subscription.toJson(),
+      'service_details': merchantData.serviceDetails.toJson(),
     };
   }
 
@@ -67,7 +68,7 @@ class MerchantDashboardModel extends BaseModel<MerchantDashboardModel> {
     return MerchantDashboardModel(
       isAuthenticated: true,
       token: map.timestamp,
-      id: '${map.merchant?.merchant.id}',
+      id: '${map.merchant!.merchant.id}',
       merchantData: map.merchant!,
       planAccess: MerchantPlanAccessModel.empty(),
       services: [],
@@ -109,13 +110,26 @@ class MerchantDashboardModel extends BaseModel<MerchantDashboardModel> {
     );
   }
 
+
+  factory MerchantDashboardModel.requiredOtp(    MerchantOtpVerificationResponse result,) {
+    return MerchantDashboardModel(
+      isAuthenticated: true,
+      token: result.timestamp,
+      id: '${result.data!['merchant_id']}',
+      merchantData: MerchantData.empty(),
+      planAccess: MerchantPlanAccessModel.empty(),
+      services: [],
+      serviceRequest: ServiceRequestModel.empty(),
+    );
+  }
+
   factory MerchantDashboardModel.formOtp(
     MerchantOtpVerificationResponse result,
   ) {
     return MerchantDashboardModel(
       isAuthenticated: true,
       token: result.timestamp,
-      id: '${result..merchant?.merchant.id}',
+      id: '${result.merchant!.merchant.id}',
       merchantData: result.merchant!,
       planAccess: MerchantPlanAccessModel.empty(),
       services: [],

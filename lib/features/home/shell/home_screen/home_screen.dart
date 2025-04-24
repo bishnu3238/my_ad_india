@@ -18,6 +18,7 @@ import '../../core/first_time_popup_manager.dart';
 import 'body/body.dart';
 import '../../../../utils/widgets/header_section.dart';
 import 'body/home_category_section.dart';
+import 'body/home_search_bar.dart';
 import 'body/home_services_serction.dart';
 import 'core/home_provider.dart';
 
@@ -98,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Column(
                       children: [
                         const SizedBox(height: 8),
-                        _buildSearchBar(),
+                        HomeSearchBar(),
                         const SizedBox(height: 16),
                         const HomeBanner(),
                         const SizedBox(height: 16),
@@ -231,46 +232,6 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade300),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search "Plumber, Tutor, Mechanic"',
-            hintStyle: TextStyle(color: Colors.grey[400]),
-            prefixIcon: const Icon(Icons.search, color: Colors.grey),
-            suffixIcon: Container(
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.mic, color: Colors.white, size: 20),
-            ),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 12),
-          ),
-          onTap: () {
-            // Navigate to search page
-          },
-          readOnly: true,
-        ),
-      ),
-    );
-  }
 
   Widget _buildQuickActionCard(
     IconData icon,
@@ -348,3 +309,4 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 }
+

@@ -110,7 +110,7 @@ class _OTPScreenState<T extends UserEntity> extends State<OTPScreen<T>> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
-                  Text('PHONE NO: ${widget.phoneNo}, OTP: ${widget.otp}'),
+                  Text('on ${widget.phoneNo}, OTP: ${widget.otp}'),
                   const SizedBox(height: 12),
                   AuthTextField(
                     label: 'OTP',

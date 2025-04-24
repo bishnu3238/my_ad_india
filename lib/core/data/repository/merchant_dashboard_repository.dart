@@ -286,7 +286,7 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
     }
     final config = RequestConfig.forFileUpload(
       baseUrl: ApiConfig.baseUrl,
-      endpoint: ApiConfig.merchantImageUpload,
+      endpoint: ApiConfig.merchantServiceImageUpload,
       files: {'image': imageFile, 'mime_type': mimeType},
       fields: {'merchant_id': '$merchantId'},
       onSendProgress: onSendProgress,
@@ -334,7 +334,7 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
 
     final config = RequestConfig.forFileUpload(
       baseUrl: ApiConfig.baseUrl,
-      endpoint: ApiConfig.merchantImageUpload,
+      endpoint: ApiConfig.merchantServiceImageUpload,
       files: {'video': request.videoFile, 'mime_type': mimeType},
       fields: {'merchant_id': '$request.merchantId'},
       onSendProgress: onSendProgress,
@@ -354,6 +354,49 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
         dev.log('${result.data}');
         final data = result.data;
         if (data!.success == true && data.videoUrl != null) {
+          return Right(result.data!);
+        }
+        return Left(NetworkFailure(message: data.message));
+      });
+    } catch (e) {
+      dev.log('Error uploading image: $e');
+      return Left(NetworkFailure(message: 'Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UploadImageResponse>> uploadMerchantBusinessImage({required int merchantId, required File imageFile, Function(int p1, int p2)? onSendProgress}) async{
+    final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
+    if (![
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+    ].contains(mimeType)) {
+      return Left(NetworkFailure(message: 'Invalid image format: $mimeType'));
+    }
+    final config = RequestConfig.forFileUpload(
+      baseUrl: ApiConfig.baseUrl,
+      endpoint: ApiConfig.merchantBusinessImageUpload,
+      files: {'image': imageFile, 'mime_type': mimeType},
+      fields: {'merchant_id': '$merchantId'},
+      onSendProgress: onSendProgress,
+      method: RequestMethod.post,
+      headers: {'Content-Type': 'multipart/form-data'},
+    );
+    dev.log('Config: $config');
+    dev.log('Image file: ${imageFile.path}');
+
+    try {
+      final response = await _apiService.request<UploadImageResponse>(
+        config: config,
+        responseConverter: (data) => UploadImageResponse.fromJson(data),
+      );
+
+      return response.fold((failure) => Left(failure), (result) {
+        dev.log('${result.data}');
+        final data = result.data;
+        if (data!.success == true && data.imageUrl != null) {
           return Right(result.data!);
         }
         return Left(NetworkFailure(message: data.message));

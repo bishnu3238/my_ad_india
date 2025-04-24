@@ -13,6 +13,7 @@ import '../../merchant_dashboard/core/merchant_dashboard_route.dart';
 
 class OTPProvider with ChangeNotifier {
   final String merchantId;
+  final String mobile;
   final MerchantAuthService _authService;
 
   // Constants
@@ -42,7 +43,7 @@ class OTPProvider with ChangeNotifier {
     return _remainingResendTime <= 0;
   }
 
-  OTPProvider(this._authService, {required this.merchantId}) {
+  OTPProvider(this._authService, {required this.merchantId,   required this. mobile}) {
     // Initialize the resend timer if there was a previous resend
     if (_lastResendTime != null) {
       _updateResendTimer();
@@ -191,7 +192,7 @@ class OTPProvider with ChangeNotifier {
     BuildContext context,
   ) {
     response.fold(
-      onSuccess: (merchantId) {
+      onSuccess: (merchantId, data) {
         _errorMessage = null;
         NotifyService.snackbar(
           context: context,

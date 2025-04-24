@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
       if (didPop) return;
       final shouldPop = await BackGestureHandler.handleBackPress(
         context,
-        navigationShell,
+        navigationShell ,
       );
       if (shouldPop) navigator.pop();
     }

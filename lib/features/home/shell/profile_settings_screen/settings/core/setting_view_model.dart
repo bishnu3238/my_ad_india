@@ -27,7 +27,7 @@ class ProfileSettingsViewModel extends ChangeNotifier {
     _appVersionTracker.addListener(_onVersionChanged);
     loadSettings();
   }
-UserModel? _user;
+  UserModel? _user;
   String _language = 'en';
   bool _isLoggedIn = false;
   bool _isDarkMode = false;
@@ -46,6 +46,9 @@ UserModel? _user;
   String get errorMessage => _errorMessage;
   UserModel get user => _user ?? UserModel.empty;
 
+  set isDarkMode(bool value) {
+    _isDarkMode = value;
+  }
 
   Future<void> checkAuthStatus() async {
     // Force refresh of auth status
@@ -128,6 +131,10 @@ UserModel? _user;
     _appThemeProvider.setThemeMode(
       isDark ? AppThemeMode.dark : AppThemeMode.light,
     );
+    _state = SettingsState.success;
+
+    isDarkMode = isDark;
+
     notifyListeners();
   }
 
@@ -227,7 +234,7 @@ UserModel? _user;
   }
 
   ProfileSettingsViewModel updateStore(AuthProviderModel<UserModel> auth) {
-    _user =  auth.user;
+    _user = auth.user;
     _isLoggedIn = auth.isAuthenticated;
     notifyListeners();
 

@@ -45,8 +45,8 @@ class FormValidators {
       return 'Password is required';
     }
 
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters';
+    if (value.length < 3) {
+      return 'Password must be at least 3 characters';
     }
 
     // final bool hasUppercase = value.contains(RegExp(r'[A-Z]'));

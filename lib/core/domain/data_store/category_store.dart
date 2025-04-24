@@ -11,6 +11,8 @@ class CategoryStore extends CollectionStore<CategoryModel> implements SearchData
 
 
 
+  CategoryModel getById(String id)=> items.firstWhere((element) => element.id == id);
+
 
   @override
   Future<List<Searchable>> getAll() => Future.value(items);

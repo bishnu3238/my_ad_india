@@ -126,7 +126,8 @@ class ApiConfig {
   static const String merchantChangePassword = '/merchant/change_password.php';
   static const String merchantResetPassword = '/merchant/reset_password.php';
   static const String merchantLogout = '/merchant/logout.php';
-  static const String merchantImageUpload = '/merchant/upload_image.php';
+  static const String merchantBusinessImageUpload = '/merchant/upload_merchant_company_image.php';
+  static const String merchantServiceImageUpload = '/merchant/upload_image.php';
 
   static const String merchantDashboard = '/merchant/merchant_dashboard.php';
 

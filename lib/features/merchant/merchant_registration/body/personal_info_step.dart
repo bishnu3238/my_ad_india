@@ -1,8 +1,12 @@
 import 'dart:developer' as dev;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pack/extensions/contextx.dart';
+import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
 import '../core/form_validators.dart';
 import '../core/merchant_registration_view_model.dart';
@@ -73,6 +77,8 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           validator: FormValidators.requiredValidator,
           textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.name,
+          textCapitalization: TextCapitalization.words,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           style: RegistrationTheme.bodyMedium(context: context),
         ),
@@ -154,6 +160,13 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
 
                       onChanged: (value) {
                         if (value.length == 10) widget.onPhoneVerified(value);
+
+                        if (value.length < 10) {
+                          viewModel.formState.isMobileVerified = false;
+                          viewModel.formState.isVerifyingMobile = false;
+                          viewModel.formState.mobileAvailabilityMessage = '';
+                        }
+                        setState(() {});
                       },
                       onFieldSubmitted: widget.onPhoneVerified,
 
@@ -163,7 +176,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                 ],
               ),
             ),
-            if (viewModel.isMobileVerifying)
+            if (viewModel.formState.isVerifyingMobile)
               const Positioned(
                 right: 25,
                 top: 25,
@@ -172,7 +185,8 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                   color: RegistrationTheme.primaryColor,
                 ),
               ),
-            if (viewModel.isMobileVerified && !viewModel.isMobileVerifying)
+            if (viewModel.formState.isMobileVerified &&
+                !viewModel.formState.isVerifyingMobile)
               const Positioned(
                 right: 25,
                 top: 25,
@@ -182,7 +196,8 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                   size: 20,
                 ),
               ),
-            if (!viewModel.isMobileVerified && !viewModel.isMobileVerifying)
+            if (!viewModel.formState.isMobileVerified &&
+                !viewModel.formState.isVerifyingMobile)
               const Positioned(
                 right: 25,
                 top: 25,
@@ -192,6 +207,25 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                   size: 20,
                 ),
               ),
+            // Add a tooltip to the icon
+            Positioned(
+              right: 25,
+              bottom: 0,
+              child: Material(
+                color: Colors.transparent,
+                child: AutoSizeText(
+                  widget.mobileController.text.length < 10
+                      ? ''
+                      : viewModel.formState.isMobileVerified
+                      ? ''
+                      : 'Phone number is already exists*',
+                  style: GoogleFonts.poppins(
+                    fontSize: ScreenUtils().getFontSize(8),
+                    color: context.colorScheme.error,
+                  ),
+                ),
+              ),
+            ),
           ],
         );
       },

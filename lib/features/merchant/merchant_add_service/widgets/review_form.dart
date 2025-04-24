@@ -288,12 +288,12 @@ class ReviewForm extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          _buildPlanMetric(
-            'Services',
-            '${planAccess.remainingServices} of ${planAccess.numberOfServices} remaining',
-            planAccess.remainingServices / planAccess.numberOfServices,
-          ),
+          // const SizedBox(height: 16),
+          // _buildPlanMetric(
+          //   'Services',
+          //   '${planAccess.remainingServices} of ${planAccess.numberOfServices} remaining',
+          //   planAccess.remainingServices / planAccess.numberOfServices,
+          // ),
         ],
       ),
     );
@@ -409,10 +409,38 @@ class ReviewForm extends StatelessWidget {
             'Media',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+
           const SizedBox(height: 12),
 
           // Photos
-          _buildSummaryItem('Photos', '${servicePhotos.length} photo(s)'),
+          _buildSummaryItem('Profile Photos', '1 photo'),
+          if (provider.profilePhoto.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 80,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: NetworkImage(provider.profilePhoto),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+
+          // Photos
+          _buildSummaryItem(
+            'Business Photos',
+            '${servicePhotos.length} photo(s)',
+          ),
           if (servicePhotos.isNotEmpty) ...[
             const SizedBox(height: 8),
             SizedBox(
@@ -440,42 +468,42 @@ class ReviewForm extends StatelessWidget {
             ),
           ],
 
-          // Video
-          const SizedBox(height: 12),
-          _buildSummaryItem(
-            'Video',
-            videoPath != null ? 'Video uploaded' : 'No video',
-          ),
-          if (videoPath != null) ...[
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: CupertinoColors.activeBlue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    CupertinoIcons.video_camera_solid,
-                    color: CupertinoColors.activeBlue,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      videoPath,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: CupertinoColors.activeBlue,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          // // Video
+          // const SizedBox(height: 12),
+          // _buildSummaryItem(
+          //   'Video',
+          //   videoPath != null ? 'Video uploaded' : 'No video',
+          // ),
+          // if (videoPath != null) ...[
+          //   const SizedBox(height: 8),
+          //   Container(
+          //     padding: const EdgeInsets.all(8),
+          //     decoration: BoxDecoration(
+          //       color: CupertinoColors.activeBlue.withOpacity(0.1),
+          //       borderRadius: BorderRadius.circular(8),
+          //     ),
+          //     child: Row(
+          //       children: [
+          //         const Icon(
+          //           CupertinoIcons.video_camera_solid,
+          //           color: CupertinoColors.activeBlue,
+          //         ),
+          //         const SizedBox(width: 8),
+          //         Expanded(
+          //           child: Text(
+          //             videoPath,
+          //             style: const TextStyle(
+          //               fontSize: 12,
+          //               color: CupertinoColors.activeBlue,
+          //             ),
+          //             maxLines: 1,
+          //             overflow: TextOverflow.ellipsis,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ],
         ],
       ),
     );

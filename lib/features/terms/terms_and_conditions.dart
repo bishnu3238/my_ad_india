@@ -2,7 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_ad/features/refer_earn/core/refer_earn_route.dart';
+import 'package:pack/extensions/contextx.dart';
+
+import '../refer_earn/core/refer_earn_route.dart';
 
 class TermsAndConditionsPage extends StatefulWidget {
   const TermsAndConditionsPage({super.key});
@@ -63,36 +65,41 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                 ),
               ),
               Divider(color: CupertinoColors.systemGrey4),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(vertical: 16),
-              //   child: Row(
-              //     children: [
-              //       CupertinoSwitch(
-              //         value: _agreeToTerms,
-              //         onChanged: (value) {
-              //           setState(() {
-              //             _agreeToTerms = value;
-              //           });
-              //         },
-              //       ),
-              //       SizedBox(width: 10),
-              //       Text('I agree to the terms and conditions'),
-              //     ],
-              //   ),
-              // ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  children: [
+                    CupertinoSwitch(
+                      value: _agreeToTerms,
+                      onChanged: (value) {
+                        setState(() {
+                          _agreeToTerms = value;
+                        });
+                      },
+                    ),
+                    SizedBox(width: 10),
+                    Text('I agree to the terms and conditions'),
+                  ],
+                ),
+              ),
               SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: CupertinoButton(
-                  color: CupertinoColors.activeBlue,
+                  color: context.colorScheme.primary, //007AFFFF
                   disabledColor: CupertinoColors.systemGrey3,
-                  onPressed: () => context.pop(),
-                  // _agreeToTerms
-                  //     ? () {
-                  //       context.push(ReferEarnRoute.referAndEarn);
-                  //     }
-                  //     : null,
-                  child: Text('back'),
+                  onPressed:
+                      _agreeToTerms
+                          ? () {
+                            context.push(ReferEarnRoute.referAndEarn);
+                          }
+                          : null,
+                  child: Text(
+                    'Back',
+                    style: context.bodyMedium!.copyWith(
+                      color: context.colorScheme.surface,
+                    ),
+                  ),
                 ),
               ),
             ],

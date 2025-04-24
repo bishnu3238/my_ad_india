@@ -1,4 +1,4 @@
- import 'package:pack/services/service.dart';
+import 'package:pack/services/service.dart';
 import 'package:pack/pack.dart';
 import '../../api/api_config.dart';
 
@@ -6,21 +6,21 @@ enum CategoryStatus { active, inactive }
 
 // Category Model
 class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
-    final String category, title, favIcon;
+  final String category, title, favIcon;
   @override
-  final String searchImageUrl;
+  final String imageUrl;
   final CategoryStatus status;
 
   const CategoryModel({
     required super.id,
     required this.category,
-    required this.searchImageUrl,
+    required this.imageUrl,
     required this.favIcon,
     required this.title,
     required this.status,
   });
 
-   CategoryModel copyWith({
+  CategoryModel copyWith({
     String? id,
     String? category,
     String? title,
@@ -31,7 +31,7 @@ class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
     id: id ?? this.id,
     category: category ?? this.category,
     title: title ?? this.title,
-    searchImageUrl: imageUrl ?? this.searchImageUrl,
+    imageUrl: imageUrl ?? this.imageUrl,
     favIcon: favIcon ?? this.favIcon,
     status: status ?? this.status,
   );
@@ -40,7 +40,7 @@ class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
     return {
       'id': id,
       'category': category,
-      'image': searchImageUrl,
+      'image': imageUrl,
       'fav_icon': favIcon,
       'title': title,
       'status': status == CategoryStatus.inactive ? '0' : '1',
@@ -52,7 +52,7 @@ class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
       id: json.getString('id'),
       category: json.getString('category'),
       title: json.getString('title'),
-      searchImageUrl: json.getString('image'),
+      imageUrl: json.getString('image'),
       favIcon: json.getString('fav_icon'),
       status: json.getStatus(
         'status',
@@ -63,16 +63,21 @@ class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
   }
 
   // Validation and utilities
-  bool get isValid => id.isNotEmpty && searchImageUrl.isNotEmpty;
+  bool get isValid => id.isNotEmpty && imageUrl.isNotEmpty;
+  bool get isEmpty => this == empty();
   bool get isActive => status == CategoryStatus.active;
   String get fullImageUrl =>
-      searchImageUrl.startsWith('http')
-          ? searchImageUrl
-          : "${ApiConfig.baseUrl}${ApiConfig.categoryImgPath}/$searchImageUrl";
+      imageUrl.startsWith('http')
+          ? imageUrl
+          : "${ApiConfig.baseUrl}${ApiConfig.categoryImgPath}/$imageUrl";
+  String get fullFavIconUrl =>
+      favIcon.startsWith('http')
+          ? favIcon
+          : "${ApiConfig.baseUrl}${ApiConfig.categoryImgPath}/$favIcon";
 
   @override
   String toString() {
-    return 'CategoryModel{id: $id, name: $category, imageUrl: $searchImageUrl, favIcon: $favIcon, title: $title, status: $status}';
+    return 'CategoryModel{id: $id, name: $category, imageUrl: $imageUrl, favIcon: $favIcon, title: $title, status: $status}';
   }
 
   @override
@@ -89,7 +94,7 @@ class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
   }
 
   @override
-  List<Object?> get props => [id, category, title, searchImageUrl, favIcon, status];
+  List<Object?> get props => [id, category, title, imageUrl, favIcon, status];
 
   @override
   SearchResultType get resultType => SearchResultType.category;
@@ -103,13 +108,13 @@ class CategoryModel extends BaseModel<CategoryModel> implements Searchable {
   static CategoryModel empty() => CategoryModel(
     id: '',
     category: 'Select Category',
-    searchImageUrl: '',
+    imageUrl: '',
     favIcon: '',
     title: '',
     status: CategoryStatus.active,
   );
 
-   CategoryModel fromJson(Map<String, dynamic> json) {
+  CategoryModel fromJson(Map<String, dynamic> json) {
     throw UnimplementedError();
   }
 }

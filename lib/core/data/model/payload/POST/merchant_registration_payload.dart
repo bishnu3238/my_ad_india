@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-class PostMerchantRegistration {
+class MerchantRegistrationPayload {
   final String username;
   final String email;
   final String mobile;
   final String state;
-  final String pincode;
+  final String pinCode;
   final String password;
   final String address;
   final String gender;
@@ -14,7 +14,7 @@ class PostMerchantRegistration {
   final String receiveOptions;
   final String businessLocation;
   final String companyName;
-  final String? gstin;
+  final String? gstIn;
   final String? pan;
   final String? city;
   final String? companyLogo;
@@ -28,13 +28,17 @@ class PostMerchantRegistration {
   final String startDate;
   final String endDate;
   final int validity;
+  // ---- New parameters ---
+  final String categoryId;
+  final String? subCategoryId;
+  final String serviceId;
 
-  PostMerchantRegistration({
+  MerchantRegistrationPayload({
     required this.username,
     required this.email,
     required this.mobile,
     required this.state,
-    required this.pincode,
+    required this.pinCode,
     required this.password,
     required this.address,
     required this.gender,
@@ -43,7 +47,7 @@ class PostMerchantRegistration {
     required this.receiveOptions,
     required this.businessLocation,
     required this.companyName,
-    this.gstin,
+    this.gstIn,
     this.pan,
     this.city,
     this.companyLogo,
@@ -57,39 +61,12 @@ class PostMerchantRegistration {
     required this.startDate,
     required this.endDate,
     required this.validity,
-  });
 
-  factory PostMerchantRegistration.fromMap(Map<String, dynamic> map) {
-    return PostMerchantRegistration(
-      username: map['username'] ?? '',
-      email: map['email'] ?? '',
-      mobile: map['mobile'] ?? '',
-      state: map['state'] ?? '',
-      pincode: map['pincode'] ?? '',
-      password: map['password'] ?? '',
-      address: map['address'] ?? '',
-      gender: map['gender'] ?? 'male',
-      businessStartYear: map['business_start_year'] ?? '',
-      mobileStatus: map['mobile_status'] ?? 'public',
-      receiveOptions: map['receive_options'] ?? 'email',
-      businessLocation: map['business_location'] ?? '',
-      companyName: map['company_name'] ?? '',
-      gstin: map['gstin'],
-      pan: map['pan'],
-      city: map['city'],
-      companyLogo: map['company_logo'],
-      kyc: map['kyc'] ?? 0,
-      latitude: map['latitude'] != null ? double.tryParse(map['latitude'].toString()) : null,
-      longitude: map['longitude'] != null ? double.tryParse(map['longitude'].toString()) : null,
-      planId: map['plan_id'] ?? '',
-      planName: map['plan_name'] ?? '',
-      gst: map['gst'] ?? '',
-      amount: map['amount'] ?? '',
-      startDate: map['start_date'] ?? '',
-      endDate: map['end_date'] ?? '',
-      validity: map['validity'] ?? 30,
-    );
-  }
+    required this.categoryId,
+    this.subCategoryId,
+    required this.serviceId,
+
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -97,7 +74,7 @@ class PostMerchantRegistration {
       'email': email,
       'mobile': mobile,
       'state': state,
-      'pincode': pincode,
+      'pincode': pinCode,
       'password': password,
       'address': address,
       'gender': gender,
@@ -106,7 +83,7 @@ class PostMerchantRegistration {
       'receive_options': receiveOptions,
       'business_location': businessLocation,
       'company_name': companyName,
-      'gstin': gstin,
+      'gstin': gstIn,
       'pan': pan,
       'city': city,
       'company_logo': companyLogo,
@@ -120,6 +97,10 @@ class PostMerchantRegistration {
       'start_date': startDate,
       'end_date': endDate,
       'validity': validity,
+      'category_id': categoryId,
+      'sub_category_id': subCategoryId,
+      'service_id': serviceId,
+
     };
   }
 
@@ -127,6 +108,6 @@ class PostMerchantRegistration {
 
   @override
   String toString() {
-    return 'PostMerchantRegistration(username: $username, email: $email, mobile: $mobile, state: $state, pincode: $pincode, password: $password, address: $address, gender: $gender, businessStartYear: $businessStartYear, mobileStatus: $mobileStatus, receiveOptions: $receiveOptions, businessLocation: $businessLocation, companyName: $companyName, gstin: $gstin, pan: $pan, city: $city, companyLogo: $companyLogo, kyc: $kyc, latitude: $latitude, longitude: $longitude, planId: $planId, planName: $planName, gst: $gst, amount: $amount, startDate: $startDate, endDate: $endDate, validity: $validity)';
+    return 'MerchantRegistrationRequest{username: $username, email: $email, mobile: $mobile, state: $state, pinCode: $pinCode, password: $password, address: $address, gender: $gender, businessStartYear: $businessStartYear, mobileStatus: $mobileStatus, receiveOptions: $receiveOptions, businessLocation: $businessLocation, companyName: $companyName, gstIn: $gstIn, pan: $pan, city: $city, companyLogo: $companyLogo, kyc: $kyc, latitude: $latitude, longitude: $longitude, planId: $planId, planName: $planName, gst: $gst, amount: $amount, startDate: $startDate, endDate: $endDate, validity: $validity, categoryId: $categoryId, subCategoryId: $subCategoryId, serviceId: $serviceId}';
   }
 }

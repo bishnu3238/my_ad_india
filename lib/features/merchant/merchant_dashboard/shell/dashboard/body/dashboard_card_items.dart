@@ -12,9 +12,9 @@ class RecentFile {
 List demoRecentFiles = [
   RecentFile(
     icon: "assets/icons/xd_file.svg",
-    title: "XD File",
-    date: "01-03-2021",
-    size: "3.5mb",
+    title: "Uttam Das",
+    date: "01-03-2025",
+    size: "Plumber",
   ),
 ];
 
@@ -32,4 +32,3 @@ class DashboardGridInfo {
     required this.onTap,
   });
 }
-

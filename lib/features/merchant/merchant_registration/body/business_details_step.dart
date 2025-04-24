@@ -10,7 +10,7 @@ class BusinessDetailsStep extends StatelessWidget {
   final TextEditingController startYearController;
   final TextEditingController businessLocationController;
   final TextEditingController panCardController;
-  final TextEditingController gstinController;
+  final TextEditingController gstInController;
 
   const BusinessDetailsStep({
     super.key,
@@ -19,7 +19,7 @@ class BusinessDetailsStep extends StatelessWidget {
     required this.startYearController,
     required this.businessLocationController,
     required this.panCardController,
-    required this.gstinController,
+    required this.gstInController,
   });
 
   @override
@@ -31,13 +31,13 @@ class BusinessDetailsStep extends StatelessWidget {
         children: [
           _buildShopNameField(),
           const SizedBox(height: 16),
-          _buildStartYearField(context),
-          const SizedBox(height: 16),
+          // _buildStartYearField(context),
+          // const SizedBox(height: 16),
           _buildBusinessLocationField(),
           const SizedBox(height: 16),
           _buildPanCardField(),
           const SizedBox(height: 16),
-          _buildGstinField(),
+          _buildGstInField(),
         ],
       ),
     );
@@ -69,91 +69,91 @@ class BusinessDetailsStep extends StatelessWidget {
     );
   }
 
-  Widget _buildStartYearField(BuildContext context) {
-    return Material(
-      borderRadius: BorderRadius.circular(10),
-      child: CupertinoFormRow(
-        prefix: const Icon(
-          CupertinoIcons.calendar,
-          color: RegistrationTheme.primaryColor,
-        ),
-        child: CupertinoTextFormFieldRow(
-          controller: startYearController,
-          placeholder: 'Business Start Year *',
-          decoration: BoxDecoration(
-            color: CupertinoColors.systemGrey6,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          validator: FormValidators.yearValidator,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(4),
-          ],
-          textInputAction: TextInputAction.next,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-
-          // style: RegistrationTheme.bodyMedium,
-          prefix: GestureDetector(
-            onTap: () => _showYearPicker(startYearController, context),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: const Icon(
-                CupertinoIcons.calendar_badge_plus,
-                color: RegistrationTheme.primaryColor,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showYearPicker(TextEditingController controller, BuildContext context) {
-    final int currentYear = DateTime.now().year;
-    final int initialYear = int.tryParse(controller.text) ?? currentYear;
-
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 216,
-          padding: const EdgeInsets.only(top: 6.0),
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          color: CupertinoColors.systemBackground.resolveFrom(context),
-          child: SafeArea(
-            top: false,
-            child: CupertinoPicker(
-              magnification: 1.22,
-              squeeze: 1.2,
-              useMagnifier: true,
-              itemExtent: 32,
-              scrollController: FixedExtentScrollController(
-                initialItem: initialYear - 1900,
-              ),
-              onSelectedItemChanged: (int selectedItem) {
-                final year = selectedItem + 1900;
-                controller.text = year.toString();
-              },
-              children: List<Widget>.generate((currentYear - 1900) + 1, (
-                int index,
-              ) {
-                return Center(
-                  child: Text(
-                    (1900 + index).toString(),
-                    style: const TextStyle(fontSize: 22),
-                  ),
-                );
-              }),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Widget _buildStartYearField(BuildContext context) {
+  //   return Material(
+  //     borderRadius: BorderRadius.circular(10),
+  //     child: CupertinoFormRow(
+  //       prefix: const Icon(
+  //         CupertinoIcons.calendar,
+  //         color: RegistrationTheme.primaryColor,
+  //       ),
+  //       child: CupertinoTextFormFieldRow(
+  //         controller: startYearController,
+  //         placeholder: 'Business Start Year *',
+  //         decoration: BoxDecoration(
+  //           color: CupertinoColors.systemGrey6,
+  //           borderRadius: BorderRadius.circular(8),
+  //         ),
+  //         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  //         validator: FormValidators.yearValidator,
+  //         keyboardType: TextInputType.number,
+  //         inputFormatters: [
+  //           FilteringTextInputFormatter.digitsOnly,
+  //           LengthLimitingTextInputFormatter(4),
+  //         ],
+  //         textInputAction: TextInputAction.next,
+  //         autovalidateMode: AutovalidateMode.onUserInteraction,
+  //
+  //         // style: RegistrationTheme.bodyMedium,
+  //         prefix: GestureDetector(
+  //           onTap: () => _showYearPicker(startYearController, context),
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(8),
+  //             child: const Icon(
+  //               CupertinoIcons.calendar_badge_plus,
+  //               color: RegistrationTheme.primaryColor,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // void _showYearPicker(TextEditingController controller, BuildContext context) {
+  //   final int currentYear = DateTime.now().year;
+  //   final int initialYear = int.tryParse(controller.text) ?? currentYear;
+  //
+  //   showCupertinoModalPopup(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return Container(
+  //         height: 216,
+  //         padding: const EdgeInsets.only(top: 6.0),
+  //         margin: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).viewInsets.bottom,
+  //         ),
+  //         color: CupertinoColors.systemBackground.resolveFrom(context),
+  //         child: SafeArea(
+  //           top: false,
+  //           child: CupertinoPicker(
+  //             magnification: 1.22,
+  //             squeeze: 1.2,
+  //             useMagnifier: true,
+  //             itemExtent: 32,
+  //             scrollController: FixedExtentScrollController(
+  //               initialItem: initialYear - 1900,
+  //             ),
+  //             onSelectedItemChanged: (int selectedItem) {
+  //               final year = selectedItem + 1900;
+  //               controller.text = year.toString();
+  //             },
+  //             children: List<Widget>.generate((currentYear - 1900) + 1, (
+  //               int index,
+  //             ) {
+  //               return Center(
+  //                 child: Text(
+  //                   (1900 + index).toString(),
+  //                   style: const TextStyle(fontSize: 22),
+  //                 ),
+  //               );
+  //             }),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildBusinessLocationField() {
     return Material(
@@ -216,7 +216,7 @@ class BusinessDetailsStep extends StatelessWidget {
     );
   }
 
-  Widget _buildGstinField() {
+  Widget _buildGstInField() {
     return Material(
       borderRadius: BorderRadius.circular(10),
 
@@ -226,7 +226,7 @@ class BusinessDetailsStep extends StatelessWidget {
           color: RegistrationTheme.primaryColor,
         ),
         child: CupertinoTextFormFieldRow(
-          controller: gstinController,
+          controller: gstInController,
           placeholder: 'GSTIN No (Optional)',
           decoration: BoxDecoration(
             color: CupertinoColors.systemGrey6,
@@ -237,11 +237,11 @@ class BusinessDetailsStep extends StatelessWidget {
           textCapitalization: TextCapitalization.characters,
           textInputAction: TextInputAction.done,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-           onChanged: (value) {
+          onChanged: (value) {
             if (value.isNotEmpty) {
-              gstinController.value = TextEditingValue(
+              gstInController.value = TextEditingValue(
                 text: value.toUpperCase(),
-                selection: gstinController.selection,
+                selection: gstInController.selection,
               );
             }
           },

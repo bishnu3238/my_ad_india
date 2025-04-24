@@ -111,8 +111,8 @@ class ServiceForm extends StatelessWidget {
     switch (step) {
       case ServiceFormStep.basicInfo:
         return const BasicInfoForm();
-      case ServiceFormStep.details:
-        return const DetailsForm();
+      // case ServiceFormStep.details:
+      //   return const DetailsForm();
       case ServiceFormStep.media:
         return const MediaForm();
       case ServiceFormStep.review:
@@ -124,8 +124,8 @@ class ServiceForm extends StatelessWidget {
     switch (step) {
       case ServiceFormStep.basicInfo:
         return 'Add Service';
-      case ServiceFormStep.details:
-        return 'Service Details';
+      // case ServiceFormStep.details:
+      //   return 'Service Details';
       case ServiceFormStep.media:
         return 'Add Media';
       case ServiceFormStep.review:

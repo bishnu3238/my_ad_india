@@ -29,7 +29,7 @@ class OTPVerificationBody extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Verify OTP', 
+              'Verify OTP',
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.primaryColor,
@@ -43,14 +43,14 @@ class OTPVerificationBody extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              otpProvider.merchantId,
+              otpProvider.mobile.maskPhone(),
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 32),
-            
+
             // OTP input section
             OTPForm(onComplete: (otp) => otpProvider.setOtp(otp)),
             const SizedBox(height: 16),
@@ -58,34 +58,36 @@ class OTPVerificationBody extends StatelessWidget {
             // Error message section
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
-              child: otpProvider.errorMessage != null
-                  ? ErrorMessageBox(
-                      message: otpProvider.errorMessage!,
-                      onDismiss: otpProvider.clearOtp,
-                    )
-                  : const SizedBox.shrink(),
+              child:
+                  otpProvider.errorMessage != null
+                      ? ErrorMessageBox(
+                        message: otpProvider.errorMessage!,
+                        onDismiss: otpProvider.clearOtp,
+                      )
+                      : const SizedBox.shrink(),
             ),
             const SizedBox(height: 32),
-            
+
             // Verify button
             Consumer<OTPProvider>(
-              builder: (context, provider, _) => CustomButton(
-                onPressed: () => provider.otpVerification(context),
-                isLoading: provider.isLoading,
-                text: 'Verify OTP',
-                width: double.infinity,
-                height: 50,
-                borderRadius: 10,
-              ),
+              builder:
+                  (context, provider, _) => CustomButton(
+                    onPressed: () => provider.otpVerification(context),
+                    isLoading: provider.isLoading,
+                    text: 'Verify OTP',
+                    width: double.infinity,
+                    height: 50,
+                    borderRadius: 10,
+                  ),
             ),
             const SizedBox(height: 24),
-            
+
             // Resend OTP section
             ResendOTPSection(
               otpProvider: otpProvider,
               onResend: () => otpProvider.resendOTP(context),
             ),
-            
+
             // Additional help section
             const SizedBox(height: 32),
             const Divider(),
@@ -110,54 +112,55 @@ class OTPVerificationBody extends StatelessWidget {
 
   void showHelpDialog(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.help_outline, color: theme.primaryColor),
-            const SizedBox(width: 8),
-            const Text('OTP Help'),
-          ],
-        ),
-        content: const SingleChildScrollView(
-          child: ListBody(
-            children: [
-              Text(
-                '1. Check your Phone message section for the verification code',
-                style: TextStyle(height: 1.5),
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.help_outline, color: theme.primaryColor),
+                const SizedBox(width: 8),
+                const Text('OTP Help'),
+              ],
+            ),
+            content: const SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text(
+                    '1. Check your Phone message section for the verification code',
+                    style: TextStyle(height: 1.5),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '2. Make sure you enter the complete 6-digit code',
+                    style: TextStyle(height: 1.5),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '3. If you don\'t receive the code, try the "Resend OTP" option',
+                    style: TextStyle(height: 1.5),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '4. Check your spam folder or any other messaging apps',
+                    style: TextStyle(height: 1.5),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    '5. Contact support if you continue to have problems',
+                    style: TextStyle(height: 1.5),
+                  ),
+                ],
               ),
-              SizedBox(height: 8),
-              Text(
-                '2. Make sure you enter the complete 6-digit code',
-                style: TextStyle(height: 1.5),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '3. If you don\'t receive the code, try the "Resend OTP" option',
-                style: TextStyle(height: 1.5),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '4. Check your spam folder or any other messaging apps',
-                style: TextStyle(height: 1.5),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '5. Contact support if you continue to have problems',
-                style: TextStyle(height: 1.5),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text('Got it'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text('Got it'),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -178,10 +181,7 @@ class ResendOTPSection extends StatelessWidget {
 
     return Column(
       children: [
-        Text(
-          'Didn\'t receive the OTP?',
-          style: theme.textTheme.bodyMedium,
-        ),
+        Text('Didn\'t receive the OTP?', style: theme.textTheme.bodyMedium),
         const SizedBox(height: 8),
         if (otpProvider.canResendOtp)
           TextButton.icon(
@@ -193,17 +193,11 @@ class ResendOTPSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.timer,
-                size: 16,
-                color: Colors.grey,
-              ),
+              const Icon(Icons.timer, size: 16, color: Colors.grey),
               const SizedBox(width: 8),
               Text(
                 'Resend available in ${otpProvider.remainingResendTime} seconds',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.grey,
-                ),
+                style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
               ),
             ],
           ),
@@ -213,9 +207,10 @@ class ResendOTPSection extends StatelessWidget {
             child: Text(
               'Attempts: ${otpProvider.otpAttempts}/${OTPProvider.maxOtpAttempts}',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: otpProvider.hasReachedMaxAttempts 
-                    ? Colors.red 
-                    : Colors.grey,
+                color:
+                    otpProvider.hasReachedMaxAttempts
+                        ? Colors.red
+                        : Colors.grey,
               ),
             ),
           ),
@@ -247,10 +242,7 @@ class ErrorMessageBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Colors.red,
-          ),
+          const Icon(Icons.error_outline, color: Colors.red),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -264,20 +256,13 @@ class ErrorMessageBox extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  message,
-                  style: const TextStyle(color: Colors.red),
-                ),
+                Text(message, style: const TextStyle(color: Colors.red)),
               ],
             ),
           ),
           InkWell(
             onTap: onDismiss,
-            child: const Icon(
-              Icons.close,
-              color: Colors.red,
-              size: 18,
-            ),
+            child: const Icon(Icons.close, color: Colors.red, size: 18),
           ),
         ],
       ),

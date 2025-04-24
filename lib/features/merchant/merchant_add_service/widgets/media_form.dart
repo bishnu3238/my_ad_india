@@ -10,7 +10,7 @@ class MediaForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =  Theme.of(context).colorScheme;
+    final theme = Theme.of(context).colorScheme;
 
     return Consumer<MerchantAddServiceProvider>(
       builder: (context, provider, _) {
@@ -18,6 +18,7 @@ class MediaForm extends StatelessWidget {
         final isVideoAllowed = provider.isVideoAllowed;
         final maxVideoLength = provider.maxVideoLength;
         final servicePhotos = provider.servicePhotos;
+        final profilePhoto = provider.profilePhoto;
         final videoPath = provider.videoPath;
         final isUploading = provider.isUploading;
         final uploadProgress = provider.uploadProgress;
@@ -40,9 +41,60 @@ class MediaForm extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
+                /// TODO: ADD Merchant profile photo;
+                _buildLabel('Merchant Profile Photos', 'Max 1 photos'),
+                const SizedBox(height: 8),
+                if (profilePhoto.isNotEmpty)
+                  SizedBox(
+                    height: 60,
+                    width: 55,
+                    child: _buildPhotoItem(
+                      context,
+                      profilePhoto,
+                      () => provider.removeBusinessImage(),
+                    ),
+                  ),
+                if (profilePhoto.isEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      color: CupertinoColors.systemGrey5,
+                      borderRadius: BorderRadius.circular(8),
+                      onPressed:
+                          isUploading
+                              ? null
+                              : () => _showImageSourcePicker(
+                                context,
+                                provider,
+                                ImageUploadType.business,
+                              ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(
+                            CupertinoIcons.photo,
+                            color: CupertinoColors.activeBlue,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Add Photo',
+                            style: TextStyle(
+                              color: CupertinoColors.activeBlue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+
+                ///
+                const SizedBox(height: 20),
                 // Photos Section
                 if (maxPhotoCount > 0) ...[
-                  _buildLabel('Photos', 'Max $maxPhotoCount photos'),
+                  _buildLabel('Business Photos', 'Max $maxPhotoCount photos'),
                   const SizedBox(height: 8),
                   if (servicePhotos.isNotEmpty)
                     GridView.builder(
@@ -74,8 +126,11 @@ class MediaForm extends StatelessWidget {
                         onPressed:
                             isUploading
                                 ? null
-                                : () =>
-                                    _showImageSourcePicker(context, provider),
+                                : () => _showImageSourcePicker(
+                                  context,
+                                  provider,
+                                  ImageUploadType.service,
+                                ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
@@ -123,7 +178,7 @@ class MediaForm extends StatelessWidget {
                     ),
                   ),
 
-                // Video Section
+                //  Video Section
                 if (isVideoAllowed) ...[
                   const SizedBox(height: 24),
                   _buildLabel('Video', 'Max $maxVideoLength seconds'),
@@ -257,7 +312,7 @@ class MediaForm extends StatelessWidget {
                             isUploading
                                 ? null
                                 : () => provider.nextStep(context),
-                        child:   Text(
+                        child: Text(
                           'Next',
                           style: TextStyle(
                             fontSize: 16,
@@ -318,7 +373,7 @@ class MediaForm extends StatelessWidget {
                 Provider.of<MerchantAddServiceProvider>(
                   context,
                   listen: false,
-                ).removeImage(0);
+                ).removeBusinessImage();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Failed to load image'),
@@ -355,6 +410,7 @@ class MediaForm extends StatelessWidget {
   void _showImageSourcePicker(
     BuildContext context,
     MerchantAddServiceProvider provider,
+    ImageUploadType type,
   ) {
     showCupertinoModalPopup(
       context: context,
@@ -365,14 +421,14 @@ class MediaForm extends StatelessWidget {
               CupertinoActionSheetAction(
                 onPressed: () {
                   Navigator.pop(context);
-                  provider.pickImage(ImageSource.camera, context);
+                  provider.pickImage(ImageSource.camera, context, type);
                 },
                 child: const Text('Take Photo'),
               ),
               CupertinoActionSheetAction(
                 onPressed: () {
                   Navigator.pop(context);
-                  provider.pickImage(ImageSource.gallery, context);
+                  provider.pickImage(ImageSource.gallery, context, type);
                 },
                 child: const Text('Choose from Gallery'),
               ),

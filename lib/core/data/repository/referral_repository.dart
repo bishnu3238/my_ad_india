@@ -3,14 +3,12 @@ import 'dart:developer' as dev;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:my_ad/core/data/model/request/POST/post_referral_request.dart';
-import 'package:my_ad/core/data/model/response/referral_response.dart';
 
-import 'package:pack/services/failure/failure.dart';
-import 'package:pack/services/service.dart';
+ import 'package:pack/services/service.dart';
 
 import '../../domain/repository/referral_repository.dart';
 import '../api/api_config.dart';
+import '../model/model.dart';
 
 class ReferralRepositoryImpl implements ReferralRepository {
   final ApiCallService apiService;

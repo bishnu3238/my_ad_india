@@ -1,6 +1,6 @@
 import 'dart:developer' as dev;
 
- import 'package:pack/services/base_services/base_service.dart';
+import 'package:pack/services/base_services/base_service.dart';
 import 'package:pack/services/search_service/search_utility.dart';
 
 import '../../data/model/product/service_model.dart';
@@ -8,6 +8,11 @@ import '../../data/model/product/service_model.dart';
 class ServiceStore extends CollectionStore<ServiceModel>
     implements SearchDataStore {
   ServiceStore() : super(initialItems: []);
+
+  ServiceModel getById(String id) => items.firstWhere(
+    (element) => element.id == id,
+    orElse: () => ServiceModel.empty(),
+  );
 
   @override
   Future<List<Searchable>> getAll() => Future.value(items);

@@ -6,7 +6,7 @@ class NavigationButtons extends StatelessWidget {
   final int currentStep;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
-  final VoidCallback onSubmit;
+  final VoidCallback? onSubmit;
   final bool isLoading;
 
   const NavigationButtons({
@@ -65,7 +65,7 @@ class NavigationButtons extends StatelessWidget {
   }
 
   Widget _buildNextButton() {
-    final bool isLastStep = currentStep == 3;
+    final bool isLastStep = currentStep == 4;
 
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

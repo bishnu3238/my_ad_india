@@ -5,13 +5,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_ad/core/data/model/model.dart';
+import 'package:pack/extensions/extensions.dart';
 import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../../../core/domain/data_store/data_store.dart';
 import '../../../../core/services/service.dart';
 
-enum ServiceFormStep { basicInfo, details, media, review }
+enum ServiceFormStep {
+  basicInfo,
+  // details,
+  media,
+  review,
+}
+
+enum ImageUploadType { business, service }
 
 class MerchantAddServiceProvider extends ChangeNotifier {
   final MerchantDashboardStore store;
@@ -21,6 +29,25 @@ class MerchantAddServiceProvider extends ChangeNotifier {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeProvider();
     });
+  }
+
+  initializeData(BuildContext context) {
+    _categoryId = store.entity!.merchantData.serviceDetails.categoryId.toInt;
+    _subcategoryId = int.parse(
+      store.entity?.merchantData.serviceDetails.subCategoryId ?? '0',
+    );
+    _serviceTypeId = store.entity?.merchantData.serviceDetails.serviceId.toInt;
+    dev.log('CATEGORY: $_categoryId, SERVICE ID: $_serviceTypeId');
+    _selectedCategory =
+        context.read<CategoryStore>().getById('$_categoryId').category;
+    // _selectedSubCategory =
+    //     context.read<SubCategoryStore>().getById('$_subcategoryId').name;
+    _selectedService =
+        context.read<ServiceStore>().getById('$_serviceTypeId').serviceName;
+    serviceNameController.text =
+        store.entity?.merchantData.merchant.companyName ?? '';
+    addressController.text =
+        store.entity!.merchantData.merchant.businessLocation ?? '';
   }
 
   /// Initialize merchant plan details and there restrictions;
@@ -63,6 +90,7 @@ class MerchantAddServiceProvider extends ChangeNotifier {
     }
   }
 
+  String get serviceName => store.entity!.merchantData.merchant.companyName;
   // Form controllers
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController rateController = TextEditingController();
@@ -94,6 +122,8 @@ class MerchantAddServiceProvider extends ChangeNotifier {
 
   List<String> _servicePhotos = [];
   List<String> get servicePhotos => _servicePhotos;
+
+  String profilePhoto = '';
 
   String? _videoPath;
   String? get videoPath => _videoPath;
@@ -151,11 +181,11 @@ class MerchantAddServiceProvider extends ChangeNotifier {
 
     switch (_currentStep) {
       case ServiceFormStep.basicInfo:
-        _currentStep = ServiceFormStep.details;
-        break;
-      case ServiceFormStep.details:
         _currentStep = ServiceFormStep.media;
         break;
+      // case ServiceFormStep.details:
+      //   _currentStep = ServiceFormStep.media;
+      //   break;
       case ServiceFormStep.media:
         _currentStep = ServiceFormStep.review;
         break;
@@ -171,11 +201,11 @@ class MerchantAddServiceProvider extends ChangeNotifier {
       case ServiceFormStep.basicInfo:
         // This is the first step, so we don't go back
         break;
-      case ServiceFormStep.details:
-        _currentStep = ServiceFormStep.basicInfo;
-        break;
+      // case ServiceFormStep.details:
+      //   _currentStep = ServiceFormStep.basicInfo;
+      //   break;
       case ServiceFormStep.media:
-        _currentStep = ServiceFormStep.details;
+        _currentStep = ServiceFormStep.basicInfo;
         break;
       case ServiceFormStep.review:
         _currentStep = ServiceFormStep.media;
@@ -187,82 +217,82 @@ class MerchantAddServiceProvider extends ChangeNotifier {
   bool validateCurrentStep(BuildContext context) {
     switch (_currentStep) {
       case ServiceFormStep.basicInfo:
-        if (_selectedCategory == null || _selectedCategory!.isEmpty) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Please select a category',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        if (_selectedSubCategory == null || _selectedSubCategory!.isEmpty) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Please select a subcategory',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        if (_selectedService == null || _selectedService!.isEmpty) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Please select a service type',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        if (serviceNameController.text.isEmpty) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Please enter a service name',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        if (rateController.text.isEmpty) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Please enter a rate',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        try {
-          double.parse(rateController.text);
-        } catch (e) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Please enter a valid rate',
-            type: NotificationType.error,
-          );
-          return false;
-        }
+        // if (_selectedCategory == null || _selectedCategory!.isEmpty) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Please select a category',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
+        // if (_selectedSubCategory == null || _selectedSubCategory!.isEmpty) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Please select a subcategory',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
+        // if (_selectedService == null || _selectedService!.isEmpty) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Please select a service type',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
+        // if (serviceNameController.text.isEmpty) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Please enter a service name',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
+        // if (rateController.text.isEmpty) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Please enter a rate',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
+        // try {
+        //   double.parse(rateController.text);
+        // } catch (e) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Please enter a valid rate',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
         return true;
 
-      case ServiceFormStep.details:
-        if (descriptionController.text.isNotEmpty &&
-            maxDescriptionLength > 0 &&
-            descriptionController.text.length > maxDescriptionLength) {
-          NotifyService.snackbar(
-            context: context,
-            message:
-                'Description exceeds maximum length of $maxDescriptionLength characters',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        if (offersController.text.isNotEmpty &&
-            maxOfferLength > 0 &&
-            offersController.text.length > maxOfferLength) {
-          NotifyService.snackbar(
-            context: context,
-            message:
-                'Offers exceed maximum length of $maxOfferLength characters',
-            type: NotificationType.error,
-          );
-          return false;
-        }
-        return true;
+      // case ServiceFormStep.details:
+      //   if (descriptionController.text.isNotEmpty &&
+      //       maxDescriptionLength > 0 &&
+      //       descriptionController.text.length > maxDescriptionLength) {
+      //     NotifyService.snackbar(
+      //       context: context,
+      //       message:
+      //           'Description exceeds maximum length of $maxDescriptionLength characters',
+      //       type: NotificationType.error,
+      //     );
+      //     return false;
+      //   }
+      //   if (offersController.text.isNotEmpty &&
+      //       maxOfferLength > 0 &&
+      //       offersController.text.length > maxOfferLength) {
+      //     NotifyService.snackbar(
+      //       context: context,
+      //       message:
+      //           'Offers exceed maximum length of $maxOfferLength characters',
+      //       type: NotificationType.error,
+      //     );
+      //     return false;
+      //   }
+      //   return true;
 
       case ServiceFormStep.media:
         if (servicePhotos.length > maxPhotoCount) {
@@ -273,14 +303,14 @@ class MerchantAddServiceProvider extends ChangeNotifier {
           );
           return false;
         }
-        if (videoPath != null && !isVideoAllowed) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Videos are not allowed in your current plan',
-            type: NotificationType.error,
-          );
-          return false;
-        }
+        // if (videoPath != null && !isVideoAllowed) {
+        //   NotifyService.snackbar(
+        //     context: context,
+        //     message: 'Videos are not allowed in your current plan',
+        //     type: NotificationType.error,
+        //   );
+        //   return false;
+        // }
         return true;
 
       case ServiceFormStep.review:
@@ -325,8 +355,9 @@ class MerchantAddServiceProvider extends ChangeNotifier {
   // Media handling methods
   Future<Either<Failure, bool>> pickImage(
     ImageSource source,
-    BuildContext context,
-  ) async {
+    BuildContext context, [
+    ImageUploadType type = ImageUploadType.service,
+  ]) async {
     if (servicePhotos.length >= maxPhotoCount) {
       NotifyService.snackbar(
         context: context,
@@ -346,7 +377,10 @@ class MerchantAddServiceProvider extends ChangeNotifier {
       );
 
       if (image != null) {
-        return await _uploadImage(File(image.path), context);
+        if (type == ImageUploadType.service) {
+          return _uploadImage(File(image.path), context);
+        }
+        return await _uploadBusinessImage(File(image.path), context);
       } else {
         // User canceled the picker
         return right(false);
@@ -429,11 +463,84 @@ class MerchantAddServiceProvider extends ChangeNotifier {
     }
   }
 
+  Future<Either<Failure, bool>> _uploadBusinessImage(
+    File imageFile,
+    BuildContext context,
+  ) async {
+    if (profilePhoto.length > 1) {
+      return left(
+        ValidationFailure(message: 'Maximum $maxPhotoCount photos allowed'),
+      );
+    }
+
+    _isUploading = true;
+    _uploadProgress = 0.0;
+    notifyListeners();
+
+    try {
+      // Use the repository to upload the image
+      final result = await service.uploadMerchantBusinessImage(
+        merchantId: merchantId,
+        imageFile: imageFile,
+        onSendProgress: (sent, total) {
+          _uploadProgress = sent / total;
+          notifyListeners();
+        },
+      );
+
+      return result.fold(
+        (failure) {
+          if (context.mounted) {
+            NotifyService.snackbar(
+              context: context,
+              message: failure.message,
+              type: NotificationType.error,
+            );
+          }
+          return left(failure);
+        },
+        (imageUrl) {
+          // Add the image URL to the list of service photos
+          profilePhoto = imageUrl.imageUrl!;
+          notifyListeners();
+
+          if (context.mounted) {
+            NotifyService.snackbar(
+              context: context,
+              message: 'Image uploaded successfully',
+              type: NotificationType.success,
+            );
+          }
+          return right(true);
+        },
+      );
+    } catch (e) {
+      dev.log('Error uploading image: $e');
+      if (context.mounted) {
+        NotifyService.snackbar(
+          context: context,
+          message: 'Failed to upload image: $e',
+          type: NotificationType.error,
+        );
+      }
+      return left(UnexpectedFailure(message: 'Failed to upload image: $e'));
+    } finally {
+      _isUploading = false;
+      _uploadProgress = 0.0;
+      notifyListeners();
+    }
+  }
+
   void removeImage(int index) {
     if (index >= 0 && index < _servicePhotos.length) {
       _servicePhotos.removeAt(index);
       notifyListeners();
     }
+  }
+
+  void removeBusinessImage() {
+    profilePhoto = '';
+    notifyListeners();
   }
 
   Future<void> pickVideo(ImageSource source, BuildContext context) async {
@@ -556,9 +663,23 @@ class MerchantAddServiceProvider extends ChangeNotifier {
       // Create service model from form data
       final requestService = MerchantServiceModel(
         merchantId: merchantId,
-        categoryId: _categoryId ?? 0,
-        subcategoryId: _subcategoryId ?? 0,
-        serviceTypeId: _serviceTypeId ?? 0,
+        categoryId:
+            store
+                .entity!
+                .merchantData
+                .serviceDetails
+                .categoryId
+                .toInt, // _categoryId ?? 0,
+        subcategoryId: int.parse(
+          store.entity!.merchantData.serviceDetails.subCategoryId ?? '0',
+        ), //_subcategoryId ?? 0,
+        serviceTypeId:
+            store
+                .entity!
+                .merchantData
+                .serviceDetails
+                .serviceId
+                .toInt, //_serviceTypeId ?? 0,
         serviceName: serviceNameController.text,
         videoUrl: _videoPath,
         quantity: 1,
@@ -566,15 +687,25 @@ class MerchantAddServiceProvider extends ChangeNotifier {
         offers: offersController.text,
         offerStatus: offersController.text.isNotEmpty,
         planRate: double.tryParse(rateController.text) ?? 0.0,
-        cityName: '', // This can be populated from user's location if needed
+        cityName:
+            store
+                .entity!
+                .merchantData
+                .merchant
+                .businessLocation, // This can be populated from user's location if needed
         address: addressController.text,
-        latitude: '0', // This can be populated from user's location if needed
-        longitude: '0', // This can be populated from user's location if needed
-        status: 1,
+        latitude:
+            store.entity!.merchantData.merchant.latitude
+                .toString(), // This can be populated from user's location if needed
+        longitude:
+            store.entity!.merchantData.merchant.longitude
+                .toString(), // This can be populated from user's location if needed
+        status: 0,
         updateLimits: 0,
         videoStatus: _videoPath != null && _videoPath!.isNotEmpty ? 1 : 0,
         businessPartnerApprove: 0,
         servicePhotos: _servicePhotos,
+        merchantPhoto: profilePhoto,
       );
 
       dev.log('Service: $service');

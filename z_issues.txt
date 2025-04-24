@@ -1,0 +1,55 @@
+22-04-2025
+Merchant login details
+Select category – (repair) == done
+Services – (auto / todo) == done
+Follow app steps   == done
+Remove business start year, == done
+Username by default his mobile no
+Password – remove validation  == don't want to do it.
+
+
+Only show one plan (silver)   (500) free – 30 days +  free offer 30 days
+.^ done.
+
+View button to see of service details – name – address, mobile no, shop (1) / individual photo (1), review, description (30 characters)
+.^ done.
+
+Accept Terms and condition check box
+
+.^ done.
+
+Submit
+Note – hint in all box  == don't want to do it
+
+User login == done
+
+1)	Remove validation of email
+2)	Otp
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+merchant: {id: 13, username: Raju Pal,
+pan: DDDDD5555D, company_name: Raju Beauti clinic,
+email: rajupal@gmail.com, mobile: 8585969699,//12345678
+state: 24, city: 0, pincode: 700101,
+password: $2y$10$3cF/ZB5mBl/Ob.JGTL/0.eLQnEoTdUJMkZ2/hBSNt983b1wc9ycqS, address: 266 Picnic garden road,
+gender: male, business_start_year: 2020, mobile_status: private,
+receive_options: chat,
+business_location: Kolkata,
+company_logo: , kyc: 0, latitude: 22.5179016, longitude: 88.3937405,
+otp_verify: 1, otp: 196286, status: 1, dated: 2025-04-22 17:26:27,
+added_by: Raju Pal},
+
+subscription: {subscription_id: 13, merchant_id: 13, plan_id: 4,
+plan_name: SILVER, gst: 90, amount: 500, start_date: 2025-04-22,
+end_date: 2025-05-22, renew_date: , expend_date: , validity: 30,
+signature: , received_by: , transaction_id: , order_id: ,
+payment_status: pending, payment_date: , status: 1,
+subscription_type: new, plan_status: active},
+
+service_details: {id: 1, merchant_id: 13, category_id: 2,
+sub_category_id: 0,  service_id: 22, status: 1,
+date: 2025-04-22 17:26:27}}, timestamp: 2025-04-22T17:26:47+00:00}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

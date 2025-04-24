@@ -21,14 +21,14 @@ enum SubCategoryStatus {
 @immutable
 class SubCategoryModel extends BaseModel<SubCategoryModel> implements Searchable {
    final String name;
-  final String searchImageUrl;
+  final String imageUrl;
   final SubCategoryStatus status;
   final String categoryId;
 
   const SubCategoryModel({
     required super.id,
     required this.name,
-    this.searchImageUrl = '',
+    this.imageUrl = '',
     this.status = SubCategoryStatus.active,
     required this.categoryId,
   });
@@ -38,7 +38,7 @@ class SubCategoryModel extends BaseModel<SubCategoryModel> implements Searchable
     return SubCategoryModel(
       id: json['id']?.toString() ?? '0',
       name: json['subcategory'] as String? ?? 'Unknown',
-      searchImageUrl: json['image'] as String? ?? '',
+      imageUrl: json['image'] as String? ?? '',
       status: json.getStatus(
         'status',
         SubCategoryStatus.values,
@@ -54,7 +54,7 @@ class SubCategoryModel extends BaseModel<SubCategoryModel> implements Searchable
     return {
       'id': id,
       'subcategory': name,
-      'image': searchImageUrl,
+      'image': imageUrl,
       'status': status.value.toString(),
       'category': categoryId,
     }..removeWhere((_, v) => v == null || v == '');
@@ -71,7 +71,7 @@ class SubCategoryModel extends BaseModel<SubCategoryModel> implements Searchable
     return SubCategoryModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      searchImageUrl: imageUrl ?? this.searchImageUrl,
+      imageUrl: imageUrl ?? this.imageUrl,
       status: status ?? this.status,
       categoryId: categoryId ?? this.categoryId,
     );
@@ -82,20 +82,20 @@ class SubCategoryModel extends BaseModel<SubCategoryModel> implements Searchable
 
   // Utility properties
   bool get isActive => status == SubCategoryStatus.active;
-  bool get hasImage => searchImageUrl.isNotEmpty && searchImageUrl != 'null';
+  bool get hasImage => imageUrl.isNotEmpty && imageUrl != 'null';
   String get displayName => name.isEmpty ? 'Unnamed Subcategory' : name;
 
 
   String get fullImageUrl =>
-      searchImageUrl.startsWith('http')
-          ? searchImageUrl
-          : "${ApiConfig.baseUrl}${ApiConfig.subCategoryImgPath}/$searchImageUrl";
+      imageUrl.startsWith('http')
+          ? imageUrl
+          : "${ApiConfig.baseUrl}${ApiConfig.subCategoryImgPath}/$imageUrl";
 
 
 
   // Equatable implementation for value comparison
   @override
-  List<Object?> get props => [id, name, searchImageUrl, status, categoryId];
+  List<Object?> get props => [id, name, imageUrl, status, categoryId];
 
   @override
   String toString() {
@@ -133,7 +133,7 @@ extension SubCategoryModelExtension on SubCategoryModel {
 
   // Get image URL with fallback
   String getImageUrlWithFallback(String fallbackUrl) {
-    return hasImage ? searchImageUrl : fallbackUrl;
+    return hasImage ? imageUrl : fallbackUrl;
   }
 
   // Async validation or enrichment (e.g., checking image availability)

@@ -5,7 +5,7 @@ abstract class Searchable {
   String get id;
   String get displayName;
   String get displayDescription;
-  String? get searchImageUrl;
+  String? get imageUrl;
   SearchResultType get resultType;
 
   Map<String, dynamic> get searchableFields;
@@ -24,6 +24,6 @@ abstract class Searchable {
 
   @override
   String toString() {
-    return 'Searchable{ $id, $displayName, $displayDescription, $searchImageUrl, $searchableFields}';
+    return 'Searchable{ $id, $displayName, $displayDescription, $imageUrl, $searchableFields}';
   }
 }

@@ -7,7 +7,7 @@ import '../../data/model/response/merchant_otp_response.dart';
 abstract class MerchantAuthRepository {
   /// Merchant Registration
   Future<Either<NetworkFailure, MerchantRegistrationResponse>> registration(
-    PostMerchantRegistration request,
+    MerchantRegistrationPayload request,
   );
 
   /// Merchant Login

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:flutter/foundation.dart';
-import 'package:geocoding/geocoding.dart';
+ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -94,35 +93,36 @@ class LocationProvider extends ChangeNotifier {
   }
 
   // Auto-detect user's location
-  Future<void> detectUserLocation() async {
+  Future<LocationResponse> detectUserLocation() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
 
+    notifyListeners();
+    String city = 'Unknown';
     try {
       final hasPermission = await _handleLocationPermission();
       if (!hasPermission) {
         _isLoading = false;
         notifyListeners();
-        return;
+        return LocationResponse.empty;
       }
 
       // Get current position
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: LocationSettings(accuracy: LocationAccuracy.high),
       );
-
       // Get city name from coordinates
-      final placemarks = await placemarkFromCoordinates(
+      final placeMarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
 
-      if (placemarks.isNotEmpty) {
-        // Extract city name from placemarks
-        final city = placemarks.first.locality ??
-            placemarks.first.subAdministrativeArea ??
-            placemarks.first.administrativeArea ??
+      if (placeMarks.isNotEmpty) {
+        // Extract city name from placeMarks
+        city =
+            placeMarks.first.locality ??
+            placeMarks.first.subAdministrativeArea ??
+            placeMarks.first.administrativeArea ??
             'Unknown';
 
         if (city != 'Unknown') {
@@ -133,11 +133,48 @@ class LocationProvider extends ChangeNotifier {
       } else {
         _error = 'Could not determine your location';
       }
+      return LocationResponse(
+        city: city,
+        state: placeMarks.first.administrativeArea ?? 'Unknown',
+        country: placeMarks.first.country!,
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
     } catch (e) {
       _error = 'Error detecting location: ${e.toString()}';
+      return LocationResponse.empty;
     } finally {
       _isLoading = false;
+
       notifyListeners();
     }
+  }
+}
+
+class LocationResponse {
+  final String city, state, country;
+  final double latitude, longitude;
+
+  const LocationResponse({
+    required this.city,
+    required this.state,
+    required this.country,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  static LocationResponse empty = LocationResponse(
+    city: 'Unknown',
+    state: 'Unknown',
+    country: 'Unknown',
+    latitude: 0.0,
+    longitude: 0.0,
+  );
+
+  bool get isEmpty => this == empty;
+
+  @override
+  String toString() {
+    return 'LocationResponse{city: $city, state: $state, country: $country, latitude: $latitude, longitude: $longitude}';
   }
 }

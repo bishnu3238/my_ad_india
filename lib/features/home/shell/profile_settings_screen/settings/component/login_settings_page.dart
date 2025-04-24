@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_ad/features/refer_earn/refer_earn.dart';
 import 'package:my_ad/features/settings/core/settins_navigator.dart';
+import 'package:my_ad/utils/widgets/svg_icon_widget.dart';
+import 'package:pack/pack.dart';
 import '../../../../../../core/data/model/model.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../refer_earn/core/refer_earn_route.dart';
@@ -22,14 +24,17 @@ class LoggedInSettingsPage extends StatelessWidget {
         title: const Text('Account'),
         backgroundColor: Color(0xFF071667),
         foregroundColor: Colors.white,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () => Navigator.of(context).pop(),
-        // ),
+
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+          Padding(
+            padding: 20.symmetricHV(0),
+            child: SvgIconWidget(
+              onTap: () {},
+              width: 25,
+              height: 25,
+              iconPath: SvgIcons.notificationIcon,
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
           ),
         ],
       ),

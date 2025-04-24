@@ -25,7 +25,7 @@ class CategoryServicesRoute {
               id: categoryId,
               category: 'Unknown',
               title: 'Unknown Category',
-              searchImageUrl: '',
+              imageUrl: '',
               favIcon: '',
               status: CategoryStatus.active,
             ),

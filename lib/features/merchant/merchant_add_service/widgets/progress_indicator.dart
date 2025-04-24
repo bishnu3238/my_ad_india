@@ -7,10 +7,10 @@ class StepProgressIndicator extends StatelessWidget {
   final VoidCallback? onStepTapped;
 
   const StepProgressIndicator({
-    Key? key,
+    super.key,
     required this.currentStep,
     this.onStepTapped,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,11 @@ class StepProgressIndicator extends StatelessWidget {
                 _buildStepDot(ServiceFormStep.basicInfo, 'Basic Info'),
                 _buildStepLine(
                   ServiceFormStep.basicInfo,
-                  ServiceFormStep.details,
+                  // ServiceFormStep.details,
+                  ServiceFormStep.media,
                 ),
-                _buildStepDot(ServiceFormStep.details, 'Details'),
-                _buildStepLine(ServiceFormStep.details, ServiceFormStep.media),
+                // _buildStepDot(ServiceFormStep.details, 'Details'),
+                // _buildStepLine(ServiceFormStep.details, ServiceFormStep.media),
                 _buildStepDot(ServiceFormStep.media, 'Media'),
                 _buildStepLine(ServiceFormStep.media, ServiceFormStep.review),
                 _buildStepDot(ServiceFormStep.review, 'Review'),
@@ -131,12 +132,12 @@ class StepProgressIndicator extends StatelessWidget {
     switch (step) {
       case ServiceFormStep.basicInfo:
         return 1;
-      case ServiceFormStep.details:
-        return 2;
+      // case ServiceFormStep.details:
+      //   return 2;
       case ServiceFormStep.media:
-        return 3;
+        return 2;
       case ServiceFormStep.review:
-        return 4;
+        return 3;
     }
   }
 }

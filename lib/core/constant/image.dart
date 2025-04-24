@@ -3,12 +3,13 @@ class AppImage {
   static const String _baseLogo = 'assets/logos';
   static const String _baseSvg = 'assets/images/svg/';
 
+  static const String appInitialBanner = '$_baseImg/app_initial_banner.png';
+
   static const String placeholder = '$_baseImg/placeholder.png';
   static const String logo = '$_baseLogo/app_logo.png';
 
   static const String serverDownImg = '$_baseSvg/server-down.svg';
   static const String noConnectionImg = '$_baseImg/no_connection.png';
-
 
   static const String serverDownSvg = serverDown;
   static const String beforeDownSvg = beforeDown;

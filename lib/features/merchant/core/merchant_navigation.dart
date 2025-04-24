@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/data/model/merchant/merchant.dart';
 import 'package:my_ad/features/merchant/merchant_dashboard/core/merchant_dashboard_route.dart';
 import '../merchant_registration/merchant_registration_screen.dart';
 import '../merchant_login/merchant_login_screen.dart';
@@ -11,7 +12,6 @@ class MerchantRoute {
   static String merchantOtp = '/otp-verify';
   static String merchantDashboard = '/merchant-dashboard';
   static String merchantRegister = '/merchant-register';
-
 
   /// params
   static String otpParam1MerchantId = '/:merchantId';
@@ -27,10 +27,11 @@ class MerchantRoute {
         builder: (ctx, state) => MerchantRegistrationScreen(),
       ),
       GoRoute(
-        path: '$merchantOtp/:merchantId',
+        path: '$merchantOtp/:merchantId/:mobile',
         builder:
             (context, state) => OTPVerificationScreen(
               merchantId: state.pathParameters['merchantId']!,
+              mobile:  state.pathParameters['mobile']!,
             ),
       ),
 

@@ -3,7 +3,7 @@ export 'upload_merchant_service_video_request.dart';
 export 'post_merchant_forgor_password.dart';
 export 'post_merchant_login.dart';
 export 'post_merchant_otp_varification.dart';
-export 'post_merchant_registration.dart';
+export 'merchant_registration_payload.dart';
 export 'post_merchant_resend_otp.dart';
 export 'post_merchant_reset_password.dart';
 export 'post_referral_request.dart';

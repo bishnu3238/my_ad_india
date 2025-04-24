@@ -44,7 +44,7 @@ class SubscriptionPlanModel extends BaseModel<SubscriptionPlanModel> {
       profileAccess = '',
       numberOfServices = 0,
       status = 1,
-      super(id: '0');
+      super(id: '');
 
   // Create a SubscriptionPlan from a map (useful when retrieving from database)
   // Parse JSON manually

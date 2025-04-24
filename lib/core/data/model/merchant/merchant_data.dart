@@ -1,14 +1,17 @@
 import 'merchant_model.dart';
 import 'merchant_subscription_model.dart';
+import 'merchant_service_details_model.dart';
 import 'package:pack/services/service.dart';
 
 class MerchantData extends BaseModel<MerchantData> {
   final MerchantModel merchant;
   final MerchantSubscriptionModel subscription;
+  final MerchantServiceDetailsModel serviceDetails;
 
   const MerchantData({
     required this.merchant,
     required this.subscription,
+    required this.serviceDetails,
     super.id = '0',
   });
 
@@ -16,15 +19,15 @@ class MerchantData extends BaseModel<MerchantData> {
     return MerchantData(
       merchant: MerchantModel.empty(),
       subscription: MerchantSubscriptionModel.empty(),
+      serviceDetails: MerchantServiceDetailsModel.empty(),
     );
   }
 
   factory MerchantData.fromLocalMap(Map<String, dynamic> json) {
     return MerchantData(
       merchant: MerchantModel.fromLocalMap(json['merchant']),
-      subscription: MerchantSubscriptionModel.fromLocalMap(
-        json['subscription'],
-      ),
+      subscription: MerchantSubscriptionModel.fromLocalMap(json['subscription']),
+      serviceDetails: MerchantServiceDetailsModel.fromLocalMap(json['service_details'] ?? {}),
     );
   }
 
@@ -32,27 +35,30 @@ class MerchantData extends BaseModel<MerchantData> {
 
   @override
   String toString() {
-    return 'MerchantData{merchant: $merchant, subscription: $subscription}';
+    return 'MerchantData{merchant: $merchant, subscription: $subscription, serviceDetails: $serviceDetails}';
   }
 
-   MerchantData copyWith(
+  MerchantData copyWith({
     MerchantModel? merchant,
     MerchantSubscriptionModel? subscription,
-  ) {
+    MerchantServiceDetailsModel? serviceDetails,
+  }) {
     return MerchantData(
       merchant: merchant ?? this.merchant,
       subscription: subscription ?? this.subscription,
+      serviceDetails: serviceDetails ?? this.serviceDetails,
     );
   }
 
   @override
-  List<Object?> get props => [merchant, subscription];
+  List<Object?> get props => [merchant, subscription, serviceDetails];
 
   @override
   Map<String, dynamic> toJson() {
     return {
       'merchant': merchant.toJson(),
       'subscription': subscription.toJson(),
+      'service_details': serviceDetails.toJson(),
     };
   }
 }

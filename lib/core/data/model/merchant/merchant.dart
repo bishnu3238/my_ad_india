@@ -1,4 +1,5 @@
 export 'merchant_plan_access_model.dart';
+export 'merchant_service_details_model.dart';
 export 'merchant_data.dart';
 export 'merchant_service_model.dart';
 export 'plan_activity_model.dart';

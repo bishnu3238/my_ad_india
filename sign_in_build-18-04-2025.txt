@@ -76,7 +76,7 @@ Use "keytool -?, -h, or --help" for this help message
 Use "keytool -command_name --help" for usage of command_name.
 Use the -conf <url> option to specify a pre-configured options file.
 PS C:\00AA\flutter_projects\my_ad> keytool -genkey -v -keystore $env:USERPROFILE\upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-Enter keystore password:
+Enter keystore password: keyPassword=32383432 // storePassword=32383432
 Re-enter new password:
 Enter the distinguished name. Provide a single dot (.) to leave a sub-component empty or press ENTER to use the default value in braces.
 What is your first and last name?

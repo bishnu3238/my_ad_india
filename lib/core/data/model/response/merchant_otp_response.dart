@@ -1,11 +1,9 @@
-// lib/core/data/model/response/merchant_otp_verification_response.dart
-
 import 'dart:developer' as dev;
 
 import 'package:equatable/equatable.dart';
- import 'package:pack/pack.dart';
-
+import 'package:pack/pack.dart';
 import '../merchant/merchant.dart';
+import '../merchant/merchant_service_details_model.dart';
 
 enum OtpVerificationResponseType {
   success,
@@ -23,7 +21,6 @@ class MerchantOtpVerificationResponse extends Equatable {
   final String timestamp;
   final String? merchantId;
   final MerchantData? merchant; // Nullable, only used in success case
-
 
   const MerchantOtpVerificationResponse._({
     required this.type,
@@ -50,7 +47,7 @@ class MerchantOtpVerificationResponse extends Equatable {
       data: data,
       merchant: merchantData,
       timestamp: timestamp,
-      merchantId: data['merchant_id'],
+      merchantId: data['merchant_id']?.toString(),
     );
   }
 
@@ -59,7 +56,6 @@ class MerchantOtpVerificationResponse extends Equatable {
     required int status,
     required String message,
     Map<String, dynamic>? data,
-    required MerchantData merchantData,
     required String timestamp,
   }) {
     return MerchantOtpVerificationResponse._(
@@ -67,7 +63,7 @@ class MerchantOtpVerificationResponse extends Equatable {
       status: status,
       message: message,
       data: data,
-      merchant: merchantData,
+      merchant: null,
       timestamp: timestamp,
     );
   }
@@ -125,99 +121,66 @@ class MerchantOtpVerificationResponse extends Equatable {
     dev.log('JSON: $json');
     final status = json.getInt('status');
     final message = json.getString('message');
-    final data =
-        json['data'] != null ? Map<String, dynamic>.from(json['data']) : null;
-    final timestamp =
-        json.containsKey('timestamp')
-            ? json.getString('timestamp')
-            : DateTime.now().toIso8601String();
+    final data = json['data'] != null ? Map<String, dynamic>.from(json['data']) : null;
+    final timestamp = json.containsKey('timestamp')
+        ? json.getString('timestamp')
+        : DateTime.now().toIso8601String();
 
-    // Determine the response type based on status code and message
-    switch (status) {
-      case 200: // Success
-        return MerchantOtpVerificationResponse.success(
-          status: status,
-          message: message,
-          merchantData: MerchantData(
-            merchant: MerchantModel.fromJson(json['data']['merchant']),
-                subscription: MerchantSubscriptionModel.fromJson(json['data']['subscription'])
-          ),
-          data: data ?? {'merchant_id': null},
-          timestamp: timestamp,
-        );
-
-      case 201: // Could be "Missing fields" or "Already verified"
-        if (message.toLowerCase().contains('already verified')) {
-          return MerchantOtpVerificationResponse.alreadyVerified(
-            status: status,
-            message: message,
-            data: data,
-            merchantData: MerchantData(
-                merchant: MerchantModel.fromJson(json['data']['merchant']),
-                subscription: MerchantSubscriptionModel.fromJson(json['data']['subscription'])
-            ),
-            timestamp: timestamp,
-          );
-        } else {
-          return MerchantOtpVerificationResponse.error(
-            status: status,
-            message: message,
-            data: data,
-            timestamp: timestamp,
-          );
-        }
-
-      case 202: // Invalid OTP
-        return MerchantOtpVerificationResponse.invalidOtp(
-          status: status,
-          message: message,
-          data: data,
-          timestamp: timestamp,
-        );
-
-      case 203: // Merchant not found
-        return MerchantOtpVerificationResponse.notFound(
-          status: status,
-          message: message,
-          data: data,
-          timestamp: timestamp,
-        );
-
-      default: // Any other error
-        return MerchantOtpVerificationResponse.error(
-          status: status,
-          message: message,
-          data: data,
-          timestamp: timestamp,
-        );
+    // Determine the response type based on status code and data
+    if (status == 200 && data != null && data.containsKey('merchant') && data.containsKey('subscription') && data.containsKey('service_details')) {
+      return MerchantOtpVerificationResponse.success(
+        status: status,
+        message: message,
+        merchantData: MerchantData(
+          merchant: MerchantModel.fromJson(data['merchant']),
+          subscription: MerchantSubscriptionModel.fromJson(data['subscription']),
+          serviceDetails: MerchantServiceDetailsModel.fromJson(data['service_details'] ?? {}),
+        ),
+        data: data,
+        timestamp: timestamp,
+      );
+    } else if (status == 200 && data != null && data['status'] == 'already_verified') {
+      return MerchantOtpVerificationResponse.alreadyVerified(
+        status: status,
+        message: message,
+        data: data,
+        timestamp: timestamp,
+      );
+    } else if (status == 400 && data != null && data['status'] == 'invalid_otp') {
+      return MerchantOtpVerificationResponse.invalidOtp(
+        status: status,
+        message: message,
+        data: data,
+        timestamp: timestamp,
+      );
+    } else if (status == 404 && data != null && data['status'] == 'not_found') {
+      return MerchantOtpVerificationResponse.notFound(
+        status: status,
+        message: message,
+        data: data,
+        timestamp: timestamp,
+      );
+    } else {
+      return MerchantOtpVerificationResponse.error(
+        status: status,
+        message: message,
+        data: data,
+        timestamp: timestamp,
+      );
     }
   }
 
   // Helper method to check type and handle accordingly with pattern matching
   T when<T>({
-    required T Function(
-      int status,
-      String message,
-      String? merchantId,
-      String timestamp,
-    )
-    success,
-    required T Function(int status, String message, String timestamp)
-    alreadyVerified,
-    required T Function(int status, String message, String timestamp)
-    invalidOtp,
+    required T Function(int status, String message, String? merchantId, MerchantData merchant, String timestamp) success,
+    required T Function(int status, String message, String timestamp) alreadyVerified,
+    required T Function(int status, String message, String timestamp) invalidOtp,
     required T Function(int status, String message, String timestamp) notFound,
-    required T Function(
-      int status,
-      String message,
-      Map<String, dynamic>? data,
-      String timestamp,
-    )
-    error,
+    required T Function(int status, String message, Map<String, dynamic>? data, String timestamp) error,
   }) {
     switch (type) {
       case OtpVerificationResponseType.success:
-        return success(status, message, merchantId, timestamp);
+        return success(status, message, merchantId, merchant!, timestamp);
       case OtpVerificationResponseType.alreadyVerified:
         return alreadyVerified(status, message, timestamp);
       case OtpVerificationResponseType.invalidOtp:
@@ -231,7 +194,7 @@ class MerchantOtpVerificationResponse extends Equatable {
 
   // Helper method to handle the response with more concise callbacks
   T fold<T>({
-    required T Function(String? merchantId) onSuccess,
+    required T Function(String? merchantId, MerchantData merchant) onSuccess,
     T Function()? onAlreadyVerified,
     T Function()? onInvalidOtp,
     T Function()? onNotFound,
@@ -239,7 +202,7 @@ class MerchantOtpVerificationResponse extends Equatable {
   }) {
     switch (type) {
       case OtpVerificationResponseType.success:
-        return onSuccess(merchantId);
+        return onSuccess(merchantId, merchant!);
       case OtpVerificationResponseType.alreadyVerified:
         return onAlreadyVerified?.call() ?? onError(message);
       case OtpVerificationResponseType.invalidOtp:
@@ -253,9 +216,9 @@ class MerchantOtpVerificationResponse extends Equatable {
 
   @override
   String toString() {
-    return 'MerchantOtpVerificationResponse{type: $type, status: $status, message: $message, merchantId: $merchantId, timestamp: $timestamp}';
+    return 'MerchantOtpVerificationResponse{type: $type, status: $status, message: $message, merchantId: $merchantId, merchant: $merchant, timestamp: $timestamp}';
   }
 
   @override
-  List<Object?> get props => [type, status, message, merchantId];
+  List<Object?> get props => [type, status, message, merchantId, merchant];
 }

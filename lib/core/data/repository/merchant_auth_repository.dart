@@ -6,9 +6,7 @@ import 'package:pack/services/service.dart';
 import '../../domain/data_store/data_store.dart';
 import '../../domain/repository/repository.dart';
 import '../api/api_config.dart';
-import '../model/request/request.dart';
-import '../model/response/merchant_otp_response.dart';
-import '../model/response/responses.dart';
+import '../model/model.dart';
 
 class MerchantAuthRepositoryImpl implements MerchantAuthRepository {
   final ApiCallService _apiService;
@@ -17,7 +15,7 @@ class MerchantAuthRepositoryImpl implements MerchantAuthRepository {
 
   @override
   Future<Either<NetworkFailure, MerchantRegistrationResponse>> registration(
-    PostMerchantRegistration request,
+    MerchantRegistrationPayload request,
   ) async {
     try {
       final response = await _apiService.request<MerchantRegistrationResponse>(
@@ -67,7 +65,7 @@ class MerchantAuthRepositoryImpl implements MerchantAuthRepository {
             return right(result.data!);
           },
           otpRequired: (status, message, data, timestamp) {
-            return right(result.data!);
+             return right(result.data!);
           },
           error: (status, message, data, timestamp) {
             return Left(

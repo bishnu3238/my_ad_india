@@ -28,6 +28,7 @@ class MerchantServiceModel extends Equatable {
   final int videoStatus;
   final int businessPartnerApprove;
   final List<String> servicePhotos; // Store photo URLs
+  final String merchantPhoto;
 
   const MerchantServiceModel({
     this.id,
@@ -53,6 +54,7 @@ class MerchantServiceModel extends Equatable {
     required this.videoStatus,
     required this.businessPartnerApprove,
     required this.servicePhotos,
+    this.merchantPhoto = '',
   });
 
   const MerchantServiceModel.empty()
@@ -78,7 +80,8 @@ class MerchantServiceModel extends Equatable {
       updateLimits = 0,
       videoStatus = 0,
       businessPartnerApprove = 0,
-      servicePhotos = const [];
+      servicePhotos = const [],
+      merchantPhoto = '';
 
   factory MerchantServiceModel.fromJson(Map<String, dynamic> json) {
     return MerchantServiceModel(
@@ -117,6 +120,7 @@ class MerchantServiceModel extends Equatable {
                   ? json.getString('photos').split(',')
                   : json.getStringList('photos'))
               : [],
+      merchantPhoto: json.getString('company_logo'),
     );
   }
 
@@ -145,6 +149,7 @@ class MerchantServiceModel extends Equatable {
       'video_status': videoStatus,
       'business_partner_approve': businessPartnerApprove,
       'photos': servicePhotos.join(','),
+      'merchant_photo': merchantPhoto,
     };
   }
 
@@ -172,6 +177,7 @@ class MerchantServiceModel extends Equatable {
     int? videoStatus,
     int? businessPartnerApprove,
     List<String>? servicePhotos,
+    String? merchantPhoto,
   }) {
     return MerchantServiceModel(
       id: id ?? this.id,
@@ -198,6 +204,7 @@ class MerchantServiceModel extends Equatable {
       businessPartnerApprove:
           businessPartnerApprove ?? this.businessPartnerApprove,
       servicePhotos: servicePhotos ?? this.servicePhotos,
+      merchantPhoto: merchantPhoto ?? this.merchantPhoto,
     );
   }
 
@@ -226,6 +233,7 @@ class MerchantServiceModel extends Equatable {
     videoStatus,
     businessPartnerApprove,
     servicePhotos,
+    merchantPhoto,
   ];
 
   bool get isNotEmpty => this != MerchantServiceModel.empty();

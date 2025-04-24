@@ -1,6 +1,9 @@
 // Navigation Routes for Merchant Admin Dashboard
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_ad/core/services/merchant_auth_service.dart';
+import 'package:my_ad/features/chat/screens/chat_screen.dart';
+import 'package:my_ad/features/chat/widgets/empty_chat_view.dart';
 import 'package:pack/ui/widgets/loading/advance_shimmer_loading_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -75,7 +78,9 @@ class MerchantDashboardRoute {
       routes: [
         GoRoute(
           path: chatScreen,
-          builder: (context, state) => const ChatShimmer(),
+          builder: (context, state) =>   Scaffold(body: Center(child:
+
+          Text('Under development \n These feature will update soon'))),
         ),
       ],
     ),

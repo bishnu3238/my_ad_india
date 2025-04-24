@@ -4,19 +4,22 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../core/domain/data_store/merchant_dashboard_store.dart';
 import '../../../../../../utils/widgets/svg_icon_widget.dart';
-
-
+import '../../../core/merchant_dashboard_shell_provider.dart';
 
 class ProfileIcon extends StatelessWidget {
   const ProfileIcon({super.key});
 
   void _showProfileMenu(BuildContext context, String username) {
     final RenderBox button = context.findRenderObject() as RenderBox;
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+        button.localToGlobal(
+          button.size.bottomRight(Offset.zero),
+          ancestor: overlay,
+        ),
       ),
       Offset.zero & overlay.size,
     );
@@ -49,7 +52,10 @@ class ProfileIcon extends StatelessWidget {
                         iconPath: SvgIcons.profileIcon,
                         height: 28,
                         package: 'pack',
-                        colorFilter: ColorFilter.mode(theme.primary, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          theme.primary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                     SizedBox(width: 12),
@@ -103,25 +109,20 @@ class ProfileIcon extends StatelessWidget {
           context,
           "Add New Service",
           Icons.add_circle_outline,
-              () {
+          () {
             // Handle add new service
             Navigator.pop(context);
           },
         ),
-        _buildMenuItem(
-          context,
-          "Settings",
-          Icons.settings_outlined,
-              () {
-            // Handle settings
-            Navigator.pop(context);
-          },
-        ),
+        _buildMenuItem(context, "Settings", Icons.settings_outlined, () {
+          // Handle settings
+          Navigator.pop(context);
+        }),
         _buildMenuItem(
           context,
           "Notifications",
           Icons.notifications_outlined,
-              () {
+          () {
             // Handle notifications
             Navigator.pop(context);
           },
@@ -134,13 +135,14 @@ class ProfileIcon extends StatelessWidget {
             ),
             child: ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
-              title: Text(
-                "Logout",
-                style: TextStyle(color: Colors.red),
-              ),
+              title: Text("Logout", style: TextStyle(color: Colors.red)),
               onTap: () {
                 // Handle logout
-                Navigator.pop(context);
+
+                // Navigator.pop(context);
+                context.read<MerchantDashboardShellProvider>().onLogout(
+                  context,
+                );
               },
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               minLeadingWidth: 24,
@@ -152,11 +154,11 @@ class ProfileIcon extends StatelessWidget {
   }
 
   PopupMenuItem _buildMenuItem(
-      BuildContext context,
-      String title,
-      IconData icon,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return PopupMenuItem(
       padding: EdgeInsets.zero,
       child: ListTile(

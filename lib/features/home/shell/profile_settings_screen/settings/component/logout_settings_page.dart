@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
- import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_ad/features/settings/core/settings_view_model.dart';
 import '../../../../../../routes/auth/auth_routes.dart';
- import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
- import '../body/setting_appbar.dart';
+import '../body/setting_appbar.dart';
 import '../body/settings_items.dart';
 import '../core/setting_view_model.dart';
 
@@ -67,7 +68,7 @@ class _LoggedOutSettingsPageState extends State<LoggedOutSettingsPage>
               buildHeader(label: 'Accounts'),
               buildSettingItem(
                 icon: FontAwesomeIcons.arrowRightFromBracket,
-                title: 'Login',
+                title: 'Log in',
                 onTap: () => context.push(AuthRoutes.login),
                 isLoading: settingsViewModel.state == SettingsState.loading,
                 slideAnimation: _slideAnimation,
@@ -99,16 +100,11 @@ class _LoggedOutSettingsPageState extends State<LoggedOutSettingsPage>
               ),
 
               // Theme
-              buildSettingItemWithSwitch(
-                icon: Icons.dark_mode,
-                title: 'Dark Mode',
-                value: settingsViewModel.isDarkMode,
-                onChanged: (value) => settingsViewModel.setThemeMode(value),
+              BuildAppThemeSetting(
                 slideAnimation: _slideAnimation,
                 delay: 2,
                 controller: _animationController,
               ),
-
               // Language
               buildSettingItem(
                 icon: Icons.language,
@@ -263,6 +259,50 @@ class _LoggedOutSettingsPageState extends State<LoggedOutSettingsPage>
       value: value,
       activeColor: Colors.green,
       onChanged: onChanged,
+    );
+  }
+}
+
+class BuildAppThemeSetting extends StatelessWidget {
+  const BuildAppThemeSetting({
+    super.key,
+    required this.slideAnimation,
+    required this.delay,
+    required this.controller,
+  });
+
+  final Animation<Offset> slideAnimation;
+  final int delay;
+  final AnimationController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: slideAnimation,
+      child: FadeTransition(
+        opacity: Tween<double>(begin: 0, end: 1).animate(
+          CurvedAnimation(
+            parent: controller,
+            curve: Interval(delay * 0.1, 1.0, curve: Curves.easeInOut),
+          ),
+        ),
+        child: Consumer<ProfileSettingsViewModel>(
+          builder: (context, settingsViewModel, _) {
+            return buildSettingItemWithSwitch(
+              icon:
+                  !settingsViewModel.isDarkMode
+                      ? FontAwesomeIcons.solidMoon
+                      : FontAwesomeIcons.sun,
+              title: 'Dark Mode',
+              value: settingsViewModel.isDarkMode,
+              onChanged: settingsViewModel.setThemeMode,
+              slideAnimation: slideAnimation,
+              delay: 2,
+              controller: controller,
+            );
+          },
+        ),
+      ),
     );
   }
 }

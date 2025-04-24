@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../utils/handler/back_gesture_handler.dart';
+import '../../../../../../utils/widgets/svg_icon_widget.dart';
 import '../../../../core/home_provider.dart';
 
 class SettingAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -21,7 +23,7 @@ class SettingAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title:   Text(label),
+      title: Text(label),
       automaticallyImplyLeading: showLeading,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -29,7 +31,16 @@ class SettingAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         ...actions ?? [],
-        IconButton(icon: Icon(FontAwesomeIcons.solidBell), onPressed: () {}),
+        Padding(
+          padding: 20.symmetricHV(0),
+          child: SvgIconWidget(
+            onTap: () {},
+            width: 25,
+            height: 25,
+            iconPath: SvgIcons.notificationIcon,
+            colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
+        ),
       ],
     );
   }

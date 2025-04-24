@@ -8,7 +8,7 @@ class DetailsForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =  Theme.of(context).colorScheme;
+    final theme = Theme.of(context).colorScheme;
     final provider = Provider.of<MerchantAddServiceProvider>(context);
     final canAddMoreServices = provider.canAddMoreServices;
     final maxDescriptionLength = provider.maxDescriptionLength;
@@ -41,7 +41,7 @@ class DetailsForm extends StatelessWidget {
                     ? '$maxDescriptionLength characters max'
                     : null,
               ),
-              _buildTextArea(
+              buildTextArea(
                 controller: provider.descriptionController,
                 placeholder: 'Enter service description',
                 maxLength:
@@ -58,11 +58,11 @@ class DetailsForm extends StatelessWidget {
                 'Special Offers',
                 maxOfferLength > 0 ? '$maxOfferLength characters max' : null,
               ),
-              _buildTextArea(
+              buildTextArea(
                 controller: provider.offersController,
                 placeholder: 'Enter special offers or discounts',
                 maxLength: maxOfferLength > 0 ? maxOfferLength : null,
-                enabled: canAddMoreServices,
+                // enabled: canAddMoreServices,
                 semanticsLabel: 'Offers input field',
               ),
               const SizedBox(height: 16),
@@ -86,7 +86,7 @@ class DetailsForm extends StatelessWidget {
 
             // Show Phone Number Toggle (conditional)
             if (canShowPhoneNumber)
-              _buildToggleOption(
+              buildToggleOption(
                 label: 'Show Phone Number',
                 value: provider.showPhoneNumber,
                 onChanged:
@@ -98,7 +98,7 @@ class DetailsForm extends StatelessWidget {
               ),
 
             // Enable Chat Toggle
-            _buildToggleOption(
+            buildToggleOption(
               label: 'Enable Chat',
               value: provider.enableChat,
               onChanged:
@@ -140,11 +140,11 @@ class DetailsForm extends StatelessWidget {
                         canAddMoreServices
                             ? () => provider.nextStep(context)
                             : null,
-                    child:   Text(
+                    child: Text(
                       'Next',
                       style: TextStyle(
                         fontSize: 16,
-                        color:  theme.surface,
+                        color: theme.surface,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -180,91 +180,91 @@ class DetailsForm extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildTextArea({
-    required TextEditingController controller,
-    required String placeholder,
-    int? maxLength,
-    bool enabled = true,
-    required String semanticsLabel,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+Widget buildToggleOption({
+  required String label,
+  required bool value,
+  required ValueChanged<bool>? onChanged,
+  required String description,
+  required String semanticsLabel,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: Row(
       children: [
-        CupertinoTextField(
-          controller: controller,
-          placeholder: placeholder,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: CupertinoColors.systemBackground,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: CupertinoColors.systemGrey4),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: CupertinoColors.systemGrey,
+                ),
+              ),
+            ],
           ),
-          maxLines: 5,
-          minLines: 3,
-          maxLength: maxLength,
-          enabled: enabled,
+        ),
+        CupertinoSwitch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: CupertinoColors.activeBlue,
           // semanticsLabel: semanticsLabel,
         ),
-        if (maxLength != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              '${controller.text.length}/$maxLength',
-              style: TextStyle(
-                fontSize: 12,
-                color:
-                    controller.text.length > maxLength
-                        ? CupertinoColors.systemRed
-                        : CupertinoColors.systemGrey,
-              ),
-            ),
-          ),
       ],
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildToggleOption({
-    required String label,
-    required bool value,
-    required ValueChanged<bool>? onChanged,
-    required String description,
-    required String semanticsLabel,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: CupertinoColors.systemGrey,
-                  ),
-                ),
-              ],
+Widget buildTextArea({
+  required TextEditingController controller,
+  required String placeholder,
+  int? maxLength,
+  bool enabled = true,
+  required String semanticsLabel,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: [
+      CupertinoTextField(
+        controller: controller,
+        placeholder: placeholder,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemBackground,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: CupertinoColors.systemGrey4),
+        ),
+        maxLines: 5,
+        minLines: 3,
+        maxLength: maxLength,
+        enabled: enabled,
+        // semanticsLabel: semanticsLabel,
+      ),
+      if (maxLength != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            '${controller.text.length}/$maxLength',
+            style: TextStyle(
+              fontSize: 12,
+              color:
+                  controller.text.length > maxLength
+                      ? CupertinoColors.systemRed
+                      : CupertinoColors.systemGrey,
             ),
           ),
-          CupertinoSwitch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: CupertinoColors.activeBlue,
-            // semanticsLabel: semanticsLabel,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+    ],
+  );
 }

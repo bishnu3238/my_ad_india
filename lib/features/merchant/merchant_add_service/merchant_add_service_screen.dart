@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'core/merchant_add_service_provider.dart';
 import 'widgets/service_form.dart';
 
-
 class MerchantAddServiceScreen extends StatefulWidget {
   const MerchantAddServiceScreen({super.key});
 
@@ -22,6 +21,7 @@ class _MerchantAddServiceScreenState extends State<MerchantAddServiceScreen> {
   void initState() {
     super.initState();
     provider = context.read<MerchantAddServiceProvider>();
+    provider.initializeData(context);
   }
 
   @override

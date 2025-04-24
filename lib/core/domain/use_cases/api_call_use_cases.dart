@@ -53,7 +53,7 @@ class ApiCallUseCase {
     return await _stateService.fetchStates();
   }
 
-  Future<Either<NetworkFailure, MerchantRegistrationResponse>> merchantRegistration(PostMerchantRegistration requestBody) async {
+  Future<Either<NetworkFailure, MerchantRegistrationResponse>> merchantRegistration(MerchantRegistrationPayload requestBody) async {
     return merchantService.registerMerchant(requestBody);
   }
 

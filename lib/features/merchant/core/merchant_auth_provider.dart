@@ -1,15 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:my_ad/core/data/model/model.dart';
-import 'package:pack/pack.dart';
+ import 'package:pack/pack.dart';
 import 'dart:developer' as dev;
 import 'package:pack/services/failure/failure.dart';
 
-import '../../../core/data/model/merchant/merchant_model.dart';
-import '../../../core/data/model/request/request.dart';
-import '../../../core/data/model/response/merchant_login_response.dart';
-import '../../../core/data/model/response/merchant_otp_response.dart';
-import '../../../core/services/merchant_auth_service.dart';
+ import '../../../core/data/model/model.dart';
+ import '../../../core/services/merchant_auth_service.dart';
 import '../../../utils/handler/notification_service_handler.dart';
 
 class MerchantAuthProvider with ChangeNotifier {
@@ -50,7 +46,7 @@ class MerchantAuthProvider with ChangeNotifier {
 
   // Registration
   Future<Either<NetworkFailure, bool>> registerMerchant(
-    PostMerchantRegistration merchant,
+    MerchantRegistrationPayload merchant,
   ) async {
     final result = await _authService.registerMerchant(merchant);
 

@@ -2,13 +2,12 @@ import 'dart:developer' as dev;
 import 'dart:io' show File;
 
 import 'package:dartz/dartz.dart';
-import 'package:my_ad/core/data/model/request/POST/upload_merchant_service_video_request.dart';
-import 'package:my_ad/features/all_services/core/all_service_view_model.dart';
-import 'package:pack/services/base_services/base_service.dart';
+ import 'package:pack/services/base_services/base_service.dart';
 import 'package:pack/services/connectivity_service/connectivity_service.dart';
 import 'package:pack/services/failure/failure.dart';
 
 import '../data/model/model.dart';
+
 import '../domain/data_store/data_store.dart';
 import '../domain/repository/merchant_dashboard_repository.dart';
 
@@ -165,6 +164,33 @@ class MerchantDashboardService {
         },
       );
     });
+  }
+
+
+  Future<Either<Failure, UploadImageResponse>> uploadMerchantBusinessImage({
+    required int merchantId,
+    required File imageFile,
+    required dynamic Function(int, int)? onSendProgress,
+  }) async {
+    _store.setStatus(DataStoreStatus.loading);
+    final isConnected = await _connectivityService.hasActiveInternet();
+    if (!isConnected) {
+      _store.setError(OperationFailure(message: 'No internet connection.'));
+      return left(_store.error!);
+    }
+
+    // Check if the merchant ID is available
+    if (_store.entity?.merchantData.merchant.id == null) {
+      _store.setError(
+        OperationFailure(message: 'Merchant ID is not available.'),
+      );
+      return left(_store.error!);
+    }
+    return await _repository.uploadMerchantBusinessImage(
+      merchantId: merchantId,
+      imageFile: imageFile,
+      onSendProgress: onSendProgress,
+    );
   }
 
   Future<Either<Failure, UploadImageResponse>> uploadServiceImages({

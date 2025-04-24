@@ -1,8 +1,11 @@
- import 'dart:developer' as dev;
+import 'dart:developer' as dev;
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/injector/dependency_injection.dart';
+import 'package:my_ad/provider_state/location_provider.dart';
+import 'package:pack/extensions/contextx.dart';
 import 'package:pack/services/failure/src/network_failure.dart';
 import 'package:pack/services/local_notification/local_notification.dart';
 import 'package:pack/services/snack_bar_service/notify_service.dart';
@@ -23,9 +26,6 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
 
   // Form state
   late final RegistrationFormState formState;
-  String selectedGender = '';
-  String selectedState = '';
-  String selectedPlan = '';
 
   // Data
   List<StateModel> states = [];
@@ -36,21 +36,6 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
     _isLoading = value;
-    notifyListeners();
-  }
-
-  String? mobileAvailabilityMessage = '';
-  bool _isMobileVerifying = false;
-  bool get isMobileVerifying => _isMobileVerifying;
-  set isMobileVerifying(bool value) {
-    _isMobileVerifying = value;
-    notifyListeners();
-  }
-
-  bool _isMobileVerified = false;
-  bool get isMobileVerified => _isMobileVerified;
-  set isMobileVerified(bool value) {
-    _isMobileVerified = value;
     notifyListeners();
   }
 
@@ -80,11 +65,11 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
 
     // Initialize with default values if available
     if (_stateStore.items.isNotEmpty) {
-      selectedState = _stateStore.items.first.id;
+      formState.selectedState = _stateStore.items.first.id;
     }
 
     if (_planStore.items.isNotEmpty) {
-      selectedPlan = _planStore.items.first.id;
+      formState.selectedPlan = _planStore.items.first.id;
     }
   }
 
@@ -102,6 +87,7 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
       // Fetch states
       await _apiCallUseCase.fetchState();
       await _apiCallUseCase.fetchPlans();
+      await getUserLocation();
     } catch (e) {
       debugPrint('Error initializing registration: $e');
     } finally {
@@ -114,15 +100,31 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
   List<StateModel> get storedStates => _stateStore.items;
   List<SubscriptionPlanModel> get storedPlans => _planStore.items;
 
+  // get user location
+  Future<void> getUserLocation() async {
+    await DependencyInjector.get<LocationProvider>().detectUserLocation().then((
+      value,
+    ) {
+      dev.log("LOCATION => $value");
+      if (value.isEmpty) return;
+
+      formState.lat = value.latitude;
+      formState.long = value.longitude;
+      formState.selectedCity = value.city;
+      notifyListeners();
+    });
+  }
+
   // Verify mobile number
   Future<bool> verifyMobile() async {
     if (formState.mobileController.text.isEmpty ||
         formState.mobileController.text.length != 10) {
-      return isMobileVerified = false;
+      return formState.isMobileVerified = false;
     }
 
-    isMobileVerifying = true;
-    isMobileVerified = false;
+    formState.isVerifyingMobile = true;
+    formState.isMobileVerified = false;
+    notifyListeners();
     try {
       // Implement mobile verification logic here
       return await _authService
@@ -130,74 +132,50 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
           .then(
             (value) => value.fold(
               (failure) {
-                isMobileVerified = false;
-                return isMobileVerified = false;
+                return formState.isMobileVerified = false;
               },
               (right) {
-                isMobileVerified = right;
+                formState.isMobileVerified = right;
                 if (right) {
-                  mobileAvailabilityMessage = '';
+                  formState.mobileAvailabilityMessage = '';
                 } else {
-                  mobileAvailabilityMessage =
+                  formState.mobileAvailabilityMessage =
                       'Mobile number already registered,';
                 }
                 notifyListeners();
-                return isMobileVerified;
+                return formState.isMobileVerified;
               },
             ),
           );
     } catch (e) {
       dev.log('Error verifying mobile: $e');
-      isMobileVerified = false;
-      mobileAvailabilityMessage = 'Mobile number already registered,';
-      return isMobileVerified;
+      formState.isMobileVerified = false;
+      formState.mobileAvailabilityMessage = 'Mobile number already registered,';
+      return formState.isMobileVerified;
     } finally {
-      isMobileVerifying = false;
+      formState.isVerifyingMobile = false;
       notifyListeners();
     }
   }
 
   // Validate current step
-  bool validateCurrentStep() {
-    switch (_currentStep) {
-      case 0:
-        return _validatePersonalInfo();
-      case 1:
-        return _validateBusinessDetails();
-      case 2:
-        return _validateAddress();
-      case 3:
-        return _validateAccount();
-      default:
-        return false;
+  bool validateCurrentStep() => formState.validateCurrentStep(_currentStep);
+
+  void goToNextStep(BuildContext context) {
+    if (validateCurrentStep()) {
+      if (_currentStep < 4) {
+        _currentStep++;
+      }
+      notifyListeners();
+      return;
     }
   }
 
-  bool _validatePersonalInfo() {
-    return formState.nameController.text.isNotEmpty &&
-        // formState.emailController.text.isNotEmpty &&
-        formState.mobileController.text.isNotEmpty &&
-        selectedGender.isNotEmpty;
-  }
-
-  bool _validateBusinessDetails() {
-    return formState.shopNameController.text.isNotEmpty &&
-        formState.startYearController.text.isNotEmpty &&
-        formState.businessLocationController.text.isNotEmpty;
-  }
-
-  bool _validateAddress() {
-    return formState.addressController.text.isNotEmpty &&
-        formState.pincodeController.text.isNotEmpty &&
-        selectedState.isNotEmpty;
-  }
-
-  bool _validateAccount() {
-    return formState.passwordController.text.isNotEmpty &&
-        formState.confirmPasswordController.text.isNotEmpty &&
-        formState.passwordController.text ==
-            formState.confirmPasswordController.text &&
-        selectedPlan.isNotEmpty;
+  void goToPreviousStep() {
+    if (_currentStep > 0) {
+      _currentStep--;
+    }
+    notifyListeners();
   }
 
   // Submit registration
@@ -208,7 +186,7 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
     try {
       // Get selected plan details
       final selectedPlanModel = plans.firstWhere(
-        (plan) => plan.id == selectedPlan,
+        (plan) => plan.id == formState.selectedPlan,
         orElse: () => plans.first,
       );
 
@@ -223,27 +201,29 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
 
       final amount = selectedPlanModel.planRate;
       final gst = amount * 0.18;
-      final merchantRegistrationRequest = PostMerchantRegistration(
+      final merchantRegistrationRequest = MerchantRegistrationPayload(
         username: formState.nameController.text.trim(),
         email: formState.emailController.text.trim(),
         mobile: formState.mobileController.text.trim(),
-        state: selectedState.trim(),
-        pincode: formState.pincodeController.text.trim(),
+        state: formState.selectedState.trim(),
+        pinCode: formState.pincodeController.text.trim(),
         password: formState.passwordController.text.trim(),
         address: formState.addressController.text.trim(),
         gender: formState.gender.toLowerCase(),
-        businessStartYear: formState.startYearController.text.trim(),
+
+        /// TODO: comment this portions as of clint request.
+        businessStartYear: '2020', //formState.startYearController.text.trim(),
         mobileStatus: formState.mobileStatus.toLowerCase(),
         receiveOptions: formState.notificationStatus.toLowerCase().trim(),
         businessLocation: formState.businessLocationController.text.trim(),
         companyName: formState.shopNameController.text.trim(),
-        gstin: formState.gstinController.text.trim(),
+        gstIn: formState.gstinController.text.trim(),
         pan: formState.panCardController.text.trim(),
-        city: null,
+        city: formState.selectedCity.trim(),
         companyLogo: null,
         kyc: 0,
-        latitude: null,
-        longitude: null,
+        latitude: formState.lat,
+        longitude: formState.long,
         planId: selectedPlanModel.id,
         planName: selectedPlanModel.planName.trim(),
         gst: gst.toStringAsFixed(2),
@@ -251,6 +231,8 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
         startDate: startDateStr,
         endDate: endDateStr,
         validity: selectedPlanModel.validity,
+        categoryId: formState.selectedCategory,
+        serviceId: formState.selectedService,
       );
 
       // Call API
@@ -277,6 +259,7 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
   }
 
   Future<void> merchantRegistration(BuildContext context) async {
+    var cont = context;
     if (!validateCurrentStep()) {
       NotifyService.snackbar(
         context: context,
@@ -290,15 +273,19 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
     final route = GoRouter.of(context);
 
     try {
+      dev.log("hello Onw");
       final response = await submitRegistration(context);
 
       response.fold(
         (failure) {
-          NotifyService.snackbar(
-            context: context,
-            message: 'Registration failed. Please try again.',
-            type: NotificationType.error,
-          );
+          if (cont.mounted) {
+            cont.showSnackBarX('Registration failed');
+            NotifyService.snackbar(
+              context: context,
+              message: 'Registration failed. Please try again.',
+              type: NotificationType.error,
+            );
+          }
         },
         (data) {
           data.fold(
@@ -306,15 +293,17 @@ class MerchantRegistrationViewModel extends ChangeNotifier {
               NotifyService.snackbar(
                 context: context,
                 message: message,
-                type: NotificationType.error,
+                type: NotificationType.success,
               );
             },
 
-            onOtpRequired: (data, otp, merchant) {
+            onOtpRequired: (data, otp, merchant, sub, ser) {
               _showOtpNotification(otp ?? '111111');
-
+              formState.clear();
               if (context.mounted) {
-                route.go('${MerchantRoute.merchantOtp}/${merchant!.id}');
+                route.push(
+                  '${MerchantRoute.merchantOtp}/${merchant!.id}/${merchant.mobile}',
+                );
               }
             },
           );
