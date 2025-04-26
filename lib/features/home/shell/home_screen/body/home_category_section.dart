@@ -108,7 +108,6 @@ class _AnimatedCategoryListState extends State<AnimatedCategoryList> {
   Widget _buildCategoryCard(BuildContext context, CategoryModel category) {
     return GestureDetector(
       onTap: () {
-        dev.log("CATEGORY ID: ${category.id}");
         context.read<HomeScreenProvider>().setCategory(category.id);
       },
       // onTap: () => context.push('/category-services/${category.id}'),
@@ -145,7 +144,7 @@ class _AnimatedCategoryListState extends State<AnimatedCategoryList> {
                 tag: 'category_${category.id}',
                 child: ImageView(
                   source: ImageSource.network,
-                  path: category.fullImageUrl,
+                  path: category.fullFavIconUrl,
                   shape: ImageShape.circle,
                   height: 52,
                   width: 52,

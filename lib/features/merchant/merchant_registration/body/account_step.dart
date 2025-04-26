@@ -225,7 +225,6 @@ class _AccountStepState extends State<AccountStep> {
   /// Display either only the primary plan or all plans after clicking 'View More'
   Widget _buildPlanSelector(BuildContext context) {
     final showError = widget.selectedPlan.isEmpty && widget.plans.isNotEmpty;
-
     List<SubscriptionPlanModel> sortedPlans = List.from(widget.plans);
     sortedPlans.sort((a, b) => a.planName.compareTo(b.planName));
 
@@ -242,6 +241,7 @@ class _AccountStepState extends State<AccountStep> {
         (_showAllPlans || sortedPlans.length <= 1)
             ? sortedPlans
             : (primaryPlan.isValid ? [primaryPlan] : []);
+    dev.log('widget.plans.isEmpty : ${widget.plans.length}');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,30 +271,32 @@ class _AccountStepState extends State<AccountStep> {
               ),
             ),
           )
-        else ...[
-          for (final plan in displayedPlans) _buildPlanOption(context, plan),
+        else
+          _buildPlanOption(context, primaryPlan),
+        // else ...[
+        // for (final plan in displayedPlans) _buildPlanOption(context, plan),
 
-          /// TODO: Uncomment it when clint is ready to show all the plans in this app;
-          // if (sortedPlans.length > 1 && !_showAllPlans)
-          //   Container(
-          //     alignment: Alignment.centerLeft,
-          //     child: Padding(
-          //       padding: const EdgeInsets.only(left: 8, top: 4, bottom: 8),
-          //       child: TextButton.icon(
-          //         icon: const Icon(CupertinoIcons.eye, size: 19),
-          //         label: const Text(
-          //           'View More',
-          //           style: TextStyle(fontWeight: FontWeight.w600),
-          //         ),
-          //         onPressed: () {
-          //           setState(() {
-          //             _showAllPlans = true;
-          //           });
-          //         },
-          //       ),
-          //     ),
-          //   ),
-        ],
+        /// TODO: Uncomment it when clint is ready to show all the plans in this app;
+        // if (sortedPlans.length > 1 && !_showAllPlans)
+        //   Container(
+        //     alignment: Alignment.centerLeft,
+        //     child: Padding(
+        //       padding: const EdgeInsets.only(left: 8, top: 4, bottom: 8),
+        //       child: TextButton.icon(
+        //         icon: const Icon(CupertinoIcons.eye, size: 19),
+        //         label: const Text(
+        //           'View More',
+        //           style: TextStyle(fontWeight: FontWeight.w600),
+        //         ),
+        //         onPressed: () {
+        //           setState(() {
+        //             _showAllPlans = true;
+        //           });
+        //         },
+        //       ),
+        //     ),
+        //   ),
+        // ],
         if (showError)
           const Padding(
             padding: EdgeInsets.only(left: 8.0, top: 4.0),
@@ -312,10 +314,12 @@ class _AccountStepState extends State<AccountStep> {
 
   /// Enhanced single plan option widget with new design requirements and details modal.
   Widget _buildPlanOption(BuildContext context, SubscriptionPlanModel plan) {
+    dev.log("hello ");
     final isSelected = widget.selectedPlan == plan.id;
-    context.read<MerchantRegistrationViewModel>().formState.selectedPlan =
-        plan.id; // Update the selected plan in the form state
+    // context.read<MerchantRegistrationViewModel>().formState.selectedPlan =
+    //     plan.id; // Update the selected plan in the form state
 
+    dev.log('World');
     return GestureDetector(
       onTap: () => widget.onPlanChanged(plan.id),
       child: Material(

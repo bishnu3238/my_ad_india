@@ -216,6 +216,8 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                 child: AutoSizeText(
                   widget.mobileController.text.length < 10
                       ? ''
+                      : viewModel.formState.isVerifyingMobile
+                      ? 'Phone no checking ...'
                       : viewModel.formState.isMobileVerified
                       ? ''
                       : 'Phone number is already exists*',

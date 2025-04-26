@@ -14,12 +14,12 @@ class FirstTimePopupManager {
 
   static Future<bool> shouldShowPopup() async {
     final prefs = await SharedPreferences.getInstance();
-    dev.log(
-      'has_shown_referral_popup = ${(prefs.getBool(_hasShownPopupKey)!)}',
-    );
+
     final hasShown = prefs.getBool(_hasShownPopupKey) ?? true;
 
-    return hasShown ? hasShown : true;
+    /// TODO: uncomment it later if clint says to show popup only once.
+    // return hasShown;
+    return true;
   }
 
   static Future<void> markPopupAsShown() async {
@@ -41,6 +41,7 @@ class FirstTimePopupManager {
     showGeneralDialog(
       context: homeContext,
       barrierDismissible: false,
+
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder:

@@ -1,3 +1,4 @@
+export 'auth_service.dart';
 export 'banner_service.dart';
 export 'category_service.dart';
 export 'city_service.dart';

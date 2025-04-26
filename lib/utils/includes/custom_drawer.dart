@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_ad/features/terms/core/terms_and_conditiaons_route.dart';
 import 'package:pack/extensions/contextx.dart';
 import 'package:provider/provider.dart';
 import '../../features/profile/core/profile_navigator.dart';
@@ -33,7 +34,7 @@ class _DrawerContent extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          bottomRight: Radius.circular(2),
         ),
       ),
       child: SafeArea(
@@ -354,7 +355,8 @@ class _DrawerContent extends StatelessWidget {
           title: 'App Feedback',
           onTap: () {
             Navigator.pop(context);
-            context.push('/feedback');
+            context.push(TermsRoute.appSupport);
+            // context.push('${TermsRoute.feedback}/0/0/${provider.user?.name}');
           },
         ),
         _buildDrawerItem(
@@ -371,7 +373,7 @@ class _DrawerContent extends StatelessWidget {
           title: 'Customer Support',
           onTap: () {
             Navigator.pop(context);
-            context.push('/support');
+            context.push(TermsRoute.appSupport);
           },
         ),
         Consumer<DrawerProvider>(
@@ -381,15 +383,22 @@ class _DrawerContent extends StatelessWidget {
                 context,
                 icon: const Icon(Icons.logout, color: Colors.grey),
                 title: 'Logout',
+
                 onTap: () async {
                   await provider.logout();
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Logged out successfully'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Logged out successfully',
+                          style: GoogleFonts.poppins(),
+                        ),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
                 },
               );
             } else {

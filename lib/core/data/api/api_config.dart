@@ -1,6 +1,9 @@
 class ApiConfig {
   static const String baseUrl = 'https://eazytechno.com/ead_api';
-  static const String authBaseUrl = '$baseUrl/auth/auth.php';
+
+  /// TODO: if second one is not working then uncomment the first one.
+  // static const String authBaseUrl = '$baseUrl/auth/auth.php';
+  static const String authBaseUrl = '$baseUrl/auth/new_auth.php';
   static const String baseChatUrl = 'http://192.168.1.12:3000/api';
   static const String socketUrl = 'http://192.168.1.12:3000';
 
@@ -86,6 +89,8 @@ class ApiConfig {
   static const String logout = '/auth/logout';
   static const String otp = '/auth/verify-otp';
 
+  /// TODO -------------- * [Customer] * APis -------------------
+
   /// Method: [POST]
   // URL: http://yourserver/register.php?action=register
   // Body: JSON with all required fields
@@ -126,7 +131,8 @@ class ApiConfig {
   static const String merchantChangePassword = '/merchant/change_password.php';
   static const String merchantResetPassword = '/merchant/reset_password.php';
   static const String merchantLogout = '/merchant/logout.php';
-  static const String merchantBusinessImageUpload = '/merchant/upload_merchant_company_image.php';
+  static const String merchantBusinessImageUpload =
+      '/merchant/upload_merchant_company_image.php';
   static const String merchantServiceImageUpload = '/merchant/upload_image.php';
 
   static const String merchantDashboard = '/merchant/merchant_dashboard.php';

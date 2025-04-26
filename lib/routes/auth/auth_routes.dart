@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/constant/image.dart';
 import '../../features/home/core/home_navigator.dart';
 import 'dart:developer' as dev;
 import 'package:pack/auth/custom_auth.dart';
@@ -11,6 +12,7 @@ class AuthRoutes {
   static const String register = '/register';
   static const String otp = '/otp';
   static const String forgotPassword = '/forgot-password';
+  static const String forgotPasswordOtp = '/forgot-password-otp';
   static const String resetPassword = '/reset-password';
 
   static const String home = '/home';
@@ -22,6 +24,12 @@ class AuthRoutes {
           (context, state) => BlocProvider.value(
             value: getIt<AuthBloc<UserModel>>(), // Fetch AuthBloc from getIt
             child: LoginScreen<UserModel>(
+              logoAsset: AppImage.logo,
+
+              // backgroundImage: AppImage.loginBackground,
+              useGlassmorphism: false,
+              accentColor: context.colorScheme.primary,
+              animationStyle: AnimationStyle.scale,
               onLoginSuccess: () async {
                 await getIt<AuthProviderModel<UserModel>>().initialize();
                 if (context.mounted) context.go('/home');
@@ -63,8 +71,20 @@ class AuthRoutes {
               onResetSuccess: () {
                 context.go('/login');
               },
+              onOtpSent:
+                  (String identifier) =>
+                      context.push('$forgotPasswordOtp/$identifier'),
             ),
           ),
+      routes: [
+        GoRoute(
+          path: '$forgotPasswordOtp:/identifier',
+          builder: (ctx, state) {
+            final identifier = state.pathParameters['identifier']!;
+            return OTPVerificationScreen(identifier: identifier);
+          },
+        ),
+      ],
     ),
     GoRoute(
       path: resetPassword,

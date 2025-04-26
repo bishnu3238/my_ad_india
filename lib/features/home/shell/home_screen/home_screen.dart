@@ -138,7 +138,6 @@ class _HomeScreenState extends State<HomeScreen>
 
                   //
                   HomeCategorySection(),
-                  // HomeSubCategorySection(),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),

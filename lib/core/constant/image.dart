@@ -19,6 +19,8 @@ class AppImage {
   static const String heatMapSvg = heatMap;
   static const String onboardingSvg = onboarding;
   static const String quiteStreetSvg = quiteStreet;
+
+  static const loginBackground = '$_baseImg/login_background.jpg';
 }
 
 const String serverDown =

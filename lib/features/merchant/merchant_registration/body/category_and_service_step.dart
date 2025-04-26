@@ -453,7 +453,7 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
                                       itemBuilder: (ctx, idx) {
                                         final cat = filteredCategories[idx];
 
-                                        dev.log("${cat.fullFavIconUrl}");
+                                        dev.log(cat.fullFavIconUrl);
                                         // Use selectedCategory from the main state
                                         final isSelected =
                                             (selectedCategory.id == cat.id);

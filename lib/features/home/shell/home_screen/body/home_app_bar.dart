@@ -38,8 +38,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: SvgIconWidget(
             iconPath: SvgIcons.userProfileCircleIcon,
             onTap: () {
-              // context.openDrawer();
-              FirstTimePopupManager.showReferralPopupIfNeeded(context);
+              context.openDrawer();
+              // FirstTimePopupManager.showReferralPopupIfNeeded(context);
             },
             width: 25,
             height: 25,

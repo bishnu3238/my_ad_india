@@ -1,13 +1,12 @@
 import 'package:get_it/get_it.dart';
-import 'package:my_ad/features/chat/core/chat_viewmodel.dart';
-import 'package:my_ad/features/chat/repositories/chat_repository.dart';
-import 'package:my_ad/features/chat/repository/chat_repository.dart';
-import 'package:my_ad/features/chat/services/chat_service.dart';
-import 'package:my_ad/features/chat/services/i_chat_service.dart';
-import 'package:my_ad/features/settings/core/settings_view_model.dart';
+import '../../features/chat/core/chat_viewmodel.dart';
+ import '../../features/chat/repository/chat_repository.dart';
+import '../../features/chat/services/chat_service.dart';
+import '../../features/chat/services/i_chat_service.dart';
+import '../../features/settings/core/settings_view_model.dart';
 import '../../features/home/shell/profile_settings_screen/settings/core/setting_view_model.dart';
-import 'package:my_ad/features/onboarding/core/onboarding_provider.dart';
-import 'package:my_ad/features/profile/core/profile_provider.dart';
+import '../../features/onboarding/core/onboarding_provider.dart';
+import '../../features/profile/core/profile_provider.dart';
 import 'package:pack/services/service.dart';
 import '../../features/merchant/merchant_add_service/core/merchant_add_service_provider.dart';
 import '../../features/merchant/merchant_dashboard/shell/dashboard/core/merchant_dashboard_provider.dart';
@@ -35,6 +34,7 @@ import '../domain/data_store/data_store.dart';
 import 'package:pack/auth/custom_auth.dart';
 import '../domain/use_cases/api_call_use_cases.dart';
 import '../services/service.dart';
+import '../../features/terms/app_support/core/support_provider.dart';
 
 class DependencyInjector {
   static final GetIt _getIt = GetIt.instance;
@@ -161,6 +161,7 @@ class DependencyInjector {
     ///
     /// TODO:---- [Services-Start] ---------------------------------------------
     ///
+    _getIt.registerLazySingleton<AuthCheckService>(() => AuthCheckService());
     _getIt.registerLazySingleton(
       () => BannerService(
         _getIt.get<BannerStore>(),
@@ -386,6 +387,9 @@ class DependencyInjector {
 
     _getIt.registerLazySingleton<ChatViewModel>(
       () => ChatViewModel(_getIt.get<ChatRepository>()),
+    );
+    _getIt.registerLazySingleton<FeedbackSupportProvider>(
+      () => FeedbackSupportProvider(),
     );
 
     // -------------------------- End Screen Providers ---------------------------

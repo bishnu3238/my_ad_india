@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_ad/features/chat/core/chat_viewmodel.dart';
 import 'package:my_ad/features/profile/core/profile_provider.dart';
+import 'package:my_ad/features/terms/app_support/core/support_provider.dart';
 import 'package:pack/auth/custom_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer' as dev;
@@ -179,6 +180,7 @@ class ScreenProviders extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => DependencyInjector.get<ChatViewModel>(),
         ),
+        ChangeNotifierProvider(create: (ctx)=>DependencyInjector.get<FeedbackSupportProvider>()),
       ],
       child: MyAdd(),
     );
