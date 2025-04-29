@@ -41,54 +41,68 @@ class _CallScreenState extends State<CallScreen> {
   bool _isCallEnded = false;
   Timer? _callTimer;
   Duration _callDuration = Duration.zero;
-  late StreamSubscription _callResponseSubscription;
-  late StreamSubscription _callEndedSubscription;
+  StreamSubscription? _callResponseSubscription;
+  StreamSubscription? _callEndedSubscription;
+  String _callStatus = 'Connecting...';
 
   @override
   void initState() {
     super.initState();
-    _setupCallListeners();
-    
-    if (!widget.isOutgoing) {
-      // This is an incoming call, already connected
-      _startCallTimer();
-      _isCallConnected = true;
-    }
+    _setupCall();
   }
 
   @override
   void dispose() {
     _callTimer?.cancel();
-    _callResponseSubscription.cancel();
-    _callEndedSubscription.cancel();
+    _callResponseSubscription?.cancel();
+    _callEndedSubscription?.cancel();
     super.dispose();
   }
 
-  void _setupCallListeners() {
+  void _setupCall() {
     final chatManager = Provider.of<ChatManager>(context, listen: false);
     
-    // Listen for call responses (for outgoing calls)
-    _callResponseSubscription = chatManager.socketService.onCallResponse.listen((data) {
-      if (widget.isOutgoing && data['callId'] == widget.callId) {
-        final response = data['response'];
-        
-        if (response == 'answered') {
-          setState(() {
-            _isCallConnected = true;
-          });
-          _startCallTimer();
-        } else if (response == 'rejected') {
-          _handleCallRejected();
+    // For outgoing calls
+    if (widget.isOutgoing) {
+      setState(() {
+        _callStatus = 'Calling...';
+      });
+      
+      // Listen for call response
+      _callResponseSubscription = chatManager.socketService.onCallResponse.listen((data) {
+        if (data['callId'] == widget.callId) {
+          if (data['response'] == 'answered') {
+            _handleCallConnected();
+          } else if (data['response'] == 'rejected') {
+            _handleCallRejected();
+          }
         }
-      }
-    });
+      });
+    } 
+    // For incoming calls
+    else {
+      setState(() {
+        _callStatus = 'Incoming call...';
+      });
+      
+      // For incoming calls, we don't start the timer until the call is answered
+    }
     
-    // Listen for call ended events
+    // Listen for call ended events (for both incoming and outgoing)
     _callEndedSubscription = chatManager.socketService.onCallEnded.listen((data) {
       if (data['callId'] == widget.callId) {
         _handleCallEnded();
       }
     });
+  }
+
+  void _handleCallConnected() {
+    setState(() {
+      _isCallConnected = true;
+      _callStatus = 'Connected';
+    });
+    
+    _startCallTimer();
   }
 
   void _startCallTimer() {
@@ -100,16 +114,28 @@ class _CallScreenState extends State<CallScreen> {
   }
 
   void _handleCallRejected() {
+    setState(() {
+      _isCallEnded = true;
+      _callStatus = 'Call rejected';
+    });
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${widget.otherUserName} rejected the call')),
     );
-    Navigator.pop(context);
+    
+    // Close the call screen after a short delay
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    });
   }
 
   void _handleCallEnded() {
     if (!_isCallEnded) {
       setState(() {
         _isCallEnded = true;
+        _callStatus = 'Call ended';
       });
       
       _callTimer?.cancel();
@@ -131,31 +157,42 @@ class _CallScreenState extends State<CallScreen> {
   void _answerCall() {
     final chatManager = Provider.of<ChatManager>(context, listen: false);
     
-    chatManager.respondToCall(
-      widget.callId!,
-      'answered',
-      widget.callerType!,
-      widget.callerId!,
-    );
-    
-    setState(() {
-      _isCallConnected = true;
-    });
-    
-    _startCallTimer();
+    try {
+      if (widget.callId != null && widget.callerType != null && widget.callerId != null) {
+        chatManager.respondToCall(
+          widget.callId!,
+          'answered',
+          widget.callerType!,
+          widget.callerId!,
+        );
+        _handleCallConnected();
+      } else {
+        debugPrint('Cannot answer call: missing required parameters');
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      debugPrint('Error answering call: $e');
+      Navigator.pop(context);
+    }
   }
 
   void _rejectCall() {
     final chatManager = Provider.of<ChatManager>(context, listen: false);
     
-    chatManager.respondToCall(
-      widget.callId!,
-      'rejected',
-      widget.callerType!,
-      widget.callerId!,
-    );
-    
-    Navigator.pop(context);
+    try {
+      if (widget.callId != null && widget.callerType != null && widget.callerId != null) {
+        chatManager.respondToCall(
+          widget.callId!,
+          'rejected',
+          widget.callerType!,
+          widget.callerId!,
+        );
+      }
+      Navigator.pop(context);
+    } catch (e) {
+      debugPrint('Error rejecting call: $e');
+      Navigator.pop(context);
+    }
   }
 
   void _endCall() {
@@ -303,9 +340,7 @@ class _CallScreenState extends State<CallScreen> {
               Text(
                 _isCallConnected
                     ? _formatDuration(_callDuration)
-                    : widget.isOutgoing
-                        ? 'Calling...'
-                        : 'Incoming call',
+                    : _callStatus,
                 style: const TextStyle(color: Colors.white70),
               ),
             ],
@@ -356,9 +391,7 @@ class _CallScreenState extends State<CallScreen> {
             Text(
               _isCallConnected
                   ? _formatDuration(_callDuration)
-                  : widget.isOutgoing
-                      ? 'Calling...'
-                      : 'Incoming call',
+                  : _callStatus,
               style: const TextStyle(color: Colors.white70, fontSize: 16),
             ),
           ],
