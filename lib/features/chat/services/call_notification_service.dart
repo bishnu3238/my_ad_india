@@ -52,7 +52,7 @@ class CallNotificationService {
     
     // Show notification for incoming call
     await _showCallNotification(
-      callId: callId,
+      callId: callId.toString(),
       conversationId: conversationId,
       callerType: callerType,
       callerId: callerId,

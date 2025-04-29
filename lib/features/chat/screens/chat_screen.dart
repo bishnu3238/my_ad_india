@@ -15,13 +15,13 @@ class ChatScreen extends StatefulWidget {
   final String otherUserId;
 
   const ChatScreen({
-    Key? key,
+    super.key,
     required this.conversationId,
     required this.otherUserName,
     required this.otherUserImage,
     required this.otherUserType,
     required this.otherUserId,
-  }) : super(key: key);
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -83,7 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage() async {
     final message = _messageController.text.trim();
-    if (message.isEmpty) return;
+    if (message.isEmpty || _isSending) return;
     
     final chatManager = Provider.of<ChatManager>(context, listen: false);
     
@@ -92,12 +92,15 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     
     try {
-      await chatManager.sendTextMessage(message);
+      // Clear the input field immediately for better UX
       _messageController.clear();
+      
+      // Send the message
+      await chatManager.sendTextMessage(message);
       
       // Scroll to bottom
       Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
+        if (_scrollController.hasClients && mounted) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
@@ -110,9 +113,11 @@ class _ChatScreenState extends State<ChatScreen> {
         SnackBar(content: Text('Failed to send message: $e')),
       );
     } finally {
-      setState(() {
-        _isSending = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+        });
+      }
     }
   }
 
@@ -131,7 +136,7 @@ class _ChatScreenState extends State<ChatScreen> {
       
       // Scroll to bottom
       Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
+        if (_scrollController.hasClients && mounted) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
@@ -140,13 +145,17 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send image: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to send image: $e')),
+        );
+      }
     } finally {
-      setState(() {
-        _isSending = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+        });
+      }
     }
   }
 
@@ -165,7 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
       
       // Scroll to bottom
       Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
+        if (_scrollController.hasClients && mounted) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
@@ -174,13 +183,17 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send file: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to send file: $e')),
+        );
+      }
     } finally {
-      setState(() {
-        _isSending = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+        });
+      }
     }
   }
 
@@ -567,12 +580,14 @@ class _ChatScreenState extends State<ChatScreen> {
                           height: 24,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : IconButton(
-                          icon: const Icon(Icons.send),
-                          color: Theme.of(context).primaryColor,
+                      : FloatingActionButton(
+                          mini: true,
+                          heroTag: 'sendMessageButton',
+                          backgroundColor: Theme.of(context).primaryColor,
                           onPressed: _sendMessage,
                           tooltip: 'Send message',
                           key: const ValueKey('chat_send_button'),
+                          child: const Icon(Icons.send, color: Colors.white),
                         ),
                 ],
               ),

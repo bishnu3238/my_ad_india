@@ -56,6 +56,32 @@ class Conversation {
       'unread_count': unreadCount,
     };
   }
+
+  Conversation copyWith({
+    String? id,
+    String? customerId,
+    String? merchantId,
+    String? lastMessage,
+    DateTime? lastMessageTime,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? otherUserName,
+    String? otherUserImage,
+    int? unreadCount,
+  }) {
+    return Conversation(
+      id: id ?? this.id,
+      customerId: customerId ?? this.customerId,
+      merchantId: merchantId ?? this.merchantId,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      otherUserName: otherUserName ?? this.otherUserName,
+      otherUserImage: otherUserImage ?? this.otherUserImage,
+      unreadCount: unreadCount ?? this.unreadCount,
+    );
+  }
 }
 
 class ChatMessage {

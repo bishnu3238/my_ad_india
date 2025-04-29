@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:my_ad/core/constant/image.dart';
 import '../../features/home/core/home_navigator.dart';
 import 'dart:developer' as dev;
@@ -31,8 +32,24 @@ class AuthRoutes {
               accentColor: context.colorScheme.primary,
               animationStyle: AnimationStyle.scale,
               onLoginSuccess: () async {
+                dev.log('Login successful');
+
+                /// Todo add a loading indicator
+                m.showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  useRootNavigator: true,
+                  builder:
+                      (context) =>
+                          const m.Center(child: m.CircularProgressIndicator()),
+                );
+
                 await getIt<AuthProviderModel<UserModel>>().initialize();
-                if (context.mounted) context.go('/home');
+
+                if (context.mounted) {
+                  context .pop();
+                  context.go('/home');
+                }
               },
               onCreateAccountTap: () => context.push(register),
               onForgotPasswordTap: () => context.push(forgotPassword),
@@ -121,7 +138,22 @@ class AuthRoutes {
               userName: state.pathParameters['userName']!,
               onVerifySuccess: () {
                 dev.log('OTP verified successfully');
-                context.go(HomeRoute.home);
+
+                /// Todo add a loading indicator
+                m.showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  useRootNavigator: true,
+                  builder:
+                      (context) =>
+                          const m.Center(child: m.CircularProgressIndicator()),
+                );
+                getIt<AuthProviderModel<UserModel>>().initialize();
+                if (context.mounted) {
+                  m.Navigator.pop(context);
+                  context.go(HomeRoute.home);
+                }
+                // context.go(HomeRoute.home);
               },
             ),
           ),

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_ad/core/services/merchant_auth_service.dart';
 import 'package:my_ad/features/chat/screens/chat_screen.dart';
+import 'package:my_ad/features/chat/screens/conversation_list_screen.dart';
 import 'package:my_ad/features/chat/widgets/empty_chat_view.dart';
 import 'package:pack/ui/widgets/loading/advance_shimmer_loading_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/injector/dependency_injection.dart';
 import '../../../../core/services/merchant_dashboard_service.dart';
+import '../../../chat/screens/inquiry_screen.dart';
 import '../../subscription/core/subscription_plan_route.dart';
 import '../merchant_dashboard_shell.dart';
 import '../shell/dashboard/dashboard.dart';
@@ -61,7 +63,7 @@ class MerchantDashboardRoute {
       routes: [
         GoRoute(
           path: reports,
-          builder: (context, state) => const MerchantReportsScreen(),
+          builder: (context, state) => const InquiryScreen(),
         ),
       ],
     ),
@@ -70,6 +72,7 @@ class MerchantDashboardRoute {
       routes: [
         GoRoute(
           path: services,
+          // builder: (context, state) => const MerchantServicesScreen(),
           builder: (context, state) => const MerchantServicesScreen(),
         ),
       ],
@@ -78,9 +81,7 @@ class MerchantDashboardRoute {
       routes: [
         GoRoute(
           path: chatScreen,
-          builder: (context, state) =>   Scaffold(body: Center(child:
-
-          Text('Under development \n These feature will update soon'))),
+          builder: (context, state) =>   ConversationListScreen(),
         ),
       ],
     ),

@@ -566,11 +566,11 @@ class _EadProductDetailsState extends State<EadProductDetails>
 
     try {
       // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()),
-      );
+      // showDialog(
+      //   context: context,
+      //   barrierDismissible: false,
+      //   builder: (context) => const Center(child: CircularProgressIndicator()),
+      // );
 
       if (!chatManager.isInitialized) {
         chatManager.initialize(
@@ -600,14 +600,9 @@ class _EadProductDetailsState extends State<EadProductDetails>
         merchantName,
         processedImageUrl,
       );
-
-      // Close loading dialog
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
     } catch (e) {
       // Close loading dialog if open
-      if (Navigator.canPop(context)) {
+      if (context.mounted && Navigator.canPop(context)) {
         Navigator.pop(context);
       }
 

@@ -14,6 +14,8 @@ class ConversationListScreen extends StatefulWidget {
 
 class _ConversationListScreenState extends State<ConversationListScreen> {
   bool _isLoading = true;
+  bool _hasError = false;
+  String _errorMessage = '';
 
   @override
   void initState() {
@@ -25,13 +27,37 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
     final chatManager = Provider.of<ChatManager>(context, listen: false);
     setState(() {
       _isLoading = true;
+      _hasError = false;
     });
     
-    await chatManager.refreshConversations();
-    
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      // Check if ChatManager is initialized
+      if (!chatManager.isInitialized) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = 'Chat not initialized. Please go back and try again.';
+        });
+        return;
+      }
+      
+      await chatManager.refreshConversations();
+      
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading conversations: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = 'Failed to load conversations: $e';
+        });
+      }
+    }
   }
 
   @override
@@ -46,10 +72,36 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _buildConversationList(),
+      body: _buildBody(),
     );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    
+    if (_hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _errorMessage,
+              style: const TextStyle(color: Colors.red),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadConversations,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    return _buildConversationList();
   }
 
   Widget _buildConversationList() {
@@ -58,10 +110,20 @@ class _ConversationListScreenState extends State<ConversationListScreen> {
         final conversations = chatManager.conversations;
         
         if (conversations.isEmpty) {
-          return const Center(
-            child: Text(
-              'No conversations yet',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'No conversations yet',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _loadConversations,
+                  child: const Text('Refresh'),
+                ),
+              ],
             ),
           );
         }

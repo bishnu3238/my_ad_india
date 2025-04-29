@@ -44,6 +44,31 @@ class ChatNavigator {
         path: '/chat/inquiries',
         builder: (context, state) => const InquiryScreen(),
       ),
+
+      GoRoute(
+        path:
+        '/merchanr-chat/conversation/:conversationId/:otherUserName/:otherUserImage/:otherUserType/:otherUserId',
+        builder: (context, state) {
+          final conversationId = state.pathParameters['conversationId'] ?? '';
+          final otherUserName = Uri.decodeComponent(
+            state.pathParameters['otherUserName'] ?? '',
+          );
+          final otherUserImage = Uri.decodeComponent(
+            state.pathParameters['otherUserImage'] ?? '',
+          );
+          final otherUserType = state.pathParameters['otherUserType'] ?? '';
+          final otherUserId = state.pathParameters['otherUserId'] ?? '';
+
+          return ChatScreen(
+            conversationId: conversationId,
+            otherUserName: otherUserName,
+            otherUserImage: otherUserImage,
+            otherUserType: otherUserType,
+            otherUserId: otherUserId,
+          );
+        },
+      ),
+
     ];
   }
 }

@@ -41,7 +41,7 @@ class ChatManager extends ChangeNotifier {
   bool ensureInitialized() {
     if (!isInitialized) {
       debugPrint('ChatManager not initialized. Call initialize() first.');
-      return false;
+      throw Exception('ChatManager not initialized. Call initialize() first.');
     }
     return true;
   }
@@ -57,7 +57,9 @@ class ChatManager extends ChangeNotifier {
   }
 
   // Initialize the chat manager
-  void initialize(String baseUrl, String userId, String userType) {
+  Future<void> initialize(String baseUrl, String userId, String userType) async {
+    debugPrint('Initializing ChatManager with userId: $userId, userType: $userType');
+    
     this.userId = userId;
     this.userType = userType;
     
@@ -68,18 +70,31 @@ class ChatManager extends ChangeNotifier {
     // Setup socket listeners
     _setupSocketListeners();
     
-    // Connect to socket
-    socketService.connect();
-    
-    // Load initial data
-    refreshConversations();
-    refreshCallHistory();
-    
-    if (userType == 'merchant') {
-      refreshInquiries();
+    try {
+      // Connect to socket
+       socketService.connect();
+      
+      // Authenticate with socket
+      _authenticate();
+      
+      // Load initial data
+      await refreshConversations();
+      await refreshCallHistory();
+      
+      if (userType == 'merchant') {
+        try {
+          await refreshInquiries();
+        } catch (e) {
+          debugPrint('Error refreshing inquiries: $e');
+          // Don't throw here, just log the error
+        }
+      }
+      
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error during ChatManager initialization: $e');
+      throw Exception('Failed to initialize chat: $e');
     }
-    
-    notifyListeners();
   }
   
   void _setupSocketListeners() {
@@ -140,9 +155,7 @@ class ChatManager extends ChangeNotifier {
   
   // Refresh data from API
   Future<void> refreshConversations() async {
-    if (!ensureInitialized()) {
-      throw Exception('User information not set');
-    }
+    ensureInitialized();
     
     try {
       _conversations = await _apiService.getConversations();
@@ -153,16 +166,21 @@ class ChatManager extends ChangeNotifier {
     }
   }
   
-  Future<void> loadMessages(String conversationId, {bool refresh = false}) async {
-    if (!ensureInitialized()) {
-      throw Exception('User information not set');
-    }
+  Future<void> loadMessages(String conversationId, {bool refresh = false, int page = 1}) async {
+    ensureInitialized();
     
     try {
       if (refresh || !_messages.containsKey(conversationId)) {
         final messages = await _apiService.getMessages(conversationId);
         _messages[conversationId] = messages;
         notifyListeners();
+      } else if (page > 1) {
+        // Load more messages for pagination
+        final moreMessages = await _apiService.getMessages(conversationId, page: page);
+        if (moreMessages.isNotEmpty) {
+          _messages[conversationId] = [...moreMessages, ..._messages[conversationId]!];
+          notifyListeners();
+        }
       }
     } catch (e) {
       debugPrint('Error loading messages: $e');
@@ -171,26 +189,23 @@ class ChatManager extends ChangeNotifier {
   }
   
   Future<void> refreshCallHistory() async {
-    if (!ensureInitialized()) {
-      throw Exception('User information not set');
-    }
+    ensureInitialized();
     
     try {
       _callHistory = await _apiService.getCallHistory();
       notifyListeners();
     } catch (e) {
       debugPrint('Error refreshing call history: $e');
-      rethrow;
+      // Don't throw here, just log the error
     }
   }
   
   Future<void> refreshInquiries({String status = 'pending'}) async {
-    if (!ensureInitialized()) {
-      throw Exception('User information not set');
-    }
+    ensureInitialized();
     
     if (userType != 'merchant') {
-      throw Exception('Only merchants can access inquiries');
+      debugPrint('Only merchants can access inquiries');
+      return;
     }
     
     try {
@@ -198,25 +213,28 @@ class ChatManager extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error refreshing inquiries: $e');
-      rethrow;
+      // Don't throw here, just log the error
     }
   }
   
   // Set current conversation
-  void setCurrentConversation(String conversationId, String otherUserType, String otherUserId) {
-    if (!ensureInitialized()) {
-      throw Exception('User information not set');
-    }
+  Future<void> setCurrentConversation(String conversationId, String otherUserType, String otherUserId) async {
+    ensureInitialized();
     
     _currentConversationId = conversationId;
     _otherUserType = otherUserType;
     _otherUserId = otherUserId;
     
-    // Load messages for this conversation
-    loadMessages(conversationId);
-    
-    // Mark messages as read
-    markMessagesAsRead(conversationId);
+    try {
+      // Load messages for this conversation
+      await loadMessages(conversationId, refresh: true);
+      
+      // Mark messages as read
+      await markMessagesAsRead(conversationId);
+    } catch (e) {
+      debugPrint('Error setting current conversation: $e');
+      rethrow;
+    }
   }
   
   // Create a new conversation if needed
@@ -228,9 +246,7 @@ class ChatManager extends ChangeNotifier {
       }
     }
     
-    if (!ensureInitialized()) {
-      throw Exception('Failed to initialize user information');
-    }
+    ensureInitialized();
     
     // Check if conversation already exists
     for (var conversation in _conversations) {
@@ -252,25 +268,28 @@ class ChatManager extends ChangeNotifier {
   
   // Send a text message
   Future<void> sendTextMessage(String message) async {
-    if (!ensureInitialized()) {
-      throw Exception('User information not set');
-    }
+    ensureInitialized();
     
     if (_currentConversationId == null || _otherUserType == null || _otherUserId == null) {
       throw Exception('No active conversation');
     }
     
-    final messageData = {
-      'conversationId': _currentConversationId,
-      'senderType': userType,
-      'senderId': userId,
-      'receiverType': _otherUserType,
-      'receiverId': _otherUserId,
-      'message': message,
-      'messageType': 'text',
-    };
-    
-    socketService.sendMessage(messageData);
+    try {
+      final messageData = {
+        'conversationId': _currentConversationId,
+        'senderType': userType,
+        'senderId': userId,
+        'receiverType': _otherUserType,
+        'receiverId': _otherUserId,
+        'message': message,
+        'messageType': 'text',
+      };
+      
+       socketService.sendMessage(messageData);
+    } catch (e) {
+      debugPrint('Error sending text message: $e');
+      rethrow;
+    }
   }
   
   // Send a file message
@@ -350,25 +369,34 @@ class ChatManager extends ChangeNotifier {
   }
   
   // Mark messages as read
-  void markMessagesAsRead(String conversationId) {
-    if (!ensureInitialized()) {
-      debugPrint('Cannot mark messages as read: User information not set');
-      return;
-    }
+  Future<void> markMessagesAsRead(String conversationId) async {
+    ensureInitialized();
     
-    socketService.markAsRead(conversationId);
-    
-    // Also update local state
-    if (_messages.containsKey(conversationId)) {
-      final updatedMessages = _messages[conversationId]!.map((msg) {
-        if (!msg.isMine && !msg.isRead) {
-          return msg.copyWith(isRead: true);
-        }
-        return msg;
-      }).toList();
+    try {
+       socketService.markAsRead(conversationId);
       
-      _messages[conversationId] = updatedMessages;
-      notifyListeners();
+      // Also update local state
+      if (_messages.containsKey(conversationId)) {
+        final updatedMessages = _messages[conversationId]!.map((msg) {
+          if (!msg.isMine && !msg.isRead) {
+            return msg.copyWith(isRead: true);
+          }
+          return msg;
+        }).toList();
+        
+        _messages[conversationId] = updatedMessages;
+        
+        // Update conversation unread count
+        final convoIndex = _conversations.indexWhere((c) => c.id == conversationId);
+        if (convoIndex >= 0) {
+          _conversations[convoIndex] = _conversations[convoIndex].copyWith(unreadCount: 0);
+        }
+        
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error marking messages as read: $e');
+      // Don't throw here, just log the error
     }
   }
   
@@ -484,6 +512,7 @@ class ChatManager extends ChangeNotifier {
   }
   
   // Clean up resources
+  @override
   void dispose() {
     socketService.disconnect();
     _typingTimer?.cancel();

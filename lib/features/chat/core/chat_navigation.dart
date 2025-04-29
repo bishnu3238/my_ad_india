@@ -8,38 +8,38 @@ class ChatNavigation {
   static void navigateToConversationList(BuildContext context) {
     GoRouter.of(context).go('/chat');
   }
-  
+
   // Navigate to specific chat conversation
   static void navigateToChat(
-    BuildContext context, 
-    String conversationId, 
-    String otherUserName, 
-    String otherUserImage, 
-    String otherUserType, 
-    String otherUserId
+    BuildContext context,
+    String conversationId,
+    String otherUserName,
+    String otherUserImage,
+    String otherUserType,
+    String otherUserId,
   ) {
     // URL encode parameters to handle special characters
     final encodedName = Uri.encodeComponent(otherUserName);
     final encodedImage = Uri.encodeComponent(otherUserImage);
-    
+
     context.push(
-      '/chat/conversation/$conversationId/$encodedName/$encodedImage/$otherUserType/$otherUserId'
+      '/chat/conversation/$conversationId/$encodedName/$encodedImage/$otherUserType/$otherUserId',
     );
   }
-  
+
   // Navigate to call history
   static void navigateToCallHistory(BuildContext context) {
     GoRouter.of(context).go('/chat/calls');
   }
-  
+
   // Navigate to inquiries (for merchants)
   static void navigateToInquiries(BuildContext context) {
     GoRouter.of(context).go('/chat/inquiries');
   }
-  
+
   // Open chat with a merchant from product details
   static Future<void> openChatWithMerchant(
-    BuildContext context,
+    BuildContext pageContext,
     ChatManager chatManager,
     String customerId,
     String merchantId,
@@ -49,26 +49,26 @@ class ChatNavigation {
     try {
       // Show loading indicator
       showDialog(
-        context: context,
+        context: pageContext,
+        useRootNavigator: true,
         barrierDismissible: false,
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
-      
+
       // Create or get conversation
       final conversationId = await chatManager.getOrCreateConversation(
         customerId,
-        merchantId
+        merchantId,
       );
-      
       // Close loading dialog
-      if (context.mounted) {
-        Navigator.pop(context);
+      if (pageContext.mounted) {
+        Navigator.of(pageContext, rootNavigator: true).pop();
       }
-      
+
       // Navigate to chat screen
-      if (context.mounted) {
+      if (pageContext.mounted) {
         navigateToChat(
-          context,
+          pageContext,
           conversationId,
           merchantName,
           merchantImage,
@@ -78,15 +78,15 @@ class ChatNavigation {
       }
     } catch (e) {
       // Close loading dialog if open
-      if (context.mounted && Navigator.canPop(context)) {
-        Navigator.pop(context);
+      if (pageContext.mounted && Navigator.canPop(pageContext)) {
+        Navigator.pop(pageContext);
       }
-      
+
       // Show error message
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error opening chat: $e')),
-        );
+      if (pageContext.mounted) {
+        ScaffoldMessenger.of(
+          pageContext,
+        ).showSnackBar(SnackBar(content: Text('Error opening chat: $e')));
       }
     }
   }

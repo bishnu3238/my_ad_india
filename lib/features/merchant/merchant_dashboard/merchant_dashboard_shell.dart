@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/domain/data_store/merchant_dashboard_store.dart';
+import 'package:provider/provider.dart';
 import '../../../utils/handler/back_gesture_handler.dart';
 import '../../home/core/home_navigator.dart';
+import '../../../core/data/model/model.dart';
+import '../../chat/core/merchant_chat_navigation.dart';
 import 'body/bottom_navigation_bar.dart';
 import 'body/merchant_app_drawer.dart';
 
@@ -9,6 +13,41 @@ class MerchantDashboardShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   const MerchantDashboardShell({super.key, required this.navigationShell});
+
+  Widget _buildChatButton(BuildContext context) {
+    return Consumer<MerchantDashboardStore>(
+      builder: (context, authProvider, _) {
+        return ElevatedButton.icon(
+          onPressed: () {
+            // Check if user is logged in
+            if (!authProvider.entity!.isAuthenticated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please login to access chat')),
+              );
+              return;
+            }
+
+            // Get merchant ID and name from auth provider
+            final merchantId = authProvider.entity!.id.toString();
+            final merchantName =
+                authProvider.entity!.merchantData.merchant.username;
+
+            // Navigate to merchant chat screen
+            MerchantChatNavigation.navigateToMerchantChat(
+              context,
+              merchantId,
+              merchantName,
+            );
+          },
+          icon: const Icon(Icons.chat),
+          label: const Text('Messages & Inquiries'),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +60,10 @@ class MerchantDashboardShell extends StatelessWidget {
       },
       child: Scaffold(
         drawer: AppDrawer(),
+        appBar: AppBar(
+          title: const Text('Merchant Dashboard'),
+          actions: [_buildChatButton(context)],
+        ),
         body: navigationShell,
         bottomNavigationBar: CustomFloatingNavBar(
           currentIndex: navigationShell.currentIndex,

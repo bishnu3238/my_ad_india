@@ -5,6 +5,10 @@ import 'package:provider/provider.dart';
 import '../core/domain/data_store/data_store.dart';
 import '../features/all_category/core/all_category_route.dart';
 import '../features/category_services/core/category_service_route.dart';
+import '../features/chat/screens/call_history_screen.dart';
+import '../features/chat/screens/chat_screen.dart';
+import '../features/chat/screens/inquiry_screen.dart';
+import '../features/chat/screens/merchant_chat_screen.dart';
 import '../features/ead_products/core/ead_product_navigator.dart';
 import '../features/error/error_screen.dart';
 import '../features/intro/core/intro_navigator.dart';
@@ -52,6 +56,46 @@ class AppRouter {
       ProfileNavigator.page(),
       NotificationRoute.page(),
       ...ChatNavigator.pages(),
+      
+      // Merchant chat routes
+      GoRoute(
+        path: '/merchant/chat/:merchantId/:merchantName',
+        builder: (context, state) {
+          final merchantId = state.pathParameters['merchantId'] ?? '';
+          final merchantName = state.pathParameters['merchantName'] ?? '';
+          
+          return MerchantChatScreen(
+            merchantId: merchantId,
+            merchantName: merchantName,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/merchant/chat/conversation/:conversationId/:otherUserName/:otherUserImage/:otherUserType/:otherUserId',
+        builder: (context, state) {
+          final conversationId = state.pathParameters['conversationId'] ?? '';
+          final otherUserName = Uri.decodeComponent(state.pathParameters['otherUserName'] ?? '');
+          final otherUserImage = Uri.decodeComponent(state.pathParameters['otherUserImage'] ?? '');
+          final otherUserType = state.pathParameters['otherUserType'] ?? '';
+          final otherUserId = state.pathParameters['otherUserId'] ?? '';
+          
+          return ChatScreen(
+            conversationId: conversationId,
+            otherUserName: otherUserName,
+            otherUserImage: otherUserImage,
+            otherUserType: otherUserType,
+            otherUserId: otherUserId,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/merchant/chat/inquiries',
+        builder: (context, state) => const InquiryScreen(),
+      ),
+      GoRoute(
+        path: '/merchant/chat/calls',
+        builder: (context, state) => const CallHistoryScreen(),
+      ),
     ],
     observers: [AppNavigationObserver()],
     errorBuilder: (context, state) => ErrorScreen(error: state.error),
