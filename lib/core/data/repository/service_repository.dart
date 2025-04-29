@@ -35,24 +35,42 @@ class ServiceRepositoryImpl extends ServiceRepository {
     }
   }
 
-  // List<ServiceModel> _convertServices(dynamic data) {
-  //   try {
-  //     dev.log('Converting services data: ${data.runtimeType}');
-  //
-  //     // Ensure data is a List
-  //     if (data is! List) {
-  //       dev.log('Data is not a List: $data');
-  //       return [];
-  //     }
+  @override
+  Future<Either<NetworkFailure, List<ServiceModel>>> fetchServicesByCategory(
+    String categoryId,
+  ) async {
+    try {
+      return await _apiCallService
+          .request<List<ServiceModel>?>(
+            config: RequestConfig(
+              baseUrl: ApiConfig.baseUrl,
+              endpoint: ApiConfig.services,
+              queryParameters: {'category_id': categoryId},
+              method: RequestMethod.get,
+            ),
+            responseConverter: (data) => _convertServices(data),
+          )
+          .then(
+            (value) => value.fold(
+              (failure) => left(failure),
+              (result) => right(result.data!),
+            ),
+          );
+    } catch (e) {
+      dev.log('Error fetching services: $e');
+      return left(NetworkFailure(message: e.toString()));
+    }
+  }
 
   List<ServiceModel>? _convertServices(data) {
-    try {
-      LogService().info('Converting services data');
-      dev.log('Converting services data $data');
-    } catch (e, s) {
-      dev.log('$s');
-    }
+    // try {
+    //   LogService().info('Converting services data');
+    //   dev.log('Converting services data $data');
+    // } catch (e, s) {
+    //   dev.log('$s');
+    // }
     if (data is List) {
+      dev.log('Converting services data: ${data.length}');
       return data.map((json) => ServiceModel.fromJson(json)).toList();
     }
     return null;

@@ -74,3 +74,4 @@ Future<void> _initializeNotifications() async {
 
 // http://inbox.bulksmswale.in/sendsms.jsp?user=xxxxxx&password=xxxxxxxxxxXX&senderid=xxxxxx&entityid=xxxxxxxxxxxxxxxxxxx&tempid=xxxxxxxxxxxxxxxxxxx&mobiles=xxxxxxxxxx&sms=%7B%23var%23%7D%20is%20the%20OTP%20to%20login%20at%20https%3A%2F%2Fdomainoxxx.com%2Fdoma-doctor%2Fdoctor_signin.php%0AOTPs%20are%20SECRET.%20DO%20NOT%20disclose%20it%20to%20anyone.%0A-xxxxxx
 // http://inbox.bulksmswale.in/sendsms.jsp?user=EAZYTC&password=734a73d6feXX&senderid=EAZYTC&entityid=1501413500000036227&tempid=1707173104531911463&mobiles=8697444166&sms=%7B%23var%23%7D%20is%20the%20OTP%20to%20login%20at%20https%3A%2F%2Feazytechno.com%2Feazy-doctor%2Fdoctor_signin.php%0AOTPs%20are%20SECRET.%20DO%20NOT%20disclose%20it%20to%20anyone.%0A-EAZYTC
+

@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 
 import '../../../core/data/model/model.dart';
@@ -54,9 +53,4 @@ class ServiceListError extends ServiceListState {
   const ServiceListError(this.message);
 }
 
-enum SortOption {
-  popularity,
-  priceHighToLow,
-  priceLowToHigh,
-  newest,
-}
+enum SortOption { popularity, priceHighToLow, priceLowToHigh, newest }

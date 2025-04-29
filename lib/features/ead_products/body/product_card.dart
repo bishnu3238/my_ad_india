@@ -287,7 +287,7 @@ class ProductCard extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 0,
                                 ),
-                                minimumSize: const Size(0, 36),
+                                minimumSize: const Size(0, 28),
                               ),
                             ),
                           ),
@@ -301,7 +301,7 @@ class ProductCard extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 0,
                                 ),
-                                minimumSize: const Size(0, 36),
+                                minimumSize: const Size(0, 28),
                               ),
                             ),
                           ),

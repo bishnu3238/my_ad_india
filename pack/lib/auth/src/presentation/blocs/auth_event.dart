@@ -1,4 +1,8 @@
 // Events
+
+enum OtpType{
+  login, signup, forgetPassword, resetPassword,
+}
 abstract class AuthEvent {}
 
 class LoginEvent extends AuthEvent {

@@ -147,11 +147,14 @@ class _HomeScreenState extends State<HomeScreen>
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
-                        onTap: () => context.push(AllServicesRoute.allServices),
+                        onTap:
+                            () => context.push(
+                              '${AllServicesRoute.allServices}/ /${ShowServicesBy.all.name}',
+                            ),
                       ),
                     ),
                   ),
-                  HomeServicesSection( ),
+                  HomeServicesSection(),
 
                   // Top Ranked Categories
                   SliverToBoxAdapter(
@@ -231,7 +234,6 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-
   Widget _buildQuickActionCard(
     IconData icon,
     String text, {
@@ -308,4 +310,3 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 }
-

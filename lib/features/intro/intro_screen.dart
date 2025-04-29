@@ -23,7 +23,7 @@ class _IntroScreenState extends State<IntroScreen>
     // Delay fetchData until after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _introProvider.fetchData(context);
+        _introProvider..fetchData(context)..initUserOrMerchant(context);
       }
     });
     // Wave animation controller

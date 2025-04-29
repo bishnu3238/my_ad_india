@@ -6,6 +6,7 @@ import '../../core/injector/dependency_injection.dart';
 import '../../core/services/merchant_auth_service.dart';
 import '../../provider_state/theme_provider.dart';
 import '../merchant/core/merchant_auth_provider.dart';
+import '../chat/services/chat_manager.dart';
 import '../merchant/merchant_notification/core/notification_module.dart';
 import 'screen_providers.dart';
 
@@ -30,6 +31,10 @@ class AppProviders extends StatelessWidget {
           create: (ctx) => DependencyInjector.get<AppVersionTracker>(),
         ),
         ...NotificationModule.providers(),
+        ChangeNotifierProvider(
+          create: (ctx) => ChatManager(),
+        ),
+
       ],
       child: ScreenProviders(),
     );

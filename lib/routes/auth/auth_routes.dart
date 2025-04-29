@@ -69,19 +69,29 @@ class AuthRoutes {
             value: getIt<AuthBloc<UserModel>>(), // Fetch AuthBloc from getIt
             child: ForgotPasswordScreen<UserModel>(
               onResetSuccess: () {
-                context.go('/login');
+                dev.log("Password reset link sent successfully");
+                // context.go('/login');
               },
               onOtpSent:
-                  (String identifier) =>
-                      context.push('$forgotPasswordOtp/$identifier'),
+                  (String identifier, userId) => context.push(
+                    '$forgotPassword$forgotPasswordOtp/$identifier/$userId',
+                  ),
             ),
           ),
       routes: [
         GoRoute(
-          path: '$forgotPasswordOtp:/identifier',
+          path: '$forgotPasswordOtp/:identifier/:userId',
           builder: (ctx, state) {
             final identifier = state.pathParameters['identifier']!;
-            return OTPVerificationScreen(identifier: identifier);
+            final userId = state.pathParameters['userId']!;
+            return BlocProvider.value(
+              value:
+                  getIt<AuthBloc<UserModel>>(), // Fetch AuthBloc from getIt >,
+              child: OTPVerificationScreen<UserModel>(
+                identifier: identifier,
+                userId: userId,
+              ),
+            );
           },
         ),
       ],

@@ -20,7 +20,6 @@ class HomeServicesSection extends StatelessWidget {
 
     return Consumer2<ServiceStore, HomeScreenProvider>(
       builder: (context, homeViewModel, viewModel, _) {
-
         final services =
             homeViewModel.items
                 .where(
@@ -38,7 +37,9 @@ class HomeServicesSection extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   if (isViewAllCard) {
-                    context.push(AllServicesRoute.allServices);
+                    context.push(
+                      '${AllServicesRoute.allServices}/${viewModel.state.selectedCategory}/${ShowServicesBy.category.name}',
+                    );
                   } else {
                     LogService().error('Service: ${service.fullImageUrl}');
                     context.push(

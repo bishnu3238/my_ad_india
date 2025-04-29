@@ -1,42 +1,205 @@
-# my_ad
+# Service Connector Chat System
 
+This is a real-time chat, messaging, calling, and video calling system for a service connector application. It allows customers to communicate with service providers through text messages, file sharing, audio calls, video calls, and service inquiries.
 
-[//]: Make it executable: (**_`(chmod +x version_bump.sh)`_**)
-## Usage: ./version_bump.sh [options] [version] [build-number]
-```shell
-Options:
--d, --debug        Enable debug output
---build-only       Skip version bump and only build
---no-build         Skip build step
---help             Show this help message
+## Features
 
-Version can be:
-major              Bump major version (X.0.0)
-minor              Bump minor version (x.X.0)
-patch              Bump patch version (x.x.X)
-x.y.z              Set specific version
+- Real-time text messaging
+- Image and file sharing
+- Audio and video calling
+- Service inquiries
+- Read receipts
+- Typing indicators
+- Online/offline status
+- Call history
+- Inquiry management
 
+## System Architecture
 
-EXAMPLE : ./version_bump.sh minor // Bump minor version:
-          ./version_bump.sh 2.0.0 42 // Set specific version and build number:
-          ./version_bump.sh --build-only // Only build without changing version:
-          ./version_bump.sh major --no-build // Bump major version but skip build:
-          
+The system consists of two main components:
+
+1. **Node.js Backend**:
+   - Express.js for REST API
+   - Socket.IO for real-time communication
+   - MySQL database for data storage
+
+2. **Flutter Frontend**:
+   - Provider for state management
+   - Socket.IO client for real-time communication
+   - HTTP client for REST API calls
+
+## Setup Instructions
+
+### Database Setup
+
+1. Create the required tables in your MySQL database by running the SQL script:
+
+```bash
+mysql -u root -p ead < server/database/chat_schema.sql
 ```
 
+### Backend Setup
 
+1. Navigate to the server directory:
 
-A new Flutter project.
+```bash
+cd server
+```
 
-## Getting Started
+2. Install dependencies:
 
-This project is a starting point for a Flutter application.
+```bash
+npm install
+```
 
-A few resources to get you started if this is your first Flutter project:
+3. Create a `.env` file with your configuration:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+PORT=3000
+MYSQL_HOST=localhost
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_DATABASE=ead
+UPLOAD_DIR=./uploads
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+4. Start the server:
+
+```bash
+npm start
+```
+
+For development with auto-restart:
+
+```bash
+npm run dev
+```
+
+### Flutter Setup
+
+1. Add the required dependencies to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  socket_io_client: ^2.0.3+1
+  http: ^1.1.0
+  http_parser: ^4.0.2
+  intl: ^0.18.1
+  timeago: ^3.5.0
+  image_picker: ^1.0.4
+  path_provider: ^2.1.1
+  flutter_local_notifications: ^15.1.1
+  cached_network_image: ^3.3.0
+```
+
+2. Run Flutter pub get:
+
+```bash
+flutter pub get
+```
+
+3. Update your app's configuration to point to your server:
+
+```dart
+// In your app initialization
+final chatManager = Provider.of<ChatManager>(context, listen: false);
+chatManager.initialize(
+  'http://your-server-ip:3000', // Replace with your server URL
+  userId,
+  userType, // 'customer' or 'merchant'
+);
+```
+
+## Usage
+
+### Initializing Chat
+
+Before using the chat features, initialize the ChatManager:
+
+```dart
+final chatManager = Provider.of<ChatManager>(context, listen: false);
+chatManager.initialize(
+  'http://your-server-ip:3000',
+  userId,
+  userType, // 'customer' or 'merchant'
+);
+```
+
+### Starting a Conversation
+
+To start a conversation with a service provider from a product details page:
+
+```dart
+void _openChat(BuildContext context, int merchantId, String merchantName, String? merchantImage) async {
+  final chatManager = Provider.of<ChatManager>(context, listen: false);
+  
+  try {
+    // Create or get conversation
+    final conversationId = await chatManager.getOrCreateConversation(
+      userId.toString(), 
+      merchantId.toString()
+    );
+    
+    // Navigate to chat screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          conversationId: conversationId,
+          otherUserName: merchantName,
+          otherUserImage: merchantImage ?? '',
+          otherUserType: 'merchant',
+          otherUserId: merchantId.toString(),
+        ),
+      ),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error opening chat: $e')),
+    );
+  }
+}
+```
+
+### Sending Messages
+
+To send a text message:
+
+```dart
+chatManager.sendTextMessage("Hello, I'm interested in your service");
+```
+
+To send an image:
+
+```dart
+final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+if (image != null) {
+  await chatManager.sendFileMessage(File(image.path), 'image');
+}
+```
+
+### Making Calls
+
+To initiate an audio call:
+
+```dart
+chatManager.initiateCall('audio');
+```
+
+To initiate a video call:
+
+```dart
+chatManager.initiateCall('video');
+```
+
+### Sending Inquiries
+
+For customers to send service inquiries:
+
+```dart
+await chatManager.sendInquiry("I'd like to know more about your pricing", merchantId);
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

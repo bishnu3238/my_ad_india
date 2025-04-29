@@ -23,6 +23,7 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
   final ApiCallService apiService;
   final String socialLoginEndpoint;
   final String forgotPasswordEndpoint;
+  final String resetPasswordEndpoint;
   final String changePasswordEndpoint;
   final SecureStorage<T> secureStorage;
   final T Function(Map<String, dynamic>) userFromJson;
@@ -38,7 +39,7 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
     required this.changePasswordEndpoint,
     required this.socialLoginEndpoint,
     required this.logoutEndpoint,
-    required this.baseUrl,
+    required this.baseUrl, required this. resetPasswordEndpoint,
   });
 
   Future<void> _addAuthHeader() async {
@@ -183,7 +184,7 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
   /// ------------------------ change password end -----------------------------
 
   @override
-  Future<Either<NetworkFailure, bool>> forgotPassword(String identifier) async {
+  Future<Either<NetworkFailure, ForgotPasswordResponse<T>>> forgotPassword(String identifier) async {
     try {
       // Determine if the identifier is an email or phone number using regex
       bool isEmail = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(identifier);
@@ -200,10 +201,42 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
       );
 
       return await apiService
+          .request<ForgotPasswordResponse<T>>(
+        config: config,
+        responseConverter: (data) =>ForgotPasswordResponse<T>.convert(data),
+      )
+          .then(
+            (value) => value.fold(
+              (failure) => left(NetworkFailure(message: failure.message)),
+              (response) => right(response.data!),
+        ),
+      );
+    } catch (e) {
+      dev.log('FORGOT PASSWORD ERROR: $e');
+      return left(NetworkFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<NetworkFailure, bool>> sendOTP(String identifier) async {
+    try {
+      bool isEmail = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(identifier);
+
+      Map<String, dynamic> body = isEmail
+          ? {'email': identifier}
+          : {'phone': identifier};
+
+      final config = RequestConfig(
+        baseUrl: baseUrl,
+        endpoint: otpEndpoint,
+        method: RequestMethod.post,
+        body: jsonEncode(body),
+      );
+
+      return await apiService
           .request<bool>(
         config: config,
         responseConverter: (data) {
-          // Check if OTP was sent successfully
           if (data is Map<String, dynamic> &&
               data.containsKey('status') &&
               data['status'] == 'success') {
@@ -219,25 +252,53 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
         ),
       );
     } catch (e) {
-      dev.log('FORGOT PASSWORD ERROR: $e');
+      dev.log('SEND OTP ERROR: $e');
       return left(NetworkFailure(message: e.toString()));
     }
   }
 
   @override
   Future<Either<NetworkFailure, bool>> resetPassword(
-    String resetToken,
-    String newPassword,
-    String confirmPassword,
-  ) {
-    // TODO: implement resetPassword
-    throw UnimplementedError();
-  }
+      String resetToken,
+      String newPassword,
+      String confirmPassword,
+      ) async {
+    try {
+      final body = {
+        'reset_token': resetToken,
+        'new_password': newPassword,
+        'confirm_password': confirmPassword,
+      };
 
-  @override
-  Future<Either<NetworkFailure, bool>> sendOTP(String email) {
-    // TODO: implement sendOTP
-    throw UnimplementedError();
+      final config = RequestConfig(
+        baseUrl: baseUrl,
+        endpoint: resetPasswordEndpoint,
+        method: RequestMethod.post,
+        body: jsonEncode(body),
+      );
+
+      return await apiService
+          .request<bool>(
+        config: config,
+        responseConverter: (data) {
+          if (data is Map<String, dynamic> &&
+              data.containsKey('status') &&
+              data['status'] == 'success') {
+            return true;
+          }
+          return false;
+        },
+      )
+          .then(
+            (value) => value.fold(
+              (failure) => left(NetworkFailure(message: failure.message)),
+              (response) => right(response.data ?? false),
+        ),
+      );
+    } catch (e) {
+      dev.log('RESET PASSWORD ERROR: $e');
+      return left(NetworkFailure(message: e.toString()));
+    }
   }
 
   /// ------------------------ Sign up start -----------------------------------

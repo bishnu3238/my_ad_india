@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_ad/core/data/model/model.dart';
 import 'package:my_ad/features/ead_products/body/product_card.dart';
 import 'package:my_ad/features/ead_products/ead_product_details/core/ead_product_details_viewmodel.dart';
+import 'package:pack/services/service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SimilarProductsSection extends StatelessWidget {
@@ -26,7 +27,7 @@ class SimilarProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 245,
+          height: ScreenUtils().getVerticalSize(230),
           child:
               state.isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -44,21 +45,25 @@ class SimilarProductsSection extends StatelessWidget {
                       final similarProduct = state.similarProducts[index];
                       return SizedBox(
                         width: 180,
-                        child: ProductCard(
-                          product: similarProduct,
-                          onTap:
-                              () => _navigateToProductDetails(
-                                context,
-                                similarProduct,
-                              ),
-                          onCall:
-                              () =>
-                                  _launchPhone(similarProduct.merchant.mobile),
-                          onChat:
-                              () => _launchWhatsApp(
-                                similarProduct.merchant.mobile,
-                              ),
-                          distanceFromUser: '',
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ProductCard(
+                            product: similarProduct,
+                            onTap:
+                                () => _navigateToProductDetails(
+                                  context,
+                                  similarProduct,
+                                ),
+                            onCall:
+                                () => _launchPhone(
+                                  similarProduct.merchant.mobile,
+                                ),
+                            onChat:
+                                () => _launchWhatsApp(
+                                  similarProduct.merchant.mobile,
+                                ),
+                            distanceFromUser: '',
+                          ),
                         ),
                       );
                     },

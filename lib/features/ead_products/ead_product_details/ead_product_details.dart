@@ -1,6 +1,12 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/data/api/api_config.dart';
 import 'package:my_ad/features/chat/core/chat_navigator.dart';
+import 'package:my_ad/features/chat/core/chat_navigation.dart';
+import 'package:my_ad/features/chat/services/chat_manager.dart';
+import 'package:pack/auth/custom_auth.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -216,7 +222,7 @@ class _EadProductDetailsState extends State<EadProductDetails>
               viewModel: viewModel,
               onCall: () => _launchPhone(product.merchant.mobile),
               onWhatsApp: () => _launchWhatsApp(product.merchant.mobile),
-              onChat: () => _navigateToChat(product.merchant.id),
+              onChat: () => _navigateToChat(product),
               onInquiry: viewModel.toggleInquiryForm,
             ),
           );
@@ -485,15 +491,132 @@ class _EadProductDetailsState extends State<EadProductDetails>
   ) {
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: [MerchantInfoCard(product: product)],
+      children: [
+        MerchantInfoCard(product: product),
+        const SizedBox(height: 16),
+        _buildChatButton(context, product),
+      ],
     );
   }
 
-  void _navigateToChat(String merchantId) {
-    // Navigate to chat screen
-    // For example:
-    context.push('${ChatNavigator.chatScreen}/$merchantId/UttamDas/1');
-    debugPrint('Navigate to chat with merchant: $merchantId');
+  Widget _buildChatButton(BuildContext context, ProductModel product) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Start a Conversation',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Chat directly with the service provider to discuss your requirements.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.chat),
+                label: const Text('Chat with Service Provider'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+                onPressed: () => _navigateToChat(product),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _navigateToChat(ProductModel product) async {
+    // Debug logging
+    dev.log('Navigate to chat with merchant: ${product.merchant.id}');
+
+    final authProvider = context.read<AuthProviderModel<UserModel>>();
+    final userId = authProvider.user?.id ?? '';
+
+    if (userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login to chat with the service provider'),
+        ),
+      );
+      return;
+    }
+
+    final merchantId = product.merchant.id;
+    final merchantName = product.merchant.companyName;
+    final merchantImage = product.merchant.imgUrl;
+
+    final chatManager = Provider.of<ChatManager>(context, listen: false);
+
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      if (!chatManager.isInitialized) {
+        chatManager.initialize(
+          ApiConfig.baseChatUrl, // Your server URL
+          userId.toString(),
+          'customer',
+        );
+      }
+      dev.log('Customer ID: $userId, Merchant ID: $merchantId');
+
+      String processedImageUrl = '';
+      if (merchantImage.isNotEmpty) {
+        if (merchantImage.startsWith('http://') ||
+            merchantImage.startsWith('https://')) {
+          processedImageUrl = merchantImage;
+        } else {
+          processedImageUrl = 'https://api.myad.com/uploads/$merchantImage';
+        }
+      }
+
+      // Use the ChatNavigation helper to open chat
+      await ChatNavigation.openChatWithMerchant(
+        context,
+        chatManager,
+        userId.toString(),
+        merchantId.toString(),
+        merchantName,
+        processedImageUrl,
+      );
+
+      // Close loading dialog
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      // Close loading dialog if open
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      dev.log('Error opening chat: $e');
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error opening chat: $e')));
+    }
   }
 
   void _launchPhone(String phone) async {

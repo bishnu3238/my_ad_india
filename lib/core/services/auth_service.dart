@@ -11,12 +11,12 @@ class AuthCheckService {
   /// Shows authentication popup if user is not logged in
   /// Returns true if user is authenticated, false otherwise
   static Future<bool> checkAuthAndShowPopupIfNeeded(
-    BuildContext context, {
+    BuildContext pageContext, {
     String title = 'Authentication Required',
     String message = 'Please login or create an account to access this service',
   }) async {
     // Get the auth provider
-    final authProvider = context.read<AuthProviderModel<UserModel>>();
+    final authProvider = pageContext.read<AuthProviderModel<UserModel>>();
 
     // Check if already authenticated
     if (authProvider.isAuthenticated) {
@@ -25,7 +25,7 @@ class AuthCheckService {
 
     // User is not authenticated, show popup
     bool? result = await showDialog<bool>(
-      context: context,
+      context: pageContext,
       barrierDismissible: false,
       builder:
           (context) => AuthRequiredPopup(
@@ -34,17 +34,17 @@ class AuthCheckService {
             onLogin: () {
               // Close dialog and navigate to login
               Navigator.pop(context, false);
-              context.push(AuthRoutes.login);
+              pageContext.push(AuthRoutes.login);
             },
             onSignup: () {
               // Close dialog and navigate to signup
               Navigator.pop(context, false);
-              Navigator.pushNamed(context, '/signup');
+              pageContext.pushNamed(AuthRoutes.register);
             },
             onCancel: () {
               // User cancelled, return to previous screen
               Navigator.pop(context, false);
-              Navigator.pop(context);
+              // pageContext.pop();
             },
           ),
     );

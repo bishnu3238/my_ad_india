@@ -12,21 +12,22 @@ class ForgotPasswordScreen<T extends UserEntity> extends StatefulWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onResetSuccess;
-  final Function(String)? onOtpSent;
+  final Function(String, String)? onOtpSent;
 
   const ForgotPasswordScreen({
-    Key? key,
+    super.key,
     this.title = 'Forgot Password',
     this.subtitle = 'Enter your email or phone number to receive a reset code',
     this.onResetSuccess,
     this.onOtpSent,
-  }) : super(key: key);
+  });
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState<T>();
 }
 
-class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPasswordScreen<T>> {
+class _ForgotPasswordScreenState<T extends UserEntity>
+    extends State<ForgotPasswordScreen<T>> {
   final _formKey = GlobalKey<FormState>();
   final _identifierController = TextEditingController();
   bool _isEmailSelected = true;
@@ -41,9 +42,7 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
     if (_formKey.currentState?.validate() ?? false) {
       final authBloc = context.read<AuthBloc<T>>();
       authBloc.add(
-        ForgotPasswordEvent(
-          identifier: _identifierController.text.trim(),
-        ),
+        ForgotPasswordEvent(identifier: _identifierController.text.trim()),
       );
     }
   }
@@ -54,9 +53,7 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -66,8 +63,8 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
                 height: 24,
                 width: 24,
                 colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.primary,
-                    BlendMode.srcIn
+                  Theme.of(context).colorScheme.primary,
+                  BlendMode.srcIn,
                 ),
                 package: 'pack',
               ),
@@ -83,13 +80,18 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
           if (state is PasswordResetSentState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Reset code sent. Please check your inbox or messages.'),
+                content: Text(
+                  'Reset code sent. Please check your inbox or messages.',
+                ),
                 backgroundColor: Colors.green,
               ),
             );
 
             if (widget.onOtpSent != null) {
-              widget.onOtpSent!(_identifierController.text.trim());
+              widget.onOtpSent!(
+                _identifierController.text.trim(),
+                (state as PasswordResetSentState).userId,
+              );
             }
 
             // Navigate to OTP verification screen
@@ -135,9 +137,8 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
 
                     Text(
                       widget.title,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -154,7 +155,9 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceVariant.withOpacity(0.3),
                       ),
                       child: Row(
                         children: [
@@ -166,21 +169,31 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  color: _isEmailSelected
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.transparent,
+                                  color:
+                                      _isEmailSelected
+                                          ? Theme.of(
+                                            context,
+                                          ).colorScheme.primary
+                                          : Colors.transparent,
                                 ),
                                 child: Text(
                                   'Email',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: _isEmailSelected
-                                        ? Theme.of(context).colorScheme.onPrimary
-                                        : Theme.of(context).colorScheme.onSurface,
+                                    color:
+                                        _isEmailSelected
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary
+                                            : Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -194,21 +207,31 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  color: !_isEmailSelected
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.transparent,
+                                  color:
+                                      !_isEmailSelected
+                                          ? Theme.of(
+                                            context,
+                                          ).colorScheme.primary
+                                          : Colors.transparent,
                                 ),
                                 child: Text(
                                   'Phone',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: !_isEmailSelected
-                                        ? Theme.of(context).colorScheme.onPrimary
-                                        : Theme.of(context).colorScheme.onSurface,
+                                    color:
+                                        !_isEmailSelected
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary
+                                            : Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -221,21 +244,38 @@ class _ForgotPasswordScreenState<T extends UserEntity> extends State<ForgotPassw
                     const SizedBox(height: 24),
 
                     AuthTextField(
-                      label: _isEmailSelected ? 'Email Address *' : 'Phone Number *',
-                      hint: _isEmailSelected ? 'Enter your email address' : 'Enter your phone number',
+                      label:
+                          _isEmailSelected
+                              ? 'Email Address *'
+                              : 'Phone Number *',
+                      hint:
+                          _isEmailSelected
+                              ? 'Enter your email address'
+                              : 'Enter your phone number',
                       controller: _identifierController,
-                      keyboardType: _isEmailSelected ? TextInputType.emailAddress : TextInputType.phone,
-                      prefixIcon: Icon(_isEmailSelected ? Icons.email_outlined : Icons.phone_outlined),
+                      keyboardType:
+                          _isEmailSelected
+                              ? TextInputType.emailAddress
+                              : TextInputType.phone,
+                      prefixIcon: Icon(
+                        _isEmailSelected
+                            ? Icons.email_outlined
+                            : Icons.phone_outlined,
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return _isEmailSelected
                               ? 'Please enter your email'
                               : 'Please enter your phone number';
                         }
-                        if (_isEmailSelected && !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                        if (_isEmailSelected &&
+                            !RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(value)) {
                           return 'Please enter a valid email';
                         }
-                        if (!_isEmailSelected && !RegExp(r'^\+?[0-9]{10,15}$').hasMatch(value)) {
+                        if (!_isEmailSelected &&
+                            !RegExp(r'^\+?[0-9]{10,15}$').hasMatch(value)) {
                           return 'Please enter a valid phone number';
                         }
                         return null;

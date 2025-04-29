@@ -36,6 +36,13 @@ class AuthErrorState<T extends UserEntity> extends AuthState<T> {
   AuthErrorState(this.message);
 }
 
-class PasswordResetSentState<T extends UserEntity> extends AuthState<T> {}
+class PasswordResetSentState<T extends UserEntity> extends AuthState<T> {
+
+  final String? message;
+  final String userId;
+  final String otp;
+    PasswordResetSentState({this.message,required this.userId,required this.otp});
+
+}
 
 class PasswordChangedState<T extends UserEntity> extends AuthState<T> {}

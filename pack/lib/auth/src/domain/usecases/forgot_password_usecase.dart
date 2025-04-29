@@ -1,5 +1,6 @@
 // src/domain/usecases/forgot_password_usecase.dart
 import 'package:dartz/dartz.dart';
+import 'package:pack/auth/custom_auth.dart';
 
 import 'package:pack/services/failure/src/network_failure.dart';
 
@@ -11,7 +12,7 @@ class ForgotPasswordUseCase<T extends UserEntity> {
 
   ForgotPasswordUseCase(this.repository);
 
-  Future<Either<NetworkFailure, bool>> execute(String email) {
+  Future<Either<NetworkFailure, ForgotPasswordResponse<T>>> execute(String email) {
     return repository.forgotPassword(email);
   }
 }

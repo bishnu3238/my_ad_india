@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pack/services/responsive_service/responsive_utils_advance.dart';
 import '../../domain/entities/user_entity.dart';
 import '../blocs/auth_bloc.dart';
 import '../blocs/auth_event.dart';
@@ -18,16 +19,18 @@ class OTPVerificationScreen<T extends UserEntity> extends StatefulWidget {
   const OTPVerificationScreen({
     super.key,
     required this.identifier,
-    this.userId = '',
+    required this.userId,
     this.otpLength = 6,
     this.otpExpiryMinutes = 5,
   });
 
   @override
-  State<OTPVerificationScreen> createState() => _OTPVerificationScreenState<T>();
+  State<OTPVerificationScreen> createState() =>
+      _OTPVerificationScreenState<T>();
 }
 
-class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerificationScreen<T>> {
+class _OTPVerificationScreenState<T extends UserEntity>
+    extends State<OTPVerificationScreen<T>> {
   final List<TextEditingController> _otpControllers = [];
   final List<FocusNode> _focusNodes = [];
   Timer? _countdownTimer;
@@ -67,18 +70,15 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
     // Set initial countdown time
     _remainingSeconds = widget.otpExpiryMinutes * 60;
 
-    _countdownTimer = Timer.periodic(
-      const Duration(seconds: 1),
-          (timer) {
-        setState(() {
-          if (_remainingSeconds > 0) {
-            _remainingSeconds--;
-          } else {
-            timer.cancel();
-          }
-        });
-      },
-    );
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingSeconds > 0) {
+          _remainingSeconds--;
+        } else {
+          timer.cancel();
+        }
+      });
+    });
   }
 
   String get _formattedCountdown {
@@ -92,10 +92,7 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
 
     if (otp.length == widget.otpLength) {
       final authBloc = context.read<AuthBloc<T>>();
-      authBloc.add(VerifyOTPEvent(
-        otp: otp,
-        userId: widget.userId,
-      ));
+      authBloc.add(VerifyOTPEvent(otp: otp, userId: widget.userId));
     }
   }
 
@@ -131,9 +128,9 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ResetPasswordScreen<T>(
-                  resetToken: state.resetToken,
-                ),
+                builder:
+                    (context) =>
+                        ResetPasswordScreen<T>(resetToken: state.resetToken),
               ),
             );
           } else if (state is AuthErrorState<T>) {
@@ -187,9 +184,9 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
 
                 Text(
                   widget.identifier,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
 
@@ -200,9 +197,9 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
                     widget.otpLength,
-                        (index) => Container(
-                      width: 48,
-                      height: 56,
+                    (index) => Container(
+                      width: ScreenUtils().getHorizontalSize(40),
+                      height: ScreenUtils().getVerticalSize(40),
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       child: TextField(
                         controller: _otpControllers[index],
@@ -232,14 +229,17 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                         onChanged: (value) {
-                          if (value.isNotEmpty && index < widget.otpLength - 1) {
+                          if (value.isNotEmpty &&
+                              index < widget.otpLength - 1) {
                             _focusNodes[index + 1].requestFocus();
                           }
 
                           // Auto-verify when all fields are filled
                           if (value.isNotEmpty &&
                               index == widget.otpLength - 1 &&
-                              _otpControllers.every((controller) => controller.text.isNotEmpty)) {
+                              _otpControllers.every(
+                                (controller) => controller.text.isNotEmpty,
+                              )) {
                             _verifyOtp();
                           }
                         },
@@ -254,9 +254,10 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
                 Text(
                   'Code expires in: $_formattedCountdown',
                   style: TextStyle(
-                    color: _remainingSeconds < 30
-                        ? Theme.of(context).colorScheme.error
-                        : Theme.of(context).colorScheme.secondary,
+                    color:
+                        _remainingSeconds < 30
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -287,16 +288,20 @@ class _OTPVerificationScreenState<T extends UserEntity> extends State<OTPVerific
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             TextButton(
-                              onPressed: _remainingSeconds == 0 && !isLoading
-                                  ? _resendOtp
-                                  : null,
+                              onPressed:
+                                  _remainingSeconds == 0 && !isLoading
+                                      ? _resendOtp
+                                      : null,
                               child: Text(
                                 'Resend',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: _remainingSeconds == 0 && !isLoading
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).disabledColor,
+                                  color:
+                                      _remainingSeconds == 0 && !isLoading
+                                          ? Theme.of(
+                                            context,
+                                          ).colorScheme.primary
+                                          : Theme.of(context).disabledColor,
                                 ),
                               ),
                             ),

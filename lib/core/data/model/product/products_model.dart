@@ -2,6 +2,7 @@ import 'package:my_ad/core/data/api/api_config.dart';
 import 'package:pack/services/service.dart';
 
 import 'package:pack/pack.dart';
+import '../../../constant/image.dart';
 import '../merchant/merchant_model.dart';
 
 enum OfferStatus { inactive, active }
@@ -12,6 +13,7 @@ class Merchant {
   final String companyName;
   final String email;
   final String mobile;
+  final String imgUrl;
 
   Merchant({
     required this.id,
@@ -19,6 +21,7 @@ class Merchant {
     required this.companyName,
     required this.email,
     required this.mobile,
+    this.imgUrl = AppImage.defaultMerchantImg,
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) {
@@ -28,6 +31,7 @@ class Merchant {
       companyName: json.getString('merchant_company'),
       email: json.getString('merchant_email'),
       mobile: json.getString('merchant_mobile'),
+      imgUrl: json.getString('merchant_img'),
     );
   }
 
@@ -38,6 +42,7 @@ class Merchant {
       'merchant_company': companyName,
       'merchant_email': email,
       'merchant_mobile': mobile,
+      'merchant_img': imgUrl,
     };
   }
 }
@@ -141,15 +146,19 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
     List<ProductImages> productImages = [];
 
     if (json.containsKey('images') && json['images'] != null) {
-      productImages = (json['images'] as List)
-          .map((img) => ProductImages.fromMap({
-        'id': img['id'] as String,
-        'productId': img['ead_product_id'] as String,
-        'image': img['image'] as String,
-        'status': img['status'] == '1' ? Status.active : Status.inActive,
-        'date': DateTime.parse(img['date']),
-      }))
-          .toList();
+      productImages =
+          (json['images'] as List)
+              .map(
+                (img) => ProductImages.fromMap({
+                  'id': img['id'] as String,
+                  'productId': img['ead_product_id'] as String,
+                  'image': img['image'] as String,
+                  'status':
+                      img['status'] == '1' ? Status.active : Status.inActive,
+                  'date': DateTime.parse(img['date']),
+                }),
+              )
+              .toList();
     }
     return ProductModel(
       id: json.getString('id'),
@@ -239,7 +248,7 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
     };
   }
 
-  String get fullImgUrl =>images[0].image;
+  String get fullImgUrl => images[0].image;
 
   @override
   String get displayDescription => description;

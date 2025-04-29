@@ -28,7 +28,7 @@ abstract class AuthRepository<T extends UserEntity> {
     String newPassword,
     String confirmPassword,
   );
-  Future<Either<NetworkFailure, bool>> forgotPassword(String email);
+  Future<Either<NetworkFailure, ForgotPasswordResponse<T>>> forgotPassword(String email);
 
   Future<Either<NetworkFailure, ChangePasswordResponse<T>>> changePassword(
     String currentPassword,

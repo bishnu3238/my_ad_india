@@ -4,7 +4,7 @@ class ApiConfig {
   /// TODO: if second one is not working then uncomment the first one.
   // static const String authBaseUrl = '$baseUrl/auth/auth.php';
   static const String authBaseUrl = '$baseUrl/auth/new_auth.php';
-  static const String baseChatUrl = 'http://192.168.1.12:3000/api';
+  static const String baseChatUrl = 'http://192.168.1.12:3000';
   static const String socketUrl = 'http://192.168.1.12:3000';
 
   static const String baseLocalUrl = 'http://192.168.1.12/ead_api';

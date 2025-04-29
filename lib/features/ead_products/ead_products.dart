@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_ad/core/services/auth_service.dart';
+import 'package:my_ad/features/chat/services/chat_service.dart';
 import 'package:pack/pack.dart';
 import 'package:pack/services/service.dart';
- import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:animations/animations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/data/model/model.dart';
@@ -307,21 +309,23 @@ class _EadProductsState extends State<EadProducts>
           const Spacer(),
           IconButton(
             icon: Icon(
-              Icons.view_list,
+              !viewModel.isGridView
+                  ? Icons.view_list_rounded
+                  : Icons.view_list_outlined,
               color:
                   !viewModel.isGridView
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.primary.withOpacity(0.7),
+                      : theme.colorScheme.primary.withValues(alpha: 0.7),
             ),
             onPressed: () => viewModel.toggleViewMode(false),
           ),
           IconButton(
             icon: Icon(
-              Icons.grid_view,
+              viewModel.isGridView ? Icons.grid_view_rounded : Icons.grid_view,
               color:
                   viewModel.isGridView
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.primary.withOpacity(0.7),
+                      : theme.colorScheme.primary.withValues(alpha: 0.7),
             ),
             onPressed: () => viewModel.toggleViewMode(true),
           ),
@@ -339,9 +343,9 @@ class _EadProductsState extends State<EadProducts>
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.635,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+        childAspectRatio: 0.62,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
       itemCount: viewModel.products.length,
       itemBuilder: (context, index) {
@@ -506,14 +510,22 @@ class _EadProductsState extends State<EadProducts>
     }
   }
 
-  void _navigateToProductDetails(BuildContext context, ProductModel product) {
-    context.push(
-      '${EadProductRoute.eadServices}/${product.id}/${ProductSearchBy.product.name}${EadProductRoute.eadServiceDetails}',
-      extra: context.read<EadProductsViewModel>(),
-    );
+  void _navigateToProductDetails(
+    BuildContext context,
+    ProductModel product,
+  ) async {
+    if (!await AuthCheckService.checkAuthAndShowPopupIfNeeded(context)) return;
+    if (context.mounted) {
+      context.push(
+        '${EadProductRoute.eadServices}/${product.id}/${ProductSearchBy.product.name}${EadProductRoute.eadServiceDetails}',
+        extra: context.read<EadProductsViewModel>(),
+      );
+    }
   }
 
   void _launchPhone(String phoneNumber) async {
+    if (!await AuthCheckService.checkAuthAndShowPopupIfNeeded(context)) return;
+
     final Uri phoneUri = Uri.parse('tel:$phoneNumber');
     try {
       if (await canLaunchUrl(phoneUri)) {

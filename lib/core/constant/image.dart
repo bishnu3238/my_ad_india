@@ -21,6 +21,8 @@ class AppImage {
   static const String quiteStreetSvg = quiteStreet;
 
   static const loginBackground = '$_baseImg/login_background.jpg';
+
+  static const String defaultMerchantImg = 'https://bom1plmcpnl502088.prod.bom1.secureserver.net:2083/cpsess6114879059/viewer/home%2fzxpunadw6rpm%2fpublic_html%2feazytechno.com%2fead_api%2fead%2fmerchant%2fimg%2fdemo/av1.jpg';
 }
 
 const String serverDown =

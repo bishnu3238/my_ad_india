@@ -67,6 +67,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
           color: RegistrationTheme.primaryColor,
         ),
         child: CupertinoTextFormFieldRow(
+
           controller: widget.nameController,
           placeholder: 'Full Name *',
           decoration: BoxDecoration(

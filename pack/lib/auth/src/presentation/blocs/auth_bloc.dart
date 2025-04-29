@@ -1,7 +1,7 @@
 // src/presentation/blocs/auth_bloc.dart
 import 'dart:developer' as dev;
 import 'package:flutter_bloc/flutter_bloc.dart';
- import '../../domain/entities/user_entity.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/change_password_usecase.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
@@ -49,7 +49,7 @@ class AuthBloc<T extends UserEntity> extends Bloc<AuthEvent, AuthState<T>> {
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState<T>> emit) async {
-    emit(AuthLoadingState());
+    emit(AuthLoadingState<T>());
     try {
       final authResponse = await loginUseCase.execute(
         event.emailOrUsername,
@@ -65,7 +65,7 @@ class AuthBloc<T extends UserEntity> extends Bloc<AuthEvent, AuthState<T>> {
   }
 
   Future<void> _onSignup(SignupEvent event, Emitter<AuthState<T>> emit) async {
-    emit(AuthLoadingState());
+    emit(AuthLoadingState<T>());
     try {
       final authResponse = await signupUseCase.execute(
         event.email,
@@ -79,48 +79,48 @@ class AuthBloc<T extends UserEntity> extends Bloc<AuthEvent, AuthState<T>> {
         (result) => emit(OTPSentState<T>(result.userId, result.otp)),
       );
     } catch (e) {
-      emit(AuthErrorState(e.toString()));
+      emit(AuthErrorState<T>(e.toString()));
     }
   }
 
   Future<void> _onForgotPassword(
-      ForgotPasswordEvent event,
-      Emitter<AuthState> emit,
-      ) async {
-    emit(AuthLoadingState());
+    ForgotPasswordEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoadingState<T>());
     try {
       final result = await forgotPasswordUseCase.execute(event.identifier);
 
-      result.fold(
-            (failure) => emit(AuthErrorState(failure.message)),
-            (success) {
-          if (success) {
-            emit(PasswordResetSentState());
-          } else {
-            emit(AuthErrorState("Failed to send reset code. Please try again."));
-          }
-        },
-      );
+      result.fold((failure) => emit(AuthErrorState<T>(failure.message)), (
+        success,
+      ) {
+        if (success.smsSent ?? false) {
+          emit(PasswordResetSentState<T>(otp: success.otp!, userId: success.userId!));
+        } else {
+          emit(
+            AuthErrorState<T>("Failed to send reset code. Please try again."),
+          );
+        }
+      });
     } catch (e) {
-      emit(AuthErrorState(e.toString()));
+      emit(AuthErrorState<T>(e.toString()));
     }
   }
-
 
   Future<void> _onChangePassword(
     ChangePasswordEvent event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoadingState());
+    emit(AuthLoadingState<T>());
     try {
       await changePasswordUseCase.execute(
         event.currentPassword,
         event.newPassword,
         event.confirmPassword,
       );
-      emit(PasswordChangedState());
+      emit(PasswordChangedState<T>());
     } catch (e) {
-      emit(AuthErrorState(e.toString()));
+      emit(AuthErrorState<T>(e.toString()));
     }
   }
 
@@ -129,11 +129,11 @@ class AuthBloc<T extends UserEntity> extends Bloc<AuthEvent, AuthState<T>> {
     Emitter<AuthState> emit,
   ) async {
     if (socialLoginUseCase == null) {
-      emit(AuthErrorState('Social login is not enabled'));
+      emit(AuthErrorState<T>('Social login is not enabled'));
       return;
     }
 
-    emit(AuthLoadingState());
+    emit(AuthLoadingState<T>());
     try {
       final authResponse = await socialLoginUseCase!.execute(
         event.provider,
@@ -141,11 +141,11 @@ class AuthBloc<T extends UserEntity> extends Bloc<AuthEvent, AuthState<T>> {
         userData: event.userData,
       );
       authResponse.fold(
-        (failure) => emit(AuthErrorState(failure.message)),
-        (result) => emit(AuthenticatedState(result)),
+        (failure) => emit(AuthErrorState<T>(failure.message)),
+        (result) => emit(AuthenticatedState<T>(result)),
       );
     } catch (e) {
-      emit(AuthErrorState(e.toString()));
+      emit(AuthErrorState<T>(e.toString()));
     }
   }
 

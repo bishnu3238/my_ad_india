@@ -26,4 +26,19 @@ class ServicesService {
       dev.log('SERVICES-SERVICES-ERROR: $e');
     }
   }
+
+  Future<List<ServiceModel>?> fetchServicesByCategoryId(String id) async {
+    _store.setStatus(DataStoreStatus.loading);
+    try {
+      final result = await _repository.fetchServicesByCategory(id);
+
+      return result.fold((failure) {
+        _store.setError(OperationFailure(message: failure.message));
+        return null;
+      }, (services) => services);
+    } catch (e) {
+      dev.log('SERVICES-SERVICES-ERROR: $e');
+    }
+    return null;
+  }
 }

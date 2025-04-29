@@ -66,10 +66,10 @@ class SignupResponse<T extends UserEntity> extends AuthResponse<T> {
   });
 
   factory SignupResponse.convert(Map<String, dynamic> data) {
-     dev.log('SignupResponse convert:= $data');
+    dev.log('SignupResponse convert:= $data');
     return SignupResponse(
-      otp: data.containsKey('data')  ? data['data']['otp'] : '',
-      userId: data.containsKey('data') ? data['data']['user_id']: '',
+      otp: data.containsKey('data') ? data['data']['otp'] : '',
+      userId: data.containsKey('data') ? data['data']['user_id'] : '',
       user: null,
       status: data['status'],
       message: data['message'],
@@ -135,6 +135,50 @@ class ChangePasswordResponse<T extends UserEntity> extends AuthResponse<T> {
 
       token: data['token'],
     );
+  }
+}
+
+// Add this class within your src/data/models/auth_response.dart file
+// or wherever the other AuthResponse classes are defined.
+
+class ForgotPasswordResponse<T extends UserEntity> extends AuthResponse<T> {
+  final String? otp, userId;
+  final bool? smsSent;
+
+  ForgotPasswordResponse({
+    this.otp,
+    this.userId,
+    this.smsSent,
+    super.user,
+    super.message,
+    super.status,
+  });
+
+  factory ForgotPasswordResponse.convert(Map<String, dynamic> data) {
+    dev.log('ForgotPasswordResponse convert: $data');
+
+    final responseData =
+        data.containsKey('data') && data['data'] is Map
+            ? data['data'] as Map<String, dynamic>
+            : null;
+
+    return ForgotPasswordResponse(
+      otp: responseData?['otp']?.toString(), // Use null-aware access
+      userId: responseData?['user_id']?.toString(), // Use null-aware access
+
+      smsSent:
+          responseData?['sms_sent'] as bool?, // Cast to bool?, handles null
+
+      user: null,
+
+      status: data['status']?.toString(),
+      message: data['message']?.toString(),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'ForgotPasswordResponse{otp: $otp, smsSent: $smsSent, status: $status, message: $message, user: $user}';
   }
 }
 

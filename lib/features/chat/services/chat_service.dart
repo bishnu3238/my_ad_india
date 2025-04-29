@@ -10,7 +10,6 @@ import 'package:uuid/uuid.dart';
 import '../models/chat_conversation.dart';
 import '../models/chat_message.dart';
 import 'i_chat_service.dart';
-
 class ChatService implements IChatService {
   // API endpoints
   static const String _baseUrl = ApiConfig.baseChatUrl;
@@ -123,7 +122,7 @@ class ChatService implements IChatService {
         throw Exception('Failed to load conversations: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error getting conversations: $e');
+      dev.log('Error getting conversations: $e');
       throw Exception('Failed to load conversations: $e');
     }
   }
@@ -143,7 +142,7 @@ class ChatService implements IChatService {
         throw Exception('Failed to load conversation: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error getting conversation: $e');
+      dev.log('Error getting conversation: $e');
       throw Exception('Failed to load conversation: $e');
     }
   }
@@ -174,7 +173,7 @@ class ChatService implements IChatService {
         );
       }
     } catch (e) {
-      debugPrint('Error creating conversation: $e');
+      dev.log('Error creating conversation: $e');
       throw Exception('Failed to create conversation: $e');
     }
   }
@@ -200,7 +199,7 @@ class ChatService implements IChatService {
         throw Exception('Failed to load messages: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error getting messages: $e');
+      dev.log('Error getting messages: $e');
       throw Exception('Failed to load messages: $e');
     }
   }
@@ -256,7 +255,7 @@ class ChatService implements IChatService {
         throw Exception('Failed to send message: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error sending message: $e');
+      dev.log('Error sending message: $e');
       throw Exception('Failed to send message: $e');
     }
   }
@@ -289,7 +288,7 @@ class ChatService implements IChatService {
         'userId': _userId,
       });
     } catch (e) {
-      debugPrint('Error marking messages as read: $e');
+      dev.log('Error marking messages as read: $e');
       throw Exception('Failed to mark messages as read: $e');
     }
   }
@@ -313,7 +312,7 @@ class ChatService implements IChatService {
         'userId': _userId,
       });
     } catch (e) {
-      debugPrint('Error deleting messages: $e');
+      dev.log('Error deleting messages: $e');
       throw Exception('Failed to delete messages: $e');
     }
   }
@@ -344,7 +343,7 @@ class ChatService implements IChatService {
         throw Exception('Failed to upload file: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error uploading file: $e');
+      dev.log('Error uploading file: $e');
       throw Exception('Failed to upload file: $e');
     }
   }

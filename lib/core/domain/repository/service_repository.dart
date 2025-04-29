@@ -9,6 +9,8 @@ import 'package:dartz/dartz.dart';
 abstract class ServiceRepository  extends IRepository{
 
 Future<Either<NetworkFailure, List<ServiceModel>>> fetchServices();
+Future<Either<NetworkFailure, List<ServiceModel>>> fetchServicesByCategory(String categoryId);
+
 
 }
 
