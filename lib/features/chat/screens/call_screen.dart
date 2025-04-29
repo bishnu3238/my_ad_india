@@ -163,11 +163,36 @@ class _CallScreenState extends State<CallScreen> {
     
     final chatManager = Provider.of<ChatManager>(context, listen: false);
     
-    chatManager.endCall(
-      widget.callId!,
-      widget.otherUserType,
-      widget.otherUserId,
-    );
+    // Add null checks to prevent the error
+    if (widget.callId == null) {
+      debugPrint('Cannot end call: callId is null');
+      
+      // Just close the call screen if we can't properly end the call
+      setState(() {
+        _isCallEnded = true;
+      });
+      
+      _callTimer?.cancel();
+      
+      // Close the call screen after a short delay
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      });
+      
+      return;
+    }
+    
+    try {
+      chatManager.endCall(
+        widget.callId!,
+        widget.otherUserType,
+        widget.otherUserId,
+      );
+    } catch (e) {
+      debugPrint('Error ending call: $e');
+    }
     
     _handleCallEnded();
   }

@@ -46,6 +46,16 @@ class ChatManager extends ChangeNotifier {
     return true;
   }
   
+  // Update user information
+  void updateUserInfo(String userId, String userType) {
+    this.userId = userId;
+    this.userType = userType;
+    if (_apiService.baseUrl.isNotEmpty) {
+      _apiService.initialize(_apiService.baseUrl, userId: userId, userType: userType);
+    }
+    notifyListeners();
+  }
+
   // Initialize the chat manager
   void initialize(String baseUrl, String userId, String userType) {
     this.userId = userId;
@@ -68,6 +78,8 @@ class ChatManager extends ChangeNotifier {
     if (userType == 'merchant') {
       refreshInquiries();
     }
+    
+    notifyListeners();
   }
   
   void _setupSocketListeners() {
@@ -119,9 +131,11 @@ class ChatManager extends ChangeNotifier {
   }
   
   void _authenticate() {
-    if (userId != null && userType != null) {
-      socketService.authenticate(userId!, userType!);
+    if (!isInitialized) {
+      debugPrint('Cannot authenticate: User information not set');
+      return;
     }
+    socketService.authenticate(userId!, userType!);
   }
   
   // Refresh data from API
@@ -210,9 +224,7 @@ class ChatManager extends ChangeNotifier {
     if (!isInitialized) {
       // Initialize with the provided IDs if not already initialized
       if (userType == null) {
-        userType = 'customer'; // Assume customer by default
-        userId = customerId;
-        _apiService.initialize(_apiService.baseUrl, userId: userId!, userType: userType!);
+        updateUserInfo(customerId, 'customer'); // Assume customer by default
       }
     }
     

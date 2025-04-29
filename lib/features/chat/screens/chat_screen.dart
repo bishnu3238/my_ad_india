@@ -281,10 +281,14 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             icon: const Icon(Icons.phone),
             onPressed: () => _initiateCall('audio'),
+            tooltip: 'Audio call',
+            key: const ValueKey('chat_audio_call_button'),
           ),
           IconButton(
             icon: const Icon(Icons.videocam),
             onPressed: () => _initiateCall('video'),
+            tooltip: 'Video call',
+            key: const ValueKey('chat_video_call_button'),
           ),
           Consumer<ChatManager>(
             builder: (context, chatManager, _) {
@@ -292,6 +296,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 return IconButton(
                   icon: const Icon(Icons.help_outline),
                   onPressed: _showInquiryDialog,
+                  tooltip: 'Send inquiry',
+                  key: const ValueKey('chat_inquiry_button'),
                 );
               }
               return const SizedBox.shrink();
@@ -404,7 +410,7 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (message.messageType == 'image')
-              _buildImageMessage(message)
+             _buildImageMessage(message)
             else if (message.messageType == 'file')
               ListTile(
                 leading: const Icon(Icons.attach_file),
@@ -534,6 +540,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () => setState(() => _showAttachmentOptions = !_showAttachmentOptions),
+                    tooltip: 'Add attachment',
+                    key: const ValueKey('chat_attachment_button'),
                   ),
                   Expanded(
                     child: TextField(
@@ -563,6 +571,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           icon: const Icon(Icons.send),
                           color: Theme.of(context).primaryColor,
                           onPressed: _sendMessage,
+                          tooltip: 'Send message',
+                          key: const ValueKey('chat_send_button'),
                         ),
                 ],
               ),
