@@ -31,24 +31,12 @@ class AuthRoutes {
               useGlassmorphism: false,
               accentColor: context.colorScheme.primary,
               animationStyle: AnimationStyle.scale,
+
               onLoginSuccess: () async {
                 dev.log('Login successful');
-
-                /// Todo add a loading indicator
-                m.showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  useRootNavigator: true,
-                  builder:
-                      (context) =>
-                          const m.Center(child: m.CircularProgressIndicator()),
-                );
-
                 await getIt<AuthProviderModel<UserModel>>().initialize();
-
                 if (context.mounted) {
-                  context .pop();
-                  context.go('/home');
+                  context.go(HomeRoute.home);
                 }
               },
               onCreateAccountTap: () => context.push(register),
@@ -139,18 +127,8 @@ class AuthRoutes {
               onVerifySuccess: () {
                 dev.log('OTP verified successfully');
 
-                /// Todo add a loading indicator
-                m.showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  useRootNavigator: true,
-                  builder:
-                      (context) =>
-                          const m.Center(child: m.CircularProgressIndicator()),
-                );
                 getIt<AuthProviderModel<UserModel>>().initialize();
                 if (context.mounted) {
-                  m.Navigator.pop(context);
                   context.go(HomeRoute.home);
                 }
                 // context.go(HomeRoute.home);

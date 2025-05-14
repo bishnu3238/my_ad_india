@@ -19,324 +19,129 @@ class HomeServicesSection extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
 
     return Consumer2<ServiceStore, HomeScreenProvider>(
-      builder: (context, homeViewModel, viewModel, _) {
+      builder: (context, serviceStore, homeProvider, _) {
         final services =
-            homeViewModel.items
+            serviceStore.items
                 .where(
-                  (e) => '${e.categoryId}' == viewModel.state.selectedCategory,
+                  (e) =>
+                      '${e.categoryId}' == homeProvider.state.selectedCategory,
                 )
                 .toList();
-        return SliverGrid(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            final service = services[index];
-            // Handle "View All" card if it's the last one and we have more than 20
-            bool isViewAllCard = services.length > 20 && index == 20;
 
-            return CustomAnimatedGridItem(
-              index: index,
-              child: GestureDetector(
+        final itemCount = services.length > 20 ? 21 : services.length;
+
+        return SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          sliver: SliverGrid(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final isViewAll = services.length > 20 && index == 20;
+              final service = isViewAll ? null : services[index];
+
+              return GestureDetector(
                 onTap: () {
-                  if (isViewAllCard) {
+                  if (isViewAll) {
                     context.push(
-                      '${AllServicesRoute.allServices}/${viewModel.state.selectedCategory}/${ShowServicesBy.category.name}',
+                      '${AllServicesRoute.allServices}/${homeProvider.state.selectedCategory}/${ShowServicesBy.category.name}',
                     );
                   } else {
-                    LogService().error('Service: ${service.fullImageUrl}');
                     context.push(
-                      '${EadProductRoute.eadServices}/${service.id}/${ProductSearchBy.service.name}',
+                      '${EadProductRoute.eadServices}/${service!.id}/${ProductSearchBy.service.name}',
                     );
                   }
                 },
-                child: AnimatedServiceCard(
+                child: ServiceCard(
                   service: service,
+                  isViewAllCard: isViewAll,
                   width: width,
-                  isViewAllCard: isViewAllCard,
                 ),
-              ),
-            );
-          }, childCount: services.length > 20 ? 21 : services.length),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 8.0,
-            childAspectRatio: 0.85,
-            mainAxisSpacing: 12.0,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class CustomAnimatedGridItem extends StatefulWidget {
-  final Widget child;
-  final int index;
-
-  const CustomAnimatedGridItem({
-    super.key,
-    required this.child,
-    required this.index,
-  });
-
-  @override
-  State<CustomAnimatedGridItem> createState() => _CustomAnimatedGridItemState();
-}
-
-class _CustomAnimatedGridItemState extends State<CustomAnimatedGridItem>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _slideAnimation;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Stagger the animations based on index
-    final delay = Duration(milliseconds: 100 * (widget.index % 3));
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-
-    // Create slide animation (horizontal offset)
-    _slideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOutQuad),
-    );
-
-    // Create fade animation
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-
-    // Create scale/flip animation
-    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
-    );
-
-    // Add delay based on index
-    Future.delayed(delay, () {
-      if (mounted) {
-        _animationController.forward();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        // Apply the slide, fade, and scale transformations
-        return Transform.translate(
-          offset: Offset(_slideAnimation.value, 0),
-          child: Opacity(
-            opacity: _fadeAnimation.value,
-            child: Transform(
-              transform:
-                  Matrix4.identity()
-                    ..setEntry(3, 2, 0.001) // Perspective
-                    ..rotateY(
-                      _scaleAnimation.value *
-                          3.14159 *
-                          (1 - _scaleAnimation.value),
-                    ), // Rotate around Y axis
-              alignment: Alignment.center,
-              child: Transform.scale(
-                scale: _scaleAnimation.value,
-                child: child,
-              ),
+              );
+            }, childCount: itemCount),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.8,
             ),
           ),
         );
       },
-      child: widget.child,
     );
   }
 }
 
-class AnimatedServiceCard extends StatefulWidget {
-  final ServiceModel service;
-  final double width;
+class ServiceCard extends StatelessWidget {
+  final ServiceModel? service;
   final bool isViewAllCard;
+  final double width;
 
-  const AnimatedServiceCard({
+  const ServiceCard({
     super.key,
-    required this.service,
+    this.service,
+    required this.isViewAllCard,
     required this.width,
-    this.isViewAllCard = false,
   });
 
   @override
-  State<AnimatedServiceCard> createState() => _AnimatedServiceCardState();
-}
-
-class _AnimatedServiceCardState extends State<AnimatedServiceCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _borderAnimation;
-  bool _isHovered = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-
-    _borderAnimation = Tween<double>(
-      begin: 0.5,
-      end: 3.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _borderAnimation,
-      builder: (context, child) {
-        return Container(
-          margin: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color:
-                    _isHovered
-                        ? Colors.blue.withValues(alpha: 0.3)
-                        : Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
-            border: Border.all(
-              color:
-                  widget.isViewAllCard
-                      ? Colors.blue.withValues(
-                        alpha: _borderAnimation.value * 0.3,
-                      )
-                      : _isHovered
-                      ? Theme.of(context).primaryColor.withValues(
-                        alpha: _borderAnimation.value * 0.3,
-                      )
-                      : Colors.grey.withValues(alpha: 0.2),
-              width: _borderAnimation.value,
-            ),
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade100,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
-          child: child,
-        );
-      },
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              splashColor: Theme.of(
-                context,
-              ).primaryColor.withValues(alpha: 0.1),
-              highlightColor: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    widget.isViewAllCard
-                        ? _buildViewAllCard()
-                        : _buildServiceCard(),
-              ),
-            ),
-          ),
-        ),
+        ],
       ),
+      child: isViewAllCard ? _buildViewAll() : _buildService(context),
     );
   }
 
-  Widget _buildServiceCard() {
+  Widget _buildService(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
           flex: 3,
-          child: Hero(
-            tag: 'service_${widget.service.id}',
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: ImageView(
-                  path: widget.service.fullImageUrl,
-                  // path: 'assets/images/placeholder.png',
-                  width: double.infinity,
-                  height: double.infinity,
-                  source: ImageSource.network,
-                  fit: BoxFit.cover,
-                  placeholder: Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.image, color: Colors.grey),
-                  ),
-                ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: ImageView(
+              path: service!.fullImageUrl,
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+              source: ImageSource.network,
+              placeholder: Container(
+                color: Colors.grey[200],
+                child: const Icon(Icons.image, color: Colors.grey),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 8),
         Expanded(
           flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
-                style: TextStyle(
-                  fontSize: widget.width * 0.028,
-                  fontWeight: _isHovered ? FontWeight.bold : FontWeight.w600,
-                  letterSpacing: 0.5,
-                  color:
-                      _isHovered
-                          ? Theme.of(context).primaryColor
-                          : Colors.black87,
-                ),
-                child: Text(
-                  widget.service.serviceName,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+          child: Text(
+            service!.serviceName,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: width * 0.028,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade800,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildViewAllCard() {
+  Widget _buildViewAll() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -345,7 +150,7 @@ class _AnimatedServiceCardState extends State<AnimatedServiceCard>
         Text(
           "View All",
           style: TextStyle(
-            fontSize: widget.width * 0.03,
+            fontSize: width * 0.03,
             fontWeight: FontWeight.bold,
             color: Colors.blue,
           ),
@@ -354,8 +159,8 @@ class _AnimatedServiceCardState extends State<AnimatedServiceCard>
         Text(
           "Services",
           style: TextStyle(
-            fontSize: widget.width * 0.025,
-            color: Colors.blue.shade700,
+            fontSize: width * 0.025,
+            color: Colors.blue.shade600,
           ),
         ),
       ],

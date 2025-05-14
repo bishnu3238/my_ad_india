@@ -1,6 +1,5 @@
-// File: language_selector.dart
 import 'package:flutter/material.dart';
-import 'easy_localize_extensions.dart';
+ import 'easy_localize_extensions.dart';
 
 class LanguageSelector extends StatelessWidget {
   final Map<Locale, String> languageNames;
@@ -9,12 +8,12 @@ class LanguageSelector extends StatelessWidget {
   final void Function(Locale)? onLocaleSelected;
 
   const LanguageSelector({
-    Key? key,
+    super.key,
     required this.languageNames,
     this.title,
     this.showCountryFlags = true,
     this.onLocaleSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +29,13 @@ class LanguageSelector extends StatelessWidget {
           title: Text(name),
           onTap: () async {
             await context.setLocale(locale);
+            // Navigate to the current route with the new locale
+            // final currentPath = GoRouter.of(context).routeInformationProvider.value.uri.path;
+            // final newPath = currentPath.replaceFirst(
+            //   RegExp(r'^/(en|es)'),
+            //   '/${locale.languageCode}',
+            // );
+            // context.go(newPath);
             if (onLocaleSelected != null) {
               onLocaleSelected!(locale);
             }
@@ -44,7 +50,6 @@ class LanguageSelector extends StatelessWidget {
 
   Widget _buildFlag(Locale locale) {
     final String countryCode = locale.countryCode?.toUpperCase() ?? locale.languageCode.toUpperCase();
-
     return Text(
       getCountryFlag(countryCode),
       style: TextStyle(fontSize: 24),
@@ -52,7 +57,7 @@ class LanguageSelector extends StatelessWidget {
   }
 
   String getCountryFlag(String countryCode) {
-    // Convert country code to emoji flag
+    if (countryCode.length != 2) return '';
     final int firstLetter = countryCode.codeUnitAt(0) - 0x41 + 0x1F1E6;
     final int secondLetter = countryCode.codeUnitAt(1) - 0x41 + 0x1F1E6;
     return String.fromCharCode(firstLetter) + String.fromCharCode(secondLetter);

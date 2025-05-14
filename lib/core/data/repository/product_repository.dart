@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer' as dev;
 import 'package:dartz/dartz.dart';
 
@@ -56,6 +57,40 @@ class ProductRepositoryImpl implements ProductRepository {
         .then(
           (value) => value.fold(
             (failure) => left(NetworkFailure(message: failure.message)),
+            (response) {
+              if (response.isSuccess) return right(response.data!.products);
+
+              return left(
+                UnexpectedFailure(message: 'Unable to fetch products'),
+              );
+            },
+          ),
+        );
+  }
+
+  @override
+  Future<Either<Failure, List<ProductModel>>> fetchNearByProductsOfUser(
+    FetchNearByProductsOfUserPayload payload,
+  ) async {
+    return await apiCallService
+        .request(
+          config: RequestConfig(
+            baseUrl: ApiConfig.baseUrl,
+            endpoint: ApiConfig.nearbyProducts,
+            method: RequestMethod.post,
+            body: jsonEncode(payload.toJson()),
+          ),
+          responseConverter: (data) {
+            dev.log('FETCH NEARBY PREDICTS ${data.toString()}');
+            return EadProductResponse.fromJson(data);
+          },
+        )
+        .then(
+          (value) => value.fold(
+            (failure) {
+              dev.log(failure.message);
+              return left(NetworkFailure(message: failure.message));
+            },
             (response) {
               if (response.isSuccess) return right(response.data!.products);
 

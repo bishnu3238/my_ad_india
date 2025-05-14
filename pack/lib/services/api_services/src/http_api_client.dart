@@ -48,7 +48,7 @@ class HttpApiClient implements BaseApiClient {
     required RequestConfig config,
     T Function(dynamic data)? responseConverter,
   }) async {
-    final requestId = _generateRequestId(config);
+    final requestId = config.requestId ?? _generateRequestId(config);
     final completer = Completer<void>();
     _cancelTokens[requestId] = completer;
 
@@ -157,7 +157,9 @@ class HttpApiClient implements BaseApiClient {
       final convertedData =
           responseConverter != null
               ? responseConverter(responseData)
-              : responseData as T;
+              : config.customResponseDecoder != null
+                  ? config.customResponseDecoder!(responseData) as T
+                  : responseData as T;
 
       final apiResponse = ApiResponse<T>(
         data: convertedData,
@@ -334,7 +336,7 @@ class HttpApiClient implements BaseApiClient {
       'Retrying request (${retryCount + 1}/${config.maxRetries}): ${config.fullUrl}',
     );
 
-    final delay = Duration(milliseconds: 1000 * (1 << retryCount));
+    final delay = config.retryDelay ?? Duration(milliseconds: 1000 * (1 << retryCount));
     await Future.delayed(delay);
 
     try {

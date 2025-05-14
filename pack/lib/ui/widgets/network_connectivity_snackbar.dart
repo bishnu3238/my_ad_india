@@ -29,6 +29,7 @@ class _NetworkConnectivitySnackBarState
 
     // Set initial state
     _isOnline = _connectivityService.isConnected;
+    WidgetsBinding.instance.addPostFrameCallback((_)=>_checkConnectivity());
 
     // Listen to actual network changes instead of periodic polling
     _connectivityService.onConnectivityChanged.listen((_) {

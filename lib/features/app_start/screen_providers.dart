@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_ad/features/chat/core/chat_viewmodel.dart';
-import 'package:my_ad/features/profile/core/profile_provider.dart';
-import 'package:my_ad/features/terms/app_support/core/support_provider.dart';
 import 'package:pack/auth/custom_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer' as dev;
@@ -19,7 +16,6 @@ import 'package:pack/services/service.dart';
 
 import '../../core/data/model/user/user_model.dart';
 
-import '../all_category/core/all_category_view_modal.dart';
 import '../intro/core/intro_provider.dart';
 
 import '../../core/injector/dependency_injection.dart';
@@ -29,12 +25,15 @@ import '../../provider_state/theme_provider.dart';
 import '../home/shell/profile_settings_screen/settings/core/setting_view_model.dart';
 import '../merchant/merchant_registration/core/merchant_registration_view_model.dart';
 import '../merchant/subscription/core/subscription_plan_provider.dart';
+import '../myad_categories/core/all_category_view_modal.dart';
 import '../onboarding/core/onboarding_provider.dart';
+import '../profile/core/profile_provider.dart';
+import '../terms/app_support/core/support_provider.dart';
 import 'my_add.dart';
 import '../../core/data/model/model.dart';
 
 class ScreenProviders extends StatelessWidget {
-  const ScreenProviders({super.key});
+    const ScreenProviders({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +56,18 @@ class ScreenProviders extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => DependencyInjector.get<LocationProvider>(),
         ),
-        ChangeNotifierProvider(
+        ChangeNotifierProxyProvider<CategoryStore, AllCategoriesScreenProvider>(
           create: (x) => DependencyInjector.get<AllCategoriesScreenProvider>(),
+          update: (
+            BuildContext context,
+            value,
+            AllCategoriesScreenProvider? previous,
+          ) {
+            if (previous == null) {
+              return DependencyInjector.get<AllCategoriesScreenProvider>();
+            }
+            return previous..updateStore(value);
+          },
         ),
         ChangeNotifierProvider(
           create: (x) => DependencyInjector.get<SearchProvider>(),
@@ -71,6 +80,7 @@ class ScreenProviders extends StatelessWidget {
           create:
               (ctx) => ServiceListViewModel(
                 DependencyInjector.get<ServicesService>(),
+                DependencyInjector.get<ProductService>(),
                 context.watch<ServiceStore>(),
               ),
         ),
@@ -170,17 +180,29 @@ class ScreenProviders extends StatelessWidget {
           create: (ctx) => DependencyInjector.get<SubscriptionPlanProvider>(),
         ),
 
-        ChangeNotifierProvider(
+        ChangeNotifierProxyProvider<MerchantDashboardStore, DashboardProvider>(
           create: (ctx) => DependencyInjector.get<DashboardProvider>(),
+          update:
+              (
+                BuildContext context,
+                MerchantDashboardStore value,
+                DashboardProvider? previous,
+              ) {
+            if (previous == null) {
+              return DependencyInjector.get<DashboardProvider>();
+
+            }
+            return previous..updateStore(value);
+              },
         ),
 
         ChangeNotifierProvider(
           create: (ctx) => DependencyInjector.get<ProfileProviderModel>(),
         ),
+
         ChangeNotifierProvider(
-          create: (ctx) => DependencyInjector.get<ChatViewModel>(),
+          create: (ctx) => DependencyInjector.get<FeedbackSupportProvider>(),
         ),
-        ChangeNotifierProvider(create: (ctx)=>DependencyInjector.get<FeedbackSupportProvider>()),
       ],
       child: MyAdd(),
     );

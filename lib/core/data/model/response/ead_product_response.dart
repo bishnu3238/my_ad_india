@@ -17,7 +17,7 @@ class EadProductResponse {
   factory EadProductResponse.fromJson(Map<String, dynamic> json) {
     return EadProductResponse(
       status: json.getString('status'),
-      products: (json.get('data', []) as List<dynamic>)
+      products: (json.get('data', []))
           .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
           .toList(),
       count: json.getInt('count'),

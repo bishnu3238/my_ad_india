@@ -30,28 +30,36 @@ class BackGestureHandler {
     return true;
   }
 
-  static Future<bool> handleMerchant(BuildContext context) async {
+  static Future<bool> handleMerchant(BuildContext context, StatefulNavigationShell navigationShell) async {
     // Check if we're at the root route
     final NavigatorState navigator = Navigator.of(context);
     final bool canPop = navigator.canPop();
 
-    if (canPop) {
+    if (!canPop) {
       // We're at the root, so handle app exit logic
-      final now = DateTime.now();
-
-      // Check if back was pressed recently
-      if (_lastBackPressTime == null ||
-          now.difference(_lastBackPressTime!) > _exitTimeLimit) {
-        // First back press or timeout since last press
-        _lastBackPressTime = now;
-
-        // Show exit hint
-        _showExitSnackBar(context);
-
-        // Prevent app from closing
-        return false;
-      }
+      return _handleAppExit(context, navigationShell);
     }
+
+    // // If we can pop, let the default back navigation happen
+    // return true;
+    //
+    // if (canPop) {
+    //   // We're at the root, so handle app exit logic
+    //   final now = DateTime.now();
+    //
+    //   // Check if back was pressed recently
+    //   if (_lastBackPressTime == null ||
+    //       now.difference(_lastBackPressTime!) > _exitTimeLimit) {
+    //     // First back press or timeout since last press
+    //     _lastBackPressTime = now;
+    //
+    //     // Show exit hint
+    //     _showExitSnackBar(context);
+    //
+    //     // Prevent app from closing
+    //     return false;
+    //   }
+    // }
     // If we can pop, let the default back navigation happen
     return true;
   }

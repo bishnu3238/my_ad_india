@@ -10,7 +10,6 @@ import 'base_api_client.dart';
 import 'catch_service.dart';
 import 'log_service.dart';
 import 'request_config.dart';
-
 /// Dio implementation
 class DioApiClient implements BaseApiClient {
   final dio.Dio _dio;
@@ -38,6 +37,7 @@ class DioApiClient implements BaseApiClient {
            connectTimeout: defaultTimeout ?? const Duration(seconds: 30),
            receiveTimeout: defaultTimeout ?? const Duration(seconds: 30),
            headers: defaultHeaders ?? {'Content-Type': 'application/json'},
+
          ),
        ) {
     // Add interceptors
@@ -70,7 +70,7 @@ class DioApiClient implements BaseApiClient {
     required RequestConfig config,
     T Function(dynamic data)? responseConverter,
   }) async {
-    final requestId = _generateRequestId(config);
+    final requestId = config.requestId ?? _generateRequestId(config);
     final cancelToken = dio.CancelToken();
     _cancelTokens[requestId] = cancelToken;
 
@@ -212,7 +212,9 @@ class DioApiClient implements BaseApiClient {
       final convertedData =
           responseConverter != null
               ? responseConverter(responseData)
-              : responseData as T;
+              : config.customResponseDecoder != null
+                  ? config.customResponseDecoder!(responseData) as T
+                  : responseData as T;
 
       final apiResponse = ApiResponse<T>(
         data: convertedData,
@@ -384,7 +386,7 @@ class DioApiClient implements BaseApiClient {
     );
 
     // Exponential backoff
-    final delay = Duration(milliseconds: 1000 * (1 << retryCount));
+    final delay = config.retryDelay ?? Duration(milliseconds: 1000 * (1 << retryCount));
     await Future.delayed(delay);
 
     try {
@@ -479,3 +481,4 @@ class DioApiClient implements BaseApiClient {
     );
   }
 }
+

@@ -1,12 +1,20 @@
 // custom_drawer.dart
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_ad/features/terms/core/terms_and_conditiaons_route.dart';
+import 'package:my_ad/features/home/core/home_navigator.dart';
+import 'package:my_ad/features/home/core/home_provider.dart';
+import 'package:my_ad/features/terms/core/terms_and_conditions_route.dart';
+import 'package:my_ad/routes/auth/auth_routes.dart';
+// import 'package:my_ad/utils/translation_service/easy_localize.dart';
 import 'package:pack/extensions/contextx.dart';
+import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
 import '../../features/profile/core/profile_navigator.dart';
+import '../widgets/language_selection_row.dart';
 import 'drawer_provider.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -21,9 +29,15 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-class _DrawerContent extends StatelessWidget {
+class _DrawerContent extends StatefulWidget {
+  @override
+  State<_DrawerContent> createState() => _DrawerContentState();
+}
+
+class _DrawerContentState extends State<_DrawerContent> {
   @override
   Widget build(BuildContext context) {
+
     final drawerProvider = Provider.of<DrawerProvider>(context);
     final screenSize = MediaQuery.of(context).size;
     final drawerWidth = screenSize.width * 0.85;
@@ -346,7 +360,7 @@ class _DrawerContent extends StatelessWidget {
           title: 'Settings',
           onTap: () {
             Navigator.pop(context);
-            context.go('/setting');
+            context.go(HomeRoute.setting);
           },
         ),
         _buildDrawerItem(
@@ -370,7 +384,7 @@ class _DrawerContent extends StatelessWidget {
         _buildDrawerItem(
           context,
           icon: const Icon(Icons.headset_mic_outlined, color: Colors.grey),
-          title: 'Customer Support',
+          title: context.tr('Customer Support'),
           onTap: () {
             Navigator.pop(context);
             context.push(TermsRoute.appSupport);
@@ -382,21 +396,15 @@ class _DrawerContent extends StatelessWidget {
               return _buildDrawerItem(
                 context,
                 icon: const Icon(Icons.logout, color: Colors.grey),
-                title: 'Logout',
+                title: context.tr('Logout'),
 
                 onTap: () async {
                   await provider.logout();
                   if (context.mounted) {
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Logged out successfully',
-                          style: GoogleFonts.poppins(),
-                        ),
-                        backgroundColor: Colors.green,
-                        behavior: SnackBarBehavior.floating,
-                      ),
+                    NotifyService.googleFilesStyle(
+                      context: context,
+                      message: 'Logged out successfully',
                     );
                   }
                 },
@@ -405,10 +413,10 @@ class _DrawerContent extends StatelessWidget {
               return _buildDrawerItem(
                 context,
                 icon: const Icon(Icons.login, color: Colors.grey),
-                title: 'Login',
+                title: context.tr('Login'),
                 onTap: () {
                   Navigator.pop(context);
-                  context.push('/login');
+                  context.push(AuthRoutes.login);
                 },
               );
             }
@@ -421,18 +429,21 @@ class _DrawerContent extends StatelessWidget {
   Widget _buildLanguageSelector(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _buildLanguageOption(context, 'English', isSelected: true),
-              _buildLanguageOption(context, 'हिंदी'),
-              _buildLanguageOption(context, 'தமிழ்'),
-              _buildLanguageOption(context, 'ಕನ್ನಡ'),
-            ],
-          ),
-        ],
+      child: LanguageSelectorRow(
+        languageNames: {
+          Locale('en', 'US'): 'English',
+          Locale('hi', 'IN'): 'हिंदी',
+          Locale('bn', 'IN'): 'বাংলা',
+          Locale('ta', 'IN'): 'தமிழ்',
+          Locale('kn', 'IN'): 'ಕನ್ನಡ',
+        },
+
+        onLocaleChanged: (locale) {
+          context.setLocale(locale);
+          context.read<HomeProvider>().setSelectedLocale(locale);
+          setState(() {});
+          // Optionally handle analytics or provider updates here
+        },
       ),
     );
   }
@@ -442,34 +453,21 @@ class _DrawerContent extends StatelessWidget {
     String language, {
     bool isSelected = false,
   }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: InkWell(
-          onTap: () {
-            // Change language functionality
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: isSelected ? Colors.blue : Colors.grey.shade300,
-              ),
-              borderRadius: BorderRadius.circular(8),
-              color: isSelected ? Colors.blue.shade50 : Colors.transparent,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              language,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? Colors.blue : Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ),
+    return LanguageSelectorRow(
+      languageNames: {
+        Locale('en', 'US'): 'English',
+        Locale('hi', 'IN'): 'हिंदी',
+        Locale('bn', 'IN'): 'বাংলা',
+        Locale('ta', 'IN'): 'தமிழ்',
+        Locale('kn', 'IN'): 'ಕನ್ನಡ',
+      },
+
+      onLocaleChanged: (locale) {
+        context.setLocale(locale);
+        context.read<HomeProvider>().setSelectedLocale(locale);
+        setState(() {});
+        // Optionally handle analytics or provider updates here
+      },
     );
   }
 
@@ -494,7 +492,7 @@ class _DrawerContent extends StatelessWidget {
           title: 'Privacy Policy',
           onTap: () {
             Navigator.pop(context);
-            context.push('/privacy-policy');
+            context.push(TermsRoute.privacyPolicy);
           },
         ),
         _buildDrawerItem(
@@ -503,25 +501,25 @@ class _DrawerContent extends StatelessWidget {
           title: 'Terms of Use',
           onTap: () {
             Navigator.pop(context);
-            context.push('/terms');
+            context.push(TermsRoute.appTermsAndConditions);
           },
         ),
-        _buildDrawerItem(
-          context,
-          icon: const Icon(Icons.people_outline, color: Colors.grey),
-          title: 'Investor Relations',
-          onTap: () {
-            Navigator.pop(context);
-            context.push('/investors');
-          },
-        ),
+        // _buildDrawerItem(
+        //   context,
+        //   icon: const Icon(Icons.people_outline, color: Colors.grey),
+        //   title: 'Investor Relations',
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //     context.push('/investors');
+        //   },
+        // ),
         _buildDrawerItem(
           context,
           icon: const Icon(Icons.lightbulb_outline, color: Colors.grey),
           title: 'What\'s New',
           onTap: () {
             Navigator.pop(context);
-            context.push('/whats-new');
+            context.push(TermsRoute.whatsNew);
           },
         ),
         _buildDrawerItem(
@@ -530,7 +528,7 @@ class _DrawerContent extends StatelessWidget {
           title: 'About Us',
           onTap: () {
             Navigator.pop(context);
-            context.push('/about');
+            context.push(TermsRoute.aboutUs);
           },
         ),
       ],

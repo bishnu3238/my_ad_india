@@ -8,5 +8,22 @@
     "zero": "アイテムなし",
     "one": "1アイテム",
     "other": "{count}アイテム"
-  }
+  },
+    "all_categories": "すべてのカテゴリ",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "login": "ログイン",
+    "signup": "サインアップ",
+    "home": "ホーム",
+    "search": "検索",
+    "notifications": "通知",
+    "edit": "編集",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+  "add_post": "投稿を追加",
+  "nearby_Products": "近くの製品",
+  "category": "カテゴリー",
+  "view_all": "すべて表示"
 }

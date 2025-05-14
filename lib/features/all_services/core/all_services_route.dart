@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pack/extensions/mapx.dart';
 import '../all_services.dart';
 
-enum ShowServicesBy { category, subCategory, all, merchant }
+enum ShowServicesBy { category, subCategory,  all, merchant }
 
 class AllServicesRoute {
   static const String allServices = '/all-services';

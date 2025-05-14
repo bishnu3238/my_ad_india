@@ -32,6 +32,7 @@ class SearchNavBar extends StatelessWidget implements ObstructingPreferredSizeWi
             prefixInsets: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 4),
             suffixInsets: const EdgeInsetsDirectional.fromSTEB(0, 0, 5, 2),
             suffixMode: OverlayVisibilityMode.editing,
+            suffixIcon:  Icon(Icons.mic_none),onSuffixTap: (){},
           );
         },
       ),

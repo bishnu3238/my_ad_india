@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_ad/core/domain/data_store/category_store.dart';
 import 'package:my_ad/features/ead_products/core/ead_product_navigator.dart';
+// import 'package:my_ad/utils/translation_service/easy_localize.dart';
+import 'package:pack/pack.dart';
+import 'package:pack/services/service.dart';
 import '../../../../../core/data/model/product/category_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pack/ui/ui.dart';
 import '../core/home_provider.dart';
 import '../../../../../utils/widgets/header_section.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../all_category/core/all_category_route.dart';
+import '../../../../myad_categories/core/all_category_route.dart';
 
 class HomeCategorySection extends StatelessWidget {
   const HomeCategorySection({super.key});
@@ -40,7 +43,7 @@ class HomeCategorySection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HeaderSection(
-                title: "Category",
+                title: 'category',
                 textStyle: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -106,18 +109,30 @@ class _AnimatedCategoryListState extends State<AnimatedCategoryList> {
   }
 
   Widget _buildCategoryCard(BuildContext context, CategoryModel category) {
+    final categoryId =
+        context.watch<HomeScreenProvider>().state.selectedCategory;
     return GestureDetector(
       onTap: () {
         context.read<HomeScreenProvider>().setCategory(category.id);
       },
-      // onTap: () => context.push('/category-services/${category.id}'),
-      // onTap:
-      //     () => context.push(
-      //       '${EadProductRoute.eadServices}/${category.id}/${ProductSearchBy.category.name}',
-      //     ),
       child: Container(
-        width: 75,
-        margin: const EdgeInsets.symmetric(horizontal: 4),
+        width: ScreenUtils().getHorizontalSize(90),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        padding: 5.symmetricHV(3),
+        decoration: BoxDecoration(
+          color:
+              categoryId == category.id
+                  ? context.colorScheme.primary.withValues(alpha: 0.2)
+                  : Colors.white70,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.shade100.withValues(alpha: 0.10),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -157,11 +172,11 @@ class _AnimatedCategoryListState extends State<AnimatedCategoryList> {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              // style: GoogleFonts.montserrat(fontSize: 3, letterSpacing: 1),
-              style: TextStyle(
-                fontSize: 8,
+              style: GoogleFonts.poppins(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: Colors.blueGrey.shade800,
                 letterSpacing: 0.5,
-                fontFamily: 'roboto',
               ),
             ),
           ],

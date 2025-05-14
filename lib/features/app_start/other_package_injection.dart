@@ -9,7 +9,7 @@ import '../../core/injector/dependency_injection.dart';
 import '../../provider_state/local_notification_provider.dart';
 
 class OtherPackageInjection extends StatelessWidget {
-  const OtherPackageInjection({super.key});
+    const OtherPackageInjection({super.key});
 
   @override
   Widget build(BuildContext context) {

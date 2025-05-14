@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_ad/features/refer_earn/refer_earn.dart';
 import 'package:my_ad/features/settings/core/settins_navigator.dart';
-import 'package:my_ad/utils/widgets/svg_icon_widget.dart';
+// import '../../../../../../utils/translation_service/prebuilt_language_selector.dart';
+import '../../../../../../utils/widgets/svg_icon_widget.dart';
 import 'package:pack/pack.dart';
 import '../../../../../../core/data/model/model.dart';
 import 'package:go_router/go_router.dart';
@@ -96,7 +96,7 @@ class LoggedInSettingsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  user.name ?? 'User',
+                  user.name,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class LoggedInSettingsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  user.email ?? '',
+                  user.email,
                   style: const TextStyle(fontSize: 14, color: Colors.white70),
                 ),
               ],
@@ -146,6 +146,12 @@ class LoggedInSettingsPage extends StatelessWidget {
                     title: 'Settings',
                     onTap: () => context.push(SettingNavigator.appSettings),
                   ),
+                  // _buildSettingsTile(
+                  //   context,
+                  //   icon: Icons.translate,
+                  //   title: 'Language',
+                  //   onTap: () => context.push(LanguageNavigator.languagePath),
+                  // ),
                   _buildSettingsTile(
                     context,
                     icon: Icons.trending_up_outlined,

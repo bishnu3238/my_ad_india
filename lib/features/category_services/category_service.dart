@@ -256,10 +256,12 @@ class _CategoryServicesPageState extends State<CategoryServicesPage> {
                   ),
                   const SizedBox(height: 4),
                   // Category
-                  Text(
-                    service.categoryName ?? '',
+                  AutoSizeText(
+                    service.categoryName!.trim() ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
-                      fontSize: ScreenUtils().getFontSize(11),
+                      fontSize: ScreenUtils().getFontSize(10),
                       color: Colors.grey[600],
                     ),
                   ),

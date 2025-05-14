@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pack/services/service.dart';
 
+// import '../../utils/translation_service/easy_localize_app.dart';
 import 'other_package_injection.dart';
 
 class App extends StatelessWidget {
@@ -8,22 +9,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EasyLocalizeApp(
-      supportedLocales: [
-        Locale('en', 'US'), // English
-        Locale('hi', 'IN'), // Hindi
-        Locale('bn', 'IN'), // Bengali
-        Locale('sa', 'IN'), // Sanskrit
-        Locale('ja', 'JP'), // Japanese
-        Locale('zh', 'CN'), // Chinese (Simplified)
-        Locale('fr', 'FR'), // French
-        Locale('kn', 'IN'), // Kannada
-        Locale('ta', 'IN'), // Tamil
-        // Add more locales as needed
-      ],
-      translationsPath: 'assets/translations',
-      defaultLocale: Locale('en', 'US'),
-      child: OtherPackageInjection(),
-    );
+    return OtherPackageInjection();
   }
 }
+
+

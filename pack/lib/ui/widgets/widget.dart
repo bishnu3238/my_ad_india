@@ -1,5 +1,5 @@
-
-export 'image_view/image_view.dart';
+ export 'image_view/image_view.dart';
+export 'progress_line.dart';
  export 'responsive.dart';
 export 'dot_indicator.dart';
 export 'network_connectivity_snackbar.dart';

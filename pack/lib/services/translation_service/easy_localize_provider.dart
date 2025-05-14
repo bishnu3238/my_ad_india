@@ -6,10 +6,10 @@ class EasyLocalizeProvider extends InheritedWidget {
   final EasyLocalize easyLocalize;
 
   const EasyLocalizeProvider({
-    Key? key,
+    super.key,
     required this.easyLocalize,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   @override
   bool updateShouldNotify(EasyLocalizeProvider oldWidget) {

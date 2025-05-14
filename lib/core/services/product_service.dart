@@ -27,4 +27,8 @@ class ProductService {
     return await _repository.fetchProductsByCategory(categoryId).then((value)=>value.getRight());
 
   }
+
+  Future<List<ProductModel>> fetchNearbyProviders(FetchNearByProductsOfUserPayload payload) async{
+    return await _repository.fetchNearByProductsOfUser(payload).then((value)=>value.getRight());
+  }
 }

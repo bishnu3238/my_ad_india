@@ -11,22 +11,19 @@ import 'ead_product_details_state.dart';
 
 class ProductDetailsViewModel extends ChangeNotifier {
   final ProductModel product;
-  final ProductStore _productStore;
   final ProductService _service;
-  
+
   ProductDetailsState _state = ProductDetailsState();
-  
+
   ProductDetailsViewModel({
     required this.product,
-    required ProductStore productStore,
     required ProductService service,
-  }) : _productStore = productStore,
-       _service = service {
+  }) : _service = service {
     _fetchSimilarProducts();
   }
 
   ProductDetailsState get state => _state;
-  
+
   void updateState(ProductDetailsState newState) {
     _state = newState;
     notifyListeners();
@@ -42,18 +39,21 @@ class ProductDetailsViewModel extends ChangeNotifier {
       );
 
       // Filter out current product and limit to 4
-      final similarProducts = 
+      final newproduct = products.where((e) => e.id == product.id).first;
+      product.copyWith(images: newproduct.images);
+      final similarProducts =
           products.where((p) => p.id != product.id).take(4).toList();
-
-      updateState(_state.copyWith(
-        isLoading: false,
-        similarProducts: similarProducts,
-      ));
+      notifyListeners();
+      updateState(
+        _state.copyWith(isLoading: false, similarProducts: similarProducts),
+      );
     } catch (e) {
-      updateState(_state.copyWith(
-        isLoading: false,
-        errorMessage: e is NetworkFailure ? e.message : e.toString(),
-      ));
+      updateState(
+        _state.copyWith(
+          isLoading: false,
+          errorMessage: e is NetworkFailure ? e.message : e.toString(),
+        ),
+      );
     }
   }
 
@@ -85,26 +85,28 @@ class ProductDetailsViewModel extends ChangeNotifier {
     if (!_state.inquiryFormKey.currentState!.validate()) {
       return;
     }
-    
+
     updateState(_state.copyWith(isSubmittingInquiry: true));
-    
+
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
-      
+
       // Here you would call an actual API to submit the inquiry
       // await _service.submitInquiry(
       //   merchantId: product.merchant.id,
       //   productId: product.id,
       //   message: _state.inquiryController.text,
       // );
-      
-      updateState(_state.copyWith(
-        isSubmittingInquiry: false,
-        inquirySubmitted: true,
-        showInquiryForm: false,
-      ));
-      
+
+      updateState(
+        _state.copyWith(
+          isSubmittingInquiry: false,
+          inquirySubmitted: true,
+          showInquiryForm: false,
+        ),
+      );
+
       // Reset form after a delay
       Future.delayed(const Duration(seconds: 3), () {
         if (_state.inquirySubmitted) {
@@ -112,10 +114,12 @@ class ProductDetailsViewModel extends ChangeNotifier {
         }
       });
     } catch (e) {
-      updateState(_state.copyWith(
-        isSubmittingInquiry: false,
-        errorMessage: e is NetworkFailure ? e.message : e.toString(),
-      ));
+      updateState(
+        _state.copyWith(
+          isSubmittingInquiry: false,
+          errorMessage: e is NetworkFailure ? e.message : e.toString(),
+        ),
+      );
     }
   }
 
@@ -141,7 +145,7 @@ class ProductDetailsViewModel extends ChangeNotifier {
       return product.offers;
     }
   }
-  
+
   @override
   void dispose() {
     _state.dispose();

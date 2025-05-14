@@ -6,19 +6,32 @@ import 'log_service.dart';
 class CacheService {
   final Map<String, dynamic> _memoryCache = {};
   final Map<String, DateTime> _expirations = {};
+  final List<String> _lruKeys = [];
+  final int _maxMemoryEntries;
   final FlutterSecureStorage _secureStorage;
   final LogService _logger;
   final Duration _cleanupInterval = const Duration(minutes: 5);
 
-  CacheService(this._logger, {FlutterSecureStorage? secureStorage})
-      : _secureStorage = secureStorage ?? const FlutterSecureStorage() {
+  CacheService(this._logger, {FlutterSecureStorage? secureStorage, int maxMemoryEntries = 100})
+      : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
+        _maxMemoryEntries = maxMemoryEntries {
     _startCleanup();
   }
 
   Future<void> setCache<T>(String key, T data, Duration duration) async {
     try {
+      // LRU logic
+      if (_memoryCache.length >= _maxMemoryEntries) {
+        final oldestKey = _lruKeys.isNotEmpty ? _lruKeys.removeAt(0) : null;
+        if (oldestKey != null) {
+          _memoryCache.remove(oldestKey);
+          _expirations.remove(oldestKey);
+        }
+      }
       _memoryCache[key] = data;
       _expirations[key] = DateTime.now().add(duration);
+      _lruKeys.remove(key);
+      _lruKeys.add(key);
 
       final String value;
       if (data is String) {
@@ -42,11 +55,15 @@ class CacheService {
     try {
       if (_memoryCache.containsKey(key)) {
         if (_expirations[key]!.isAfter(DateTime.now())) {
+          // LRU update
+          _lruKeys.remove(key);
+          _lruKeys.add(key);
           _logger.debug('Retrieved from memory cache: $key');
           return _memoryCache[key] as T;
         } else {
           _memoryCache.remove(key);
           _expirations.remove(key);
+          _lruKeys.remove(key);
         }
       }
 
@@ -61,6 +78,9 @@ class CacheService {
 
       final expiry = DateTime.fromMillisecondsSinceEpoch(int.parse(expiryStr));
       if (expiry.isAfter(DateTime.now())) {
+        // LRU update
+        _lruKeys.remove(key);
+        _lruKeys.add(key);
         if (T == String) {
           _memoryCache[key] = data;
           _expirations[key] = expiry;
@@ -85,12 +105,14 @@ class CacheService {
       if (key != null) {
         _memoryCache.remove(key);
         _expirations.remove(key);
+        _lruKeys.remove(key);
         await _secureStorage.delete(key: 'cache_$key');
         await _secureStorage.delete(key: 'cache_${key}_expiry');
         _logger.debug('Cleared cache for key: $key');
       } else {
         _memoryCache.clear();
         _expirations.clear();
+        _lruKeys.clear();
         final allKeys = await _secureStorage.readAll();
         for (final entry in allKeys.entries) {
           if (entry.key.startsWith('cache_')) {
@@ -103,6 +125,19 @@ class CacheService {
       _logger.error('Error clearing cache', e, stack);
     }
   }
+
+  /// Invalidate cache by key pattern (regex)
+  Future<void> invalidateByPattern(String pattern) async {
+    final regex = RegExp(pattern);
+    final keysToRemove = _memoryCache.keys.where((k) => regex.hasMatch(k)).toList();
+    for (final key in keysToRemove) {
+      await clearCache(key);
+    }
+  }
+
+  /// Cache statistics
+  int get memoryEntryCount => _memoryCache.length;
+  int get secureEntryCount => _expirations.length;
 
   void _startCleanup() {
     Timer.periodic(_cleanupInterval, (_) {

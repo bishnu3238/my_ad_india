@@ -1,10 +1,13 @@
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/data/model/model.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/material.dart';
 import '../../../core/domain/data_store/data_store.dart';
 import '../../../core/domain/use_cases/api_call_use_cases.dart';
 import '../../../core/injector/dependency_injection.dart';
+import '../../../core/services/service.dart';
+import '../ead_product_details/core/ead_product_details_viewmodel.dart';
 import '../ead_product_details/ead_product_details.dart';
 import '../ead_products.dart';
 import 'ead_product_view_model.dart';
@@ -50,10 +53,26 @@ class EadProductRoute {
         path: eadServiceDetails,
         name: eadServiceDetails.snakeCase,
         builder: (ctx, state) {
-          final provider = state.extra as EadProductsViewModel;//context.read<EadProductsViewModel>();
-          return   EadProductDetails(provider: provider);
+          final product =
+              state.extra
+                  as ProductModel; //context.read<EadProductsViewModel>();
+          return ChangeNotifierProvider(
+            create:
+                (ctx) => ProductDetailsViewModel(
+                  product: product,
+                  service: DependencyInjector.get<ProductService>(),
+                ),
+            child: EadProductDetails(),
+          );
         },
       ),
     ],
   );
+
+  static goToEadProductDetails(BuildContext context, ProductModel product) {
+    context.push(
+      '${EadProductRoute.eadServices}/${product.id}/${ProductSearchBy.product.name}${EadProductRoute.eadServiceDetails}',
+      extra: product,
+    );
+  }
 }

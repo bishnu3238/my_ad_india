@@ -40,7 +40,7 @@ class LoginResponse<T extends UserEntity> extends AuthResponse<T> {
     dev.log('Login Response Convert: $data');
     return LoginResponse(
       user: getIt.get<UserConvert<T>>().call(data),
-      token: data['data']['token'],
+      token: '${data['data']['user']['id']}',
       status: data['status'],
       message: data['message'],
     );

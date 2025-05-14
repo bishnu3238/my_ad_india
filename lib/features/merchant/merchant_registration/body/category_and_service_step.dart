@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pack/pack.dart'; // Assuming ImageView is from here
 import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../../../core/domain/data_store/category_store.dart';
 import '../../../../core/domain/data_store/service_store.dart';
 import '../../../../core/data/model/product/category_model.dart';
@@ -63,6 +64,10 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
   // For quick UI updates in search modal for the LISTS/GRIDS only
   final ValueNotifier<void> _categoryFilterNotifier = ValueNotifier(null);
   final ValueNotifier<void> _serviceFilterNotifier = ValueNotifier(null);
+
+  // Add keys for field-level showcases
+  final GlobalKey _categoryFieldKey = GlobalKey();
+  final GlobalKey _serviceFieldKey = GlobalKey();
 
   @override
   void initState() {
@@ -994,6 +999,7 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
     required bool isCategory, // To determine which state vars to use
     required VoidCallback? onTap,
     required Color selectedColor,
+    VoidCallback? onIconTap,
   }) {
     final bool isLoading = isCategory ? isLoadingCategories : isLoadingServices;
     final bool isDisabled =
@@ -1041,10 +1047,9 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
             opacity: isDisabled && !isLoading ? 0.6 : 1.0,
             child: Row(
               children: [
-                Icon(
-                  icon,
-                  color: effectiveColor,
-                  size: 24,
+                GestureDetector(
+                  onTap: onIconTap,
+                  child: Icon(icon, color: effectiveColor, size: 24),
                 ), // Consistent icon size
                 const SizedBox(width: 14),
                 Expanded(
@@ -1064,10 +1069,13 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
                     radius: 10,
                   ) // Smaller indicator
                 else if (!isDisabled) // Only show chevron if tappable
-                  Icon(
-                    CupertinoIcons.chevron_down,
-                    size: 18,
-                    color: Colors.grey.shade600,
+                  GestureDetector(
+                    onTap: onIconTap,
+                    child: Icon(
+                      CupertinoIcons.question_circle,
+                      size: 18,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
               ],
             ),
@@ -1095,6 +1103,12 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
     );
   }
 
+  // Helper to show showcase for a specific field
+  void _showFieldShowcase(GlobalKey key, BuildContext context) {
+    setState(() {});
+    ShowCaseWidget.of(context).startShowCase([key]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor; // Use theme color
@@ -1105,37 +1119,68 @@ class _CategoryAndServicesStepState extends State<CategoryAndServicesStep> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 8), // Add space if needed above
-          // Category Selection Card
-          _buildSelectionCard(
-            titleWhenSelected: selectedCategory.title,
-            titleWhenNotSelected: 'Select Category',
-            icon:
-                selectedCategory.isEmpty
-                    ? CupertinoIcons.square_grid_2x2
-                    : _parseIcon(selectedCategory.favIcon),
-            isSelected: !selectedCategory.isEmpty,
-            isCategory: true,
-            onTap: _openCategorySheet,
-            selectedColor: primaryColor,
+          // Category Selection Card with question mark and showcase
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Showcase(
+                  key: _categoryFieldKey,
+                  description:
+                      'Select the main category that best describes your business. This helps users find your services.',
+                  child: Tooltip(
+                    message: 'Tap to select a category.',
+                    child: _buildSelectionCard(
+                      titleWhenSelected: selectedCategory.title,
+                      titleWhenNotSelected: 'Select Category',
+                      icon:
+                          selectedCategory.isEmpty
+                              ? CupertinoIcons.square_grid_2x2
+                              : _parseIcon(selectedCategory.favIcon),
+                      onIconTap:
+                          () => _showFieldShowcase(_categoryFieldKey, context),
+                      isSelected: !selectedCategory.isEmpty,
+                      isCategory: true,
+                      onTap: _openCategorySheet,
+                      selectedColor: primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          // Category Validation (Example - integrate with Form validator if preferred)
           if (selectedCategory.isEmpty)
             _buildValidationMessage('Please select a category'),
 
           const SizedBox(height: 18),
 
-          // Service Selection Card
-          _buildSelectionCard(
-            titleWhenSelected: selectedServices.serviceName,
-            titleWhenNotSelected: 'Select Service',
-            icon: CupertinoIcons.square_list, // Or a more relevant icon
-            isSelected: !selectedServices.isEmpty,
-            isCategory: false,
-            onTap: _openServiceSheet,
-            selectedColor: primaryColor,
+          // Service Selection Card with question mark and showcase
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Showcase(
+                  key: _serviceFieldKey,
+                  description:
+                      'Choose the specific service you offer within the selected category.',
+                  child: Tooltip(
+                    message: 'Tap to select a service.',
+                    child: _buildSelectionCard(
+                      titleWhenSelected: selectedServices.serviceName,
+                      titleWhenNotSelected: 'Select Service',
+                      icon: CupertinoIcons.square_list,
+                      isSelected: !selectedServices.isEmpty,
+                      isCategory: false,
+                      onTap: _openServiceSheet,
+                      onIconTap:
+                          () => _showFieldShowcase(_serviceFieldKey, context),
+                      selectedColor: primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          // Service Validation (Example)
-          // Only show if category IS selected but service is NOT
           if (!selectedCategory.isEmpty && selectedServices.isEmpty)
             _buildValidationMessage('Please select a service'),
 

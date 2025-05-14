@@ -1,5 +1,6 @@
 // settings_view_model.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pack/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/data/model/model.dart';
@@ -176,7 +177,6 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   void navigateToSupport(BuildContext context) {
-    // Navigate to support screen
-    debugPrint('Navigate to support');
+    context.push('/support');
   }
 }

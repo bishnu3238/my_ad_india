@@ -11,6 +11,9 @@ abstract class BaseApiClient {
     T Function(dynamic data)? responseConverter,
   });
 
+  /// Cancel requests by requestId or all if null.
   void cancelRequests([String? requestId]);
+
+  /// Dispose and cleanup resources.
   Future<void> dispose();
 }

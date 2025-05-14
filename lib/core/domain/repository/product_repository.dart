@@ -6,4 +6,5 @@ import '../../data/model/model.dart';
 abstract class ProductRepository {
   Future<Either<Failure, List<ProductModel>>> fetchEadProducts();
   Future<Either<Failure, List<ProductModel>>> fetchProductsByCategory(String i);
+  Future<Either<Failure, List<ProductModel>>> fetchNearByProductsOfUser(FetchNearByProductsOfUserPayload payload);
 }

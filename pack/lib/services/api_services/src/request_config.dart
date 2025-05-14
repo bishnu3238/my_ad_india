@@ -21,6 +21,9 @@ class RequestConfig {
   final int maxRetries;
   final Function(int sent, int total)? onSendProgress;
   final Function(int received, int total)? onReceiveProgress;
+  final String? requestId;
+  final Duration? retryDelay;
+  final dynamic Function(dynamic)? customResponseDecoder;
 
   RequestConfig({
     required this.baseUrl,
@@ -39,6 +42,9 @@ class RequestConfig {
     this.maxRetries = 3,
     this.onSendProgress,
     this.onReceiveProgress,
+    this.requestId,
+    this.retryDelay,
+    this.customResponseDecoder,
   });
 
   String get fullUrl => '$baseUrl$endpoint';
@@ -98,7 +104,7 @@ class RequestConfig {
 
   @override
   String toString() {
-    return 'RequestConfig{baseUrl: $baseUrl, endpoint: $endpoint, method: $method, queryParameters: $queryParameters, headers: $headers, body: $body, responseFormat: $responseFormat, timeout: $timeout, requiresAuth: $requiresAuth, cachePolicy: $cachePolicy, cacheKey: $cacheKey, cacheDuration: $cacheDuration, retryEnabled: $retryEnabled, maxRetries: $maxRetries, onSendProgress: $onSendProgress, onReceiveProgress: $onReceiveProgress}';
+    return 'RequestConfig{baseUrl: $baseUrl, endpoint: $endpoint, method: $method, queryParameters: $queryParameters, headers: $headers, body: $body, responseFormat: $responseFormat, timeout: $timeout, requiresAuth: $requiresAuth, cachePolicy: $cachePolicy, cacheKey: $cacheKey, cacheDuration: $cacheDuration, retryEnabled: $retryEnabled, maxRetries: $maxRetries, onSendProgress: $onSendProgress, onReceiveProgress: $onReceiveProgress, requestId: $requestId, retryDelay: $retryDelay, customResponseDecoder: $customResponseDecoder}';
   }
 }
 

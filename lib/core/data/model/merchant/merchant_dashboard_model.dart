@@ -28,7 +28,14 @@ class MerchantDashboardModel extends BaseModel<MerchantDashboardModel> {
   });
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [
+    id,
+    isAuthenticated,
+    merchantData,
+    planAccess,
+    services,
+    serviceRequest,
+  ];
 
   MerchantDashboardModel copyWith({
     bool? isAuthenticated,
@@ -110,8 +117,9 @@ class MerchantDashboardModel extends BaseModel<MerchantDashboardModel> {
     );
   }
 
-
-  factory MerchantDashboardModel.requiredOtp(    MerchantOtpVerificationResponse result,) {
+  factory MerchantDashboardModel.requiredOtp(
+    MerchantOtpVerificationResponse result,
+  ) {
     return MerchantDashboardModel(
       isAuthenticated: true,
       token: result.timestamp,

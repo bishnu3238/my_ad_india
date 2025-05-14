@@ -16,6 +16,7 @@ import 'dart:developer'as dev;
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:logger/logger.dart';
 import '../connectivity_service/connectivity_service.dart';
 import '../failure/src/network_failure.dart';
 import 'src/api_response/api_responce.dart';
@@ -120,6 +121,10 @@ class ApiCallService {
   /// Get WebSocket messages stream
   Stream<dynamic> get webSocketMessages => _webSocketService.messagesStream;
 
+  /// WebSocket connection state stream
+  Stream<WebSocketConnectionState> get webSocketConnectionState =>
+      _webSocketService.connectionStateStream;
+
   /// Check if WebSocket is connected
   bool get isWebSocketConnected => _webSocketService.isConnected;
 
@@ -147,9 +152,20 @@ class ApiCallService {
 
   Future<void> clearCache([String? key]) => _cacheService.clearCache(key);
 
+  /// Invalidate cache by key pattern (regex)
+  Future<void> invalidateCacheByPattern(String pattern) =>
+      _cacheService.invalidateByPattern(pattern);
+
+  /// Cache statistics
+  int get memoryCacheEntryCount => _cacheService.memoryEntryCount;
+  int get secureCacheEntryCount => _cacheService.secureEntryCount;
+
   /// Cancel specific or all requests
   void cancelRequests([String? requestId]) =>
       _dioClient.cancelRequests(requestId);
+
+  /// Set log level at runtime
+  void setLogLevel(Level level) => _logger.setLogLevel(level);
 
   /// Cleanup resources
   Future<void> dispose() async {

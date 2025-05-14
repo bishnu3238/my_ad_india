@@ -1,20 +1,15 @@
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:my_ad/core/domain/data_store/data_store.dart';
 import 'package:pack/pack.dart';
-import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
-
-import '../../core/merchant_dashboard_route.dart';
 import '../../core/merchant_dashboard_shell_provider.dart';
+import 'body/add_merchant_sevice_card.dart';
 import 'body/header.dart';
-import 'body/my_fields.dart';
-import 'body/recent_files.dart';
+import 'body/merchant_service_section.dart';
+import 'body/recent_inquiries.dart';
 import 'body/upgrade_plan_card.dart';
-import '../../../subscription/core/subscription_plan_provider.dart';
-import 'body/dashboard_card_items.dart';
 import 'core/merchant_dashboard_provider.dart';
 
 class MerchantDashboardHome extends StatefulWidget {
@@ -35,8 +30,22 @@ class _MerchantDashboardHomeState extends State<MerchantDashboardHome> {
 
   @override
   Widget build(BuildContext context) {
+    final store = context.read<MerchantDashboardStore>();
+    final merchantData = store.entity?.merchantData;
+
+    final categoryStore = context.read<CategoryStore>();
+    final serviceStore = context.read<ServiceStore>();
+    final selectedCategory =
+        merchantData?.serviceDetails.categoryId != null
+            ? categoryStore.getById(merchantData!.serviceDetails.categoryId)
+            : null;
+    final selectedService =
+        merchantData?.serviceDetails.serviceId != null
+            ? serviceStore.getById(merchantData!.serviceDetails.serviceId)
+            : null;
+
     return Consumer<MerchantDashboardShellProvider>(
-      builder: (context, provider, _) {
+      builder: (context, shellProvider, _) {
         return Consumer<DashboardProvider>(
           builder: (context, provider, _) {
             if (provider.isLoading) {
@@ -44,52 +53,60 @@ class _MerchantDashboardHomeState extends State<MerchantDashboardHome> {
             }
             return OverlayLoader(
               isLoading: provider.isLoading,
-              child: SafeArea(
-                child: RefreshIndicator.adaptive(
-                  onRefresh:
-                      () => context.read<DashboardProvider>().initialFetch(),
-                  child: SingleChildScrollView(
-                    primary: false,
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        const Header(),
-                        SizedBox(height: 16),
-                        const UpgradePlanCard(),
-                        SizedBox(height: 16),
-                        if (context
-                            .read<MerchantDashboardStore>()
-                            .entity!
-                            .services
-                            .isEmpty) ...[
-                          SizedBox(
-                            height: ScreenUtils().screenHeight * 1.5 / 3,
-                            child: ErrorScreen.empty(
-                              title: 'services',
-                              message: 'Complete the process',
-                              actionText: 'Add New',
-                              onActionPressed:
-                                  () => context.push(
-                                    MerchantDashboardRoute.addService,
-                                  ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFe0eafc), Color(0xFFcfdef3)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: SafeArea(
+                  child: RefreshIndicator.adaptive(
+                    onRefresh:
+                        () => context.read<DashboardProvider>().initialFetch(),
+                    child: CustomScrollView(
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
+                      slivers: [
+                        SliverToBoxAdapter(child: Header()),
+                        // Upgrade Plan Card
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
                             ),
+                            child: const UpgradePlanCard(),
+                          ),
+                        ),
+
+                        // Dashboard Cards (Services, Customer, etc.)
+                        if (store.entity!.services.isEmpty) ...[
+                          AddMerchantServiceCard(
+                            selectedCategory: selectedCategory,
+                            selectedService: selectedService,
                           ),
                         ] else ...[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 5,
-                                child: Column(
-                                  children: [
-                                    const MyServices(),
-                                    SizedBox(height: 16),
-                                    const RecentInquiry(),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: 15.symmetricHV(8),
+                              child: const MerchantServicesPage(),
+                            ),
                           ),
+                          // Recent Inquiry
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              child: const RecentInquiry(),
+                            ),
+                          ),
+                          // Bottom Padding
+                          const SliverToBoxAdapter(child: SizedBox(height: 40)),
                         ],
                       ],
                     ),

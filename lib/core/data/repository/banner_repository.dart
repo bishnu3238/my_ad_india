@@ -16,7 +16,7 @@ class BannerRepositoryImpl extends BannerRepository {
         .request<List<BannerModel>?>(
           config: RequestConfig(
             baseUrl: ApiConfig.baseUrl,
-            endpoint: ApiConfig.banners,
+            endpoint: ApiConfig.bannersEndPoint,
           ),
           responseConverter: _convertBanner,
         )

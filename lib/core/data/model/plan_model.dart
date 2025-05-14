@@ -118,11 +118,11 @@ class SubscriptionPlanModel extends BaseModel<SubscriptionPlanModel> {
   String get fullImageUrl =>
       image.startsWith('http')
           ? image
-          : "${ApiConfig.baseUrl}/${ApiConfig.plansImgPath}/$image";
+          : "${ApiConfig.baseUrl}/${ApiConfig.subscriptionPlansImgPath}/$image";
   String get fullBannerUrl =>
       banner.startsWith('http')
           ? banner
-          : "${ApiConfig.baseUrl}${ApiConfig.plansImgPath}/$banner";
+          : "${ApiConfig.baseUrl}${ApiConfig.subscriptionPlansImgPath}/$banner";
 
   @override
   String toString() {

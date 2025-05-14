@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pack/services/service.dart';
 import '../core/theme/app_themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/theme/app_color_palette.dart';
 
-enum AppThemeMode {
-  light,
-  dark,
-  system
-}
+enum AppThemeMode { light, dark, system }
 
-class AppThemeProvider extends ChangeNotifier {
+class AppThemeProvider extends ChangeNotifier
+    implements ThemeProviderInterface {
   static const String _themePreferenceKey = 'app_theme_mode';
 
   late SharedPreferences _prefs;
@@ -24,7 +22,6 @@ class AppThemeProvider extends ChangeNotifier {
   }
 
   Future<void> _initializeThemes() async {
-
     // Initialize themes
     _lightTheme = appTheme.lightTheme;
     _darkTheme = appTheme.darkTheme;
@@ -35,14 +32,12 @@ class AppThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
   // Load Theme Mode from Preferences
   AppThemeMode _loadThemeMode() {
     final savedMode = _prefs.getString(_themePreferenceKey);
     return AppThemeMode.values.firstWhere(
-            (mode) => mode.toString() == savedMode,
-        orElse: () => AppThemeMode.system
+      (mode) => mode.toString() == savedMode,
+      orElse: () => AppThemeMode.system,
     );
   }
 
@@ -82,6 +77,19 @@ class AppThemeProvider extends ChangeNotifier {
         return MediaQuery.of(context).platformBrightness == Brightness.dark
             ? _darkTheme
             : _lightTheme;
+    }
+  }
+
+  @override
+  ThemeMode get themeMode => _getThemeModeForMaterialApp(_currentThemeMode);
+  _getThemeModeForMaterialApp(currentThemeMode) {
+    switch (currentThemeMode) {
+      case AppThemeMode.light:
+        return ThemeMode.light;
+      case AppThemeMode.dark:
+        return ThemeMode.dark;
+      case AppThemeMode.system:
+        return ThemeMode.system;
     }
   }
 }

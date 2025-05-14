@@ -39,7 +39,8 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
     required this.changePasswordEndpoint,
     required this.socialLoginEndpoint,
     required this.logoutEndpoint,
-    required this.baseUrl, required this. resetPasswordEndpoint,
+    required this.baseUrl,
+    required this.resetPasswordEndpoint,
   });
 
   Future<void> _addAuthHeader() async {
@@ -184,14 +185,17 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
   /// ------------------------ change password end -----------------------------
 
   @override
-  Future<Either<NetworkFailure, ForgotPasswordResponse<T>>> forgotPassword(String identifier) async {
+  Future<Either<NetworkFailure, ForgotPasswordResponse<T>>> forgotPassword(
+    String identifier,
+  ) async {
     try {
       // Determine if the identifier is an email or phone number using regex
-      bool isEmail = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(identifier);
+      bool isEmail = RegExp(
+        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+      ).hasMatch(identifier);
 
-      Map<String, dynamic> body = isEmail
-          ? {'email': identifier}
-          : {'phone': identifier};
+      Map<String, dynamic> body =
+          isEmail ? {'email': identifier} : {'phone': identifier};
 
       final config = RequestConfig(
         baseUrl: baseUrl,
@@ -202,15 +206,16 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
 
       return await apiService
           .request<ForgotPasswordResponse<T>>(
-        config: config,
-        responseConverter: (data) =>ForgotPasswordResponse<T>.convert(data),
-      )
+            config: config,
+            responseConverter:
+                (data) => ForgotPasswordResponse<T>.convert(data),
+          )
           .then(
             (value) => value.fold(
               (failure) => left(NetworkFailure(message: failure.message)),
               (response) => right(response.data!),
-        ),
-      );
+            ),
+          );
     } catch (e) {
       dev.log('FORGOT PASSWORD ERROR: $e');
       return left(NetworkFailure(message: e.toString()));
@@ -220,11 +225,12 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
   @override
   Future<Either<NetworkFailure, bool>> sendOTP(String identifier) async {
     try {
-      bool isEmail = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(identifier);
+      bool isEmail = RegExp(
+        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+      ).hasMatch(identifier);
 
-      Map<String, dynamic> body = isEmail
-          ? {'email': identifier}
-          : {'phone': identifier};
+      Map<String, dynamic> body =
+          isEmail ? {'email': identifier} : {'phone': identifier};
 
       final config = RequestConfig(
         baseUrl: baseUrl,
@@ -235,22 +241,22 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
 
       return await apiService
           .request<bool>(
-        config: config,
-        responseConverter: (data) {
-          if (data is Map<String, dynamic> &&
-              data.containsKey('status') &&
-              data['status'] == 'success') {
-            return true;
-          }
-          return false;
-        },
-      )
+            config: config,
+            responseConverter: (data) {
+              if (data is Map<String, dynamic> &&
+                  data.containsKey('status') &&
+                  data['status'] == 'success') {
+                return true;
+              }
+              return false;
+            },
+          )
           .then(
             (value) => value.fold(
               (failure) => left(NetworkFailure(message: failure.message)),
               (response) => right(response.data ?? false),
-        ),
-      );
+            ),
+          );
     } catch (e) {
       dev.log('SEND OTP ERROR: $e');
       return left(NetworkFailure(message: e.toString()));
@@ -259,10 +265,10 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
 
   @override
   Future<Either<NetworkFailure, bool>> resetPassword(
-      String resetToken,
-      String newPassword,
-      String confirmPassword,
-      ) async {
+    String resetToken,
+    String newPassword,
+    String confirmPassword,
+  ) async {
     try {
       final body = {
         'reset_token': resetToken,
@@ -279,22 +285,22 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
 
       return await apiService
           .request<bool>(
-        config: config,
-        responseConverter: (data) {
-          if (data is Map<String, dynamic> &&
-              data.containsKey('status') &&
-              data['status'] == 'success') {
-            return true;
-          }
-          return false;
-        },
-      )
+            config: config,
+            responseConverter: (data) {
+              if (data is Map<String, dynamic> &&
+                  data.containsKey('status') &&
+                  data['status'] == 'success') {
+                return true;
+              }
+              return false;
+            },
+          )
           .then(
             (value) => value.fold(
               (failure) => left(NetworkFailure(message: failure.message)),
               (response) => right(response.data ?? false),
-        ),
-      );
+            ),
+          );
     } catch (e) {
       dev.log('RESET PASSWORD ERROR: $e');
       return left(NetworkFailure(message: e.toString()));
@@ -320,7 +326,7 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
       baseUrl: baseUrl,
       endpoint: signupEndpoint,
       method: RequestMethod.post,
-      body: request.toJson(),
+      body: jsonEncode(request.toJson()),
     );
     try {
       return await apiService
@@ -334,14 +340,14 @@ class AuthRepositoryImpl<T extends UserEntity> implements AuthRepository<T> {
           .then(
             (value) => value.fold(
               (failure) {
-                dev.log("hello");
+                dev.log("CUSTOMER SIGN UP FAILURE : $failure");
                 return left(NetworkFailure(message: failure.message));
               },
               (result) async => right(result.data!.copyWith(request: request)),
             ),
           );
     } catch (e) {
-      dev.log("ram dev $e");
+      dev.log("CUSTOMER SIGN UP TRY CATCH $e");
       LogService().error('$e');
       _handleError(e);
     }

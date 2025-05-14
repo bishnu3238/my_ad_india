@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+// import 'package:my_ad/utils/translation_service/easy_localize.dart';
+import 'package:pack/services/service.dart';
 
 class HeaderSection extends StatelessWidget {
   final String title;
@@ -25,8 +27,8 @@ class HeaderSection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
+          AutoSizeText(
+            context.tr(title),
             style:
                 textStyle ??
                 GoogleFonts.poppins(
@@ -63,7 +65,7 @@ class HeaderSection extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AutoSizeText(
-                        'View All',
+                        context.tr('view_all'),
                         style: GoogleFonts.poppins(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,

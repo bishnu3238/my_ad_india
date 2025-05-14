@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_ad/core/data/model/payload/POST/customer_visit_payload.dart';
+import 'package:my_ad/core/domain/repository/customer_visit_repository.dart';
+import 'package:my_ad/core/injector/dependency_injection.dart';
 import 'package:my_ad/core/services/auth_service.dart';
-import 'package:my_ad/features/chat/services/chat_service.dart';
+import 'package:my_ad/features/ead_products/ead_product_details/core/ead_product_details_state.dart';
+import 'package:pack/auth/custom_auth.dart';
 import 'package:pack/pack.dart';
 import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +24,7 @@ import 'body/location_detector.dart';
 import 'body/product_card.dart';
 import 'core/ead_product_navigator.dart';
 import 'core/ead_product_view_model.dart';
+import 'ead_product_details/core/ead_product_details_viewmodel.dart';
 
 class EadProducts extends StatefulWidget {
   const EadProducts({super.key});
@@ -516,9 +521,20 @@ class _EadProductsState extends State<EadProducts>
   ) async {
     if (!await AuthCheckService.checkAuthAndShowPopupIfNeeded(context)) return;
     if (context.mounted) {
+      final customerId = context.read<AuthProviderModel<UserModel>>().user!.id;
+      await DependencyInjector.get<CustomerVisitRepository>().submitVisit(
+        SubmitCustomerVisitPayload(
+          serviceId: product.serviceId,
+          merchantId: product.merchant.id.toInt,
+          customerId: customerId.toInt,
+          contactType: 'contactType',
+          message: 'message',
+          status: '1',
+        ),
+      );
       context.push(
         '${EadProductRoute.eadServices}/${product.id}/${ProductSearchBy.product.name}${EadProductRoute.eadServiceDetails}',
-        extra: context.read<EadProductsViewModel>(),
+        extra: product,
       );
     }
   }

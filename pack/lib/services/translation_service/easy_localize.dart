@@ -4,13 +4,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
-
- export 'easy_localize_builder.dart';
+export 'easy_localize_builder.dart';
 export 'easy_localize_app.dart';
 export 'easy_localize_extensions.dart';
 export 'language_selector.dart';
-export 'package:flutter_localizations/flutter_localizations.dart';
+ import 'error_handler.dart';
+class EasyLocalizeException implements Exception {
+  final String message;
+  EasyLocalizeException(this.message);
+  @override
+  String toString() => 'EasyLocalizeException: $message';
+}
 
 class EasyLocalize {
   // Singleton instance
@@ -22,19 +28,24 @@ class EasyLocalize {
   late Locale _currentLocale;
   late List<Locale> _supportedLocales;
   late Map<String, Map<String, dynamic>> _localizedValues = {};
-  late StreamController<Locale> _localeController;
+  StreamController<Locale>? _localeController;
   final String _prefsKey = 'selected_locale';
+  late Locale _fallbackLocale;
 
   // Getters
   Locale get currentLocale => _currentLocale;
-  Stream<Locale> get localeStream => _localeController.stream;
+  Stream<Locale> get localeStream => _localeController!.stream;
 
   // Initialize the localization service
   Future<void> initialize({
     required Locale defaultLocale,
     required List<Locale> supportedLocales,
     required String path,
+    Locale? fallbackLocale,
+    void Function(Object error)? onError, // Add error callback
   }) async {
+    // Prevent multiple StreamControllers
+    _localeController?.close();
     _localeController = StreamController<Locale>.broadcast();
     _supportedLocales = supportedLocales;
 
@@ -53,60 +64,80 @@ class EasyLocalize {
       _currentLocale = defaultLocale;
     }
 
-    // Ensure the saved locale is supported
-    bool isSupported = false;
-    for (var locale in supportedLocales) {
-      if (locale.languageCode == _currentLocale.languageCode) {
-        isSupported = true;
-        break;
-      }
-    }
+    // Ensure the saved locale is supported (compare full locale)
+    bool isSupported = _supportedLocales.any((locale) =>
+      locale.languageCode == _currentLocale.languageCode &&
+      (locale.countryCode ?? '') == (_currentLocale.countryCode ?? '')
+    );
 
     if (!isSupported) {
       _currentLocale = defaultLocale;
     }
 
+    _fallbackLocale = fallbackLocale ?? defaultLocale;
+
     // Load all translations
-    await _loadAllTranslations(path);
+    await _loadAllTranslations(path, onError: onError);
 
     // Notify listeners
-    _localeController.add(_currentLocale);
+    _localeController!.add(_currentLocale);
   }
 
   // Load translations for all supported locales
-  Future<void> _loadAllTranslations(String path) async {
+  Future<void> _loadAllTranslations(String path, {void Function(Object error)? onError}) async {
     for (var locale in _supportedLocales) {
       final langCode = locale.languageCode;
       final countryCode = locale.countryCode;
-
-      String filePath;
-      if (countryCode == null || countryCode.isEmpty) {
-        filePath = '$path/$langCode.json';
-      } else {
-        filePath = '$path/${langCode}_$countryCode.json';
-      }
+      final localeKey = countryCode == null || countryCode.isEmpty
+          ? langCode
+          : '${langCode}_$countryCode';
+      String filePath = countryCode == null || countryCode.isEmpty
+          ? '$path/$langCode.json'
+          : '$path/${langCode}_$countryCode.json';
 
       try {
         final jsonString = await rootBundle.loadString(filePath);
         final Map<String, dynamic> values = json.decode(jsonString);
-        _localizedValues[langCode] = values;
+        _localizedValues[localeKey] = values;
       } catch (e) {
-        print('Error loading language file: $filePath');
-        print(e);
+        ErrorHandler.handleInitializationError(
+          message: 'Failed to load translations for $localeKey at $filePath',
+          error: e,
+        );
+      }
+    }
+  }
+  // Async load a translation file for a locale if not already loaded
+  Future<void> loadTranslationForLocale(Locale locale, String path, {void Function(Object error)? onError}) async {
+    final langCode = locale.languageCode;
+    final countryCode = locale.countryCode;
+    final localeKey = countryCode == null || countryCode.isEmpty
+        ? langCode
+        : '${langCode}_$countryCode';
+    if (_localizedValues.containsKey(localeKey)) return;
+    String filePath = countryCode == null || countryCode.isEmpty
+        ? '$path/$langCode.json'
+        : '$path/${langCode}_$countryCode.json';
+    try {
+      final jsonString = await rootBundle.loadString(filePath);
+      final Map<String, dynamic> values = json.decode(jsonString);
+      _localizedValues[localeKey] = values;
+    } catch (e) {
+      if (onError != null) {
+        onError(e);
+      } else {
+        throw EasyLocalizeException('Error loading language file: $filePath');
       }
     }
   }
 
   // Change the current locale
   Future<void> setLocale(Locale locale) async {
-    // Check if locale is supported
-    bool isSupported = false;
-    for (var supportedLocale in _supportedLocales) {
-      if (supportedLocale.languageCode == locale.languageCode) {
-        isSupported = true;
-        break;
-      }
-    }
+    // Check if locale is supported (compare full locale)
+    bool isSupported = _supportedLocales.any((supportedLocale) =>
+      supportedLocale.languageCode == locale.languageCode &&
+      (supportedLocale.countryCode ?? '') == (locale.countryCode ?? '')
+    );
 
     if (!isSupported) {
       throw Exception('Locale $locale is not supported');
@@ -123,53 +154,74 @@ class EasyLocalize {
     }
 
     // Notify listeners
-    _localeController.add(locale);
+    _localeController!.add(locale);
   }
 
   // Get a translated string
   String translate(String key, {Map<String, dynamic>? args}) {
-    final langCode = _currentLocale.languageCode;
-
-    if (!_localizedValues.containsKey(langCode)) {
-      print('No translations available for $langCode');
-      return key;
+    String? value = _getTranslationForKey(key, _currentLocale, args: args);
+    if (value == null) {
+      value = _getTranslationForKey(key, _fallbackLocale, args: args);
+      if (value == null) {
+        ErrorHandler.handleTranslationError(
+          key: key,
+          locale: _currentLocale,
+          message: 'Translation not found',
+        );
+        return key;
+      }
     }
+    return value;
+  }  String? _getTranslationForKey(String key, Locale locale, {Map<String, dynamic>? args}) {
+    final localeKey = locale.countryCode == null || locale.countryCode!.isEmpty
+        ? locale.languageCode
+        : '${locale.languageCode}_${locale.countryCode}';
+    if (!_localizedValues.containsKey(localeKey)) return null;
+    final translations = _localizedValues[localeKey]!;
 
-    final translations = _localizedValues[langCode]!;
+    // Handle nested keys
+    dynamic value = _resolveNestedKey(key, translations);
+    if (value == null) return null;
 
-    if (!translations.containsKey(key)) {
-      print('No translation found for key: $key in $langCode');
-      return key;
-    }
-
-    String value = translations[key].toString();
-
-    // Handle parameter substitution
+    String stringValue = value.toString();
     if (args != null && args.isNotEmpty) {
       args.forEach((argKey, argValue) {
-        value = value.replaceAll('{$argKey}', argValue.toString());
+        stringValue = stringValue.replaceAll('{$argKey}', argValue.toString());
       });
     }
+    return stringValue;
+  }
 
+  dynamic _resolveNestedKey(String key, Map<String, dynamic> translations) {
+    final keys = key.split('.');
+    dynamic current = translations;
+    for (var k in keys) {
+      if (current is Map<String, dynamic> && current.containsKey(k)) {
+        current = current[k];
+      } else {
+        return null;
+      }
+    }
+    return current;
+  }
+  // Translate with plurals
+  String translatePlural(String key, int count, {Map<String, dynamic>? args}) {
+    String? value = _getPluralTranslation(key, count, _currentLocale, args: args);
+    if (value == null) {
+      value = _getPluralTranslation(key, count, _fallbackLocale, args: args);
+      if (value == null) return key;
+    }
     return value;
   }
 
-  // Translate with plurals
-  String translatePlural(String key, int count, {Map<String, dynamic>? args}) {
-    final langCode = _currentLocale.languageCode;
-
-    if (!_localizedValues.containsKey(langCode)) {
-      return key;
-    }
-
-    final translations = _localizedValues[langCode]!;
-
-    if (!translations.containsKey(key)) {
-      return key;
-    }
-
+  String? _getPluralTranslation(String key, int count, Locale locale, {Map<String, dynamic>? args}) {
+    final localeKey = locale.countryCode == null || locale.countryCode!.isEmpty
+        ? locale.languageCode
+        : '${locale.languageCode}_${locale.countryCode}';
+    if (!_localizedValues.containsKey(localeKey)) return null;
+    final translations = _localizedValues[localeKey]!;
+    if (!translations.containsKey(key)) return null;
     final Map<String, dynamic> pluralForms = translations[key];
-
     String? pluralKey;
     if (count == 0 && pluralForms.containsKey('zero')) {
       pluralKey = 'zero';
@@ -177,37 +229,62 @@ class EasyLocalize {
       pluralKey = 'one';
     } else if (count == 2 && pluralForms.containsKey('two')) {
       pluralKey = 'two';
-    } else {
+    } else if (pluralForms.containsKey('other')) {
       pluralKey = 'other';
+    } else {
+      pluralKey = pluralForms.keys.first;
     }
-
-    if (!pluralForms.containsKey(pluralKey)) {
-      return key;
-    }
-
+    if (!pluralForms.containsKey(pluralKey)) return null;
     String value = pluralForms[pluralKey].toString();
-
-    // Handle parameter substitution
     Map<String, dynamic> allArgs = args ?? {};
     allArgs['count'] = count;
-
     allArgs.forEach((argKey, argValue) {
       value = value.replaceAll('{$argKey}', argValue.toString());
     });
-
     return value;
+  }
+
+  // Advanced: Format date/number using intl
+  String formatDate(DateTime date, {String? pattern, String? locale}) {
+    final loc = locale ?? _currentLocale.toString();
+    return DateFormat(pattern, loc).format(date);
+  }
+
+  String formatNumber(num number, {String? pattern, String? locale}) {
+    final loc = locale ?? _currentLocale.toString();
+    final format = NumberFormat(pattern, loc);
+    return format.format(number);
+  }
+
+  // Advanced: Reload all translations
+  Future<void> reload({void Function(Object error)? onError}) async {
+    _localizedValues.clear();
+    await _loadAllTranslations('assets/translations', onError: onError);
+    _localeController?.add(_currentLocale);
+  }
+
+  // Advanced: Add a new locale at runtime
+  Future<void> addLocale(Locale locale, String path, {void Function(Object error)? onError}) async {
+    if (_supportedLocales.contains(locale)) return;
+    _supportedLocales.add(locale);
+    await loadTranslationForLocale(locale, path, onError: onError);
+    _localeController?.add(_currentLocale);
+  }
+
+  // Advanced: Check if translation exists
+  bool hasTranslation(String key, {Locale? locale}) {
+    final loc = locale ?? _currentLocale;
+    final localeKey = loc.countryCode == null || loc.countryCode!.isEmpty
+        ? loc.languageCode
+        : '${loc.languageCode}_${loc.countryCode}';
+    return _localizedValues[localeKey]?.containsKey(key) ?? false;
   }
 
   // Clean up resources
   void dispose() {
-    _localeController.close();
+    _localeController?.close();
   }
 }
-
-
-
-
-
 
 // File: pubspec.yaml additions
 /*
@@ -217,6 +294,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   shared_preferences: ^2.2.0
+  intl: ^0.17.0
 
 flutter:
   assets:

@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,9 @@ import 'package:my_ad/core/domain/data_store/data_store.dart';
 import 'package:my_ad/features/merchant/merchant_dashboard/core/merchant_dashboard_shell_provider.dart';
 import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
+
+// import '../../../../utils/translation_service/easy_localize.dart';
+import '../../../terms/core/terms_and_conditions_route.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -163,33 +168,36 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _buildActionButton(
-                  icon: Icons.favorite_border,
-                  label: "Favourites",
-                  onTap: () {},
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildActionButton(
-                  icon: Icons.credit_card,
-                  label: "Transactions",
-                  onTap: () {},
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: _buildActionButton(
+          //         icon: Icons.favorite_border,
+          //         label: "Favourites",
+          //         onTap: () {},
+          //       ),
+          //     ),
+          //     const SizedBox(width: 12),
+          //     Expanded(
+          //       child: _buildActionButton(
+          //         icon: Icons.credit_card,
+          //         label: "Transactions",
+          //         onTap: () {},
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
                 child: _buildActionButton(
                   icon: Icons.star_border,
                   label: "Rate Us",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push(TermsRoute.rateUs);
+                  },
                 ),
               ),
               const SizedBox(width: 12),
@@ -197,7 +205,10 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
                 child: _buildActionButton(
                   icon: Icons.headset_mic_outlined,
                   label: "Help",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push(TermsRoute.help);
+                  },
                 ),
               ),
             ],
@@ -350,7 +361,7 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
             await _easyLocalize.setLocale(locale);
             setState(() {});
           } catch (e) {
-            print("Error changing language: $e");
+            dev.log("Error changing language: $e");
           }
         },
         borderRadius: BorderRadius.circular(6),
@@ -383,7 +394,10 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
         _buildMenuItem(
           icon: Icons.chat_bubble_outline,
           title: "App Feedback",
-          onTap: () {},
+          onTap: () {
+            Navigator.pop(context);
+            context.push(TermsRoute.feedback);
+          },
         ),
         _buildMenuItem(icon: Icons.share, title: "Share App", onTap: () {}),
       ],
@@ -408,24 +422,36 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
         _buildMenuItem(
           icon: Icons.privacy_tip_outlined,
           title: "Privacy Policy",
-          onTap: () {},
+          onTap: () {
+            Navigator.pop(context);
+            context.push(TermsRoute.appSupport);
+          },
         ),
         _buildMenuItem(
           icon: Icons.description_outlined,
           title: "Terms of Use",
-          onTap: () {},
+          onTap: () {
+            Navigator.pop(context);
+            context.push(TermsRoute.termsAndConditions);
+          },
         ),
-        _buildMenuItem(
-          icon: Icons.people_outline,
-          title: "Investor Relations",
-          onTap: () {},
-        ),
+        // _buildMenuItem(
+        //   icon: Icons.people_outline,
+        //   title: "Investor Relations",
+        //   onTap: () {},
+        // ),
         _buildMenuItem(
           icon: Icons.lightbulb_outline,
           title: "What's New",
-          onTap: () {},
+          onTap: () {
+            Navigator.pop(context);
+            context.push(TermsRoute.whatsNew);
+          },
         ),
-        _buildMenuItem(icon: Icons.more_horiz, title: "About Us", onTap: () {}),
+        _buildMenuItem(icon: Icons.more_horiz, title: "About Us", onTap: () {
+          Navigator.pop(context);
+          context.push(TermsRoute.aboutUs);
+        }),
         _buildMenuItem(
           icon: Icons.logout,
           title: "Logout",

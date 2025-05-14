@@ -1,4 +1,4 @@
-import '../../../../features/app_start/app.dart';
+
 import 'dart:developer' as dev;
 import 'package:pack/pack.dart';
 import 'package:pack/auth/custom_auth.dart';
@@ -102,4 +102,12 @@ class UserModel implements UserEntity {
     }
     throw Exception('Type $T is not supported by UserModel.fromMap');
   }
+}
+
+extension UserModelX on UserModel {
+  bool get isCustomer => metadata?['user_type'] == 'customer';
+  bool get isMerchant => metadata?['user_type'] == 'merchant';
+  bool get isAdmin => metadata?['user_type'] == 'admin';
+
+
 }

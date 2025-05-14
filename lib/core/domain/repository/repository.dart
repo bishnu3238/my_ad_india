@@ -1,4 +1,5 @@
 export 'banner_repository.dart';
+export 'customer_visit_repository.dart';
 export 'merchant_auth_repository.dart';
 export 'subscription_plan_repository.dart';
 export 'category_repository.dart';

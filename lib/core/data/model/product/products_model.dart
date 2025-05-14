@@ -1,4 +1,6 @@
-import 'package:my_ad/core/data/api/api_config.dart';
+import 'dart:convert';
+import 'dart:developer' as dev;
+
 import 'package:pack/services/service.dart';
 
 import 'package:pack/pack.dart';
@@ -34,7 +36,13 @@ class Merchant {
       imgUrl: json.getString('merchant_img'),
     );
   }
-
+  static Merchant empty = Merchant(
+    id: '0',
+    username: 'Unknown',
+    companyName: 'Unknown',
+    email: 'Unknown',
+    mobile: 'Unknown',
+  );
   Map<String, dynamic> toJson() {
     return {
       'merchant_id': id,
@@ -72,11 +80,11 @@ class ProductImages {
 
   factory ProductImages.fromMap(Map<String, dynamic> map) {
     return ProductImages(
-      id: map['id'] as String,
-      productId: map['productId'] as String,
-      image: map['image'] as String,
-      status: map['status'] as Status,
-      date: map['date'] as DateTime,
+      id: map.getString('id'),
+      productId: map.getString('productId'),
+      image: map.getString('image'),
+      status: map.getStatus('status', Status.values, Status.active),
+      date: map.getDateTime('date'),
     );
   }
 }
@@ -145,21 +153,28 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     List<ProductImages> productImages = [];
 
-    if (json.containsKey('images') && json['images'] != null) {
-      productImages =
-          (json['images'] as List)
-              .map(
-                (img) => ProductImages.fromMap({
-                  'id': img['id'] as String,
-                  'productId': img['ead_product_id'] as String,
-                  'image': img['image'] as String,
-                  'status':
-                      img['status'] == '1' ? Status.active : Status.inActive,
-                  'date': DateTime.parse(img['date']),
-                }),
-              )
-              .toList();
-    }
+    // if (json.containsKey('images') && json['images'] != null) {
+    //   var encode = jsonEncode(json['images']);
+    //   var decode = jsonDecode(encode);
+    //   dev.log('decode: $decode');
+    //
+    //   productImages =
+    //       (decode as List)
+    //           .map<ProductImages>(
+    //             (img) => ProductImages.fromMap({
+    //               'id': img.getString('id'),
+    //               'productId': img.getString('ead_product_id'),
+    //               'image': img.getString('image'),
+    //               'status': img.getStatus(
+    //                 'status',
+    //                 Status.values,
+    //                 Status.active,
+    //               ),
+    //               'date': img.getDateTime('date'),
+    //             }),
+    //           )
+    //           .toList();
+    // }
     return ProductModel(
       id: json.getString('id'),
       merchant: Merchant.fromJson(json),
@@ -174,7 +189,10 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
       serviceName: json.getString('service_name'),
       serviceFullName: json.getString('service_full_name', 'Unknown Service'),
       video: json.getString('video'),
-      images: productImages,
+      images: json.getList<ProductImages>(
+        'images',
+        ProductImages.fromMap,
+      ), //productImages,
       quantity: json.getInt('quantity'),
       description: json.getString('description'),
       offers: json.getString('offers'),
@@ -209,6 +227,36 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
       ),
     );
   }
+
+  static ProductModel empty = ProductModel(
+    id: '0',
+    merchant: Merchant.empty,
+    categoryId: 0,
+    categoryTitle: 'Unknown',
+    subcategoryId: 0,
+    subcategoryName: 'Unknown',
+    serviceId: 0,
+    serviceName: 'Unknown',
+    serviceFullName: 'Unknown',
+    video: 'Not Provided',
+    quantity: 0,
+    description: 'description',
+    offers: 'offers',
+    offerStatus: OfferStatus.active,
+    planRate: 0.0,
+    cityId: 1,
+    cityName: 'Kolkata',
+    stateId: 0,
+    stateName: 'West Bengal',
+    address: 'address',
+    latitude: 0.0,
+    longitude: 0.0,
+    status: Status.inActive,
+    updateLimits: 0,
+    videoStatus: Status.inActive,
+    businessPartnerApprove: Status.inActive,
+    images: [],
+  );
 
   @override
   Map<String, dynamic> toJson() {
@@ -248,7 +296,10 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
     };
   }
 
-  String get fullImgUrl => images[0].image;
+  String get fullImgUrl =>
+      images.isEmpty
+          ? 'https://eazytechno.com/ead_api/ead/admin/uploads/banner/3371f4.jpg'
+          : images[0].image;
 
   @override
   String get displayDescription => description;
@@ -285,7 +336,72 @@ class ProductModel extends BaseModel<ProductModel> implements Searchable {
     'description': description,
   };
 
-  ProductModel copyWith() {
-    throw UnimplementedError();
+  bool get isEmpty => this == empty;
+
+
+  ProductModel copyWith({
+    String? id,
+    Merchant? merchant,
+    int? categoryId,
+    String? categoryTitle,
+    int? subcategoryId,
+    String? subcategoryName,
+    int? serviceId,
+    String? serviceName,
+    String? serviceFullName,
+    String? video,
+    int? quantity,
+    String? description,
+    String? offers,
+    OfferStatus? offerStatus,
+    double? planRate,
+    int? cityId,
+    String? cityName,
+    int? stateId,
+    String? stateName,
+    String? address,
+    double? latitude,
+    double? longitude,
+    String? closeReason,
+    Status? status,
+    int? updateLimits,
+    Status? videoStatus,
+    Status? businessPartnerApprove,
+    List<ProductImages>? images,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      merchant: merchant ?? this.merchant,
+      categoryId: categoryId ?? this.categoryId,
+      categoryTitle: categoryTitle ?? this.categoryTitle,
+      subcategoryId: subcategoryId ?? this.subcategoryId,
+      subcategoryName: subcategoryName ?? this.subcategoryName,
+      serviceId: serviceId ?? this.serviceId,
+      serviceName: serviceName ?? this.serviceName,
+      serviceFullName: serviceFullName ?? this.serviceFullName,
+      video: video ?? this.video,
+      quantity: quantity ?? this.quantity,
+      description: description ?? this.description,
+      offers: offers ?? this.offers,
+      offerStatus: offerStatus ?? this.offerStatus,
+      planRate: planRate ?? this.planRate,
+      cityId: cityId ?? this.cityId,
+      cityName: cityName ?? this.cityName,
+      stateId: stateId ?? this.stateId,
+      stateName: stateName ?? this.stateName,
+      address: address ?? this.address,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      closeReason: closeReason ?? this.closeReason,
+      status: status ?? this.status,
+      updateLimits: updateLimits ?? this.updateLimits,
+      videoStatus: videoStatus ?? this.videoStatus,
+      businessPartnerApprove:
+      businessPartnerApprove ?? this.businessPartnerApprove,
+      images: images ?? this.images,
+    );
   }
+
+
+
 }

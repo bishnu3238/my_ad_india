@@ -126,6 +126,19 @@ extension MapX on Map<String, dynamic> {
     return get<String>(key, defaultValue);
   }
 
+  List<T> getList<T>(String key, T Function(Map<String, dynamic>) fromMap) {
+    final list = this[key];
+    if (list is List) {
+      return list
+          .map((item) =>
+      item is Map<String, dynamic> ? fromMap(item) : null)
+          .whereType<T>()
+          .toList();
+    }
+    return [];
+  }
+
+
   /// Gets int value (with special handling)
   int getInt(String key, [int defaultValue = 0]) {
     return get<int>(key, defaultValue);

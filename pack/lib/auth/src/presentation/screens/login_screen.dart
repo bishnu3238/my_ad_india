@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:pack/extensions/extensions.dart';
 import 'dart:ui';
 import '../../domain/entities/user_entity.dart';
 import '../blocs/auth_bloc.dart';
@@ -46,11 +47,7 @@ class LoginScreen<T extends UserEntity> extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState<T>();
 }
 
-enum AnimationStyle {
-  fade,
-  slide,
-  scale,
-}
+enum AnimationStyle { fade, slide, scale }
 
 class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
     with SingleTickerProviderStateMixin {
@@ -79,7 +76,10 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
@@ -165,9 +165,7 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
           'Social login with ${provider.name} is not implemented yet',
         ),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         duration: const Duration(seconds: 2),
       ),
@@ -186,7 +184,8 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
   }
 
   Widget _buildBackground() {
-    final Color primaryColor = widget.accentColor ?? Theme.of(context).colorScheme.primary;
+    final Color primaryColor =
+        widget.accentColor ?? Theme.of(context).colorScheme.primary;
 
     if (widget.backgroundImage != null) {
       return ShaderMask(
@@ -194,10 +193,7 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
           return LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              primaryColor.withOpacity(0.8),
-            ],
+            colors: [Colors.transparent, primaryColor.withValues(alpha: 0.8)],
             stops: const [0.3, 1.0],
           ).createShader(rect);
         },
@@ -216,8 +212,8 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              primaryColor.withOpacity(0.1),
-              primaryColor.withOpacity(0.3),
+              primaryColor.withValues(alpha: 0.1),
+              primaryColor.withValues(alpha: 0.3),
             ],
           ),
         ),
@@ -226,9 +222,8 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
   }
 
   Widget _buildMainContent() {
-    final Color primaryColor = widget.accentColor ?? Theme.of(context).colorScheme.primary;
-// 206699
-    Widget content = Form(
+    final primaryColor = widget.accentColor ?? context.colorScheme.primary;
+     Widget content = Form(
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -237,11 +232,7 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
           if (widget.logoAsset != null) ...[
             Hero(
               tag: 'app_logo',
-              child: Image.asset(
-                widget.logoAsset!,
-                width: 80,
-                height: 80,
-              ),
+              child: Image.asset(widget.logoAsset!, width: 80, height: 80),
             ),
             const SizedBox(height: 24),
           ],
@@ -249,18 +240,20 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
             widget.title,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: widget.useGlassmorphism
-                  ? Colors.white
-                  : Theme.of(context).textTheme.headlineMedium?.color,
+              color:
+                  widget.useGlassmorphism
+                      ? Colors.white
+                      : Theme.of(context).textTheme.headlineMedium?.color,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             widget.subtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: widget.useGlassmorphism
-                  ? Colors.white70
-                  : Theme.of(context).textTheme.bodySmall?.color,
+              color:
+                  widget.useGlassmorphism
+                      ? Colors.white70
+                      : Theme.of(context).textTheme.bodySmall?.color,
             ),
           ),
           const SizedBox(height: 40),
@@ -286,7 +279,7 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
             },
             isFilled: _emailFilled,
             accentColor: primaryColor,
-            useGlassmorphism: widget.useGlassmorphism,
+            useGlassMorphism: widget.useGlassmorphism,
           ),
           const SizedBox(height: 20),
           AuthTextField(
@@ -309,7 +302,7 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
             onEditingComplete: _login,
             isFilled: _passwordFilled,
             accentColor: primaryColor,
-            useGlassmorphism: widget.useGlassmorphism,
+            useGlassMorphism: widget.useGlassmorphism,
           ),
           const SizedBox(height: 8),
           Align(
@@ -317,7 +310,8 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
             child: TextButton(
               onPressed: widget.onForgotPasswordTap,
               style: TextButton.styleFrom(
-                foregroundColor: widget.useGlassmorphism ? Colors.white : primaryColor,
+                foregroundColor:
+                    widget.useGlassmorphism ? Colors.white : primaryColor,
                 textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               ),
@@ -370,26 +364,44 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
                 ),
               ),
               TextButton(
-                onPressed: widget.onCreateAccountTap ??
-                        () {
+                onPressed:
+                    widget.onCreateAccountTap ??
+                    () {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) => const SignupScreen(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const SignupScreen(),
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
                             const begin = Offset(1.0, 0.0);
                             const end = Offset.zero;
                             const curve = Curves.easeInOut;
-                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                            return SlideTransition(position: animation.drive(tween), child: child);
+                            var tween = Tween(
+                              begin: begin,
+                              end: end,
+                            ).chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
                           },
                         ),
                       );
                     },
                 style: TextButton.styleFrom(
-                  foregroundColor: widget.useGlassmorphism ? Colors.white : primaryColor,
+                  foregroundColor:
+                      widget.useGlassmorphism ? Colors.white : primaryColor,
                   textStyle: const TextStyle(fontWeight: FontWeight.w600),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                 ),
                 child: const Text('Create Account'),
               ),
@@ -407,10 +419,10 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
           child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),
@@ -423,11 +435,11 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
+        color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 5),
           ),
@@ -440,7 +452,7 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: context.colorScheme.surface,
       extendBodyBehindAppBar: widget.backgroundImage != null,
       body: BlocListener<AuthBloc<T>, AuthState<T>>(
         listener: (context, state) {
@@ -449,7 +461,6 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
             HapticFeedback.heavyImpact();
             widget.onLoginSuccess?.call();
           } else if (state is AuthErrorState<T>) {
-            // Error vibration
             HapticFeedback.vibrate();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -466,18 +477,14 @@ class _LoginScreenState<T extends UserEntity> extends State<LoginScreen<T>>
           }
         },
         child: GestureDetector(
-          // Dismiss keyboard when tapping outside
           onTap: () => FocusScope.of(context).unfocus(),
           child: Stack(
             children: [
-              // Background
               _buildBackground(),
-
-              // Main content
               SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: 24.symmetricHV(0),
                     child: _buildAnimatedContent(_buildMainContent()),
                   ),
                 ),

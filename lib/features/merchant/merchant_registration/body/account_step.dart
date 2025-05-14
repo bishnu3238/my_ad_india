@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:my_ad/core/services/service.dart';
-import 'package:my_ad/features/terms/core/terms_and_conditiaons_route.dart';
+import 'package:my_ad/features/terms/core/terms_and_conditions_route.dart';
 import 'package:my_ad/utils/widgets/svg_icon_widget.dart';
 import 'package:pack/extensions/extensions.dart';
 import 'package:pack/pack.dart';

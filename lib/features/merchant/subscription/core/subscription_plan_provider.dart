@@ -11,14 +11,14 @@ class SubscriptionPlanProvider extends ChangeNotifier {
   final MerchantDashboardStore merchantStore;
   final SubscriptionPlanRepository _repository;
 
-  final MerchantDashboardService _planRestrictionService;
+  final MerchantDashboardStore _dashboardStore;
 
   SubscriptionPlanProvider({
     required this.merchantStore,
     required SubscriptionPlanRepository repository,
-    required MerchantDashboardService planRestrictionService,
+    required MerchantDashboardStore dashboardStore,
   }) : _repository = repository,
-       _planRestrictionService = planRestrictionService;
+       _dashboardStore = dashboardStore;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -30,7 +30,7 @@ class SubscriptionPlanProvider extends ChangeNotifier {
   List<SubscriptionPlanModel> get availablePlans => _availablePlans;
 
   MerchantSubscriptionModel? _currentSubscription;
-  MerchantSubscriptionModel? get currentSubscription => _currentSubscription;
+  MerchantSubscriptionModel? get currentSubscription => _dashboardStore.entity?.merchantData.subscription;
 
   bool _isPlanExpired = false;
   bool get isPlanExpired => _isPlanExpired;

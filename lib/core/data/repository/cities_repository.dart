@@ -25,7 +25,7 @@ class CitiesRepositoryImpl implements CitiesRepository {
           .request<List<CityModel>>(
             config: RequestConfig(
               baseUrl: ApiConfig.baseUrl,
-              endpoint: ApiConfig.allCities,
+              endpoint: ApiConfig.getAllCitiesEndPoint,
               method: RequestMethod.get,
               responseFormat: ResponseFormat.json,
             ),

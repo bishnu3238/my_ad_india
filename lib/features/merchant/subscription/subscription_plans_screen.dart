@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_ad/core/data/model/plan_model.dart';
 import 'package:my_ad/features/merchant/subscription/core/subscription_plan_provider.dart';
 import 'package:my_ad/utils/widgets/primary_button.dart';
@@ -19,14 +20,14 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubscriptionPlanProvider>().fetchSubscriptionPlans();
-      context.read<SubscriptionPlanProvider>().fetchCurrentSubscription();
+      // context.read<SubscriptionPlanProvider>().fetchCurrentSubscription();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Subscription Plans'),
@@ -69,37 +70,37 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
           return Column(
             children: [
               // Header with title and description
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: theme.primaryContainer.withValues(alpha:0.3),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      'Subscribe and enjoy unlimited services',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: theme.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Choose the plan that works for you',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: theme.onSurface.withValues(alpha:0.8),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   width: double.infinity,
+              //   padding: const EdgeInsets.all(20),
+              //   decoration: BoxDecoration(
+              //     color: theme.primaryContainer.withValues(alpha: 0.3),
+              //   ),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.center,
+              //     children: [
+              //       const SizedBox(height: 10),
+              //       Text(
+              //         'Subscribe and enjoy unlimited services',
+              //         style: TextStyle(
+              //           fontSize: 22,
+              //           fontWeight: FontWeight.bold,
+              //           color: theme.onSurface,
+              //         ),
+              //         textAlign: TextAlign.center,
+              //       ),
+              //       const SizedBox(height: 10),
+              //       Text(
+              //         'Choose the plan that works for you',
+              //         style: TextStyle(
+              //           fontSize: 16,
+              //           color: theme.onSurface.withValues(alpha: 0.8),
+              //         ),
+              //         textAlign: TextAlign.center,
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
               // Current subscription info
               if (provider.currentSubscription != null) ...[
@@ -107,12 +108,13 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
                   margin: const EdgeInsets.all(16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: theme.primaryContainer.withValues(alpha:0.2),
+                    color: theme.primaryContainer.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: provider.isPlanExpired
-                          ? theme.error.withValues(alpha:0.5)
-                          : theme.primary.withValues(alpha:0.3),
+                      color:
+                          provider.isPlanExpired
+                              ? theme.error.withValues(alpha: 0.5)
+                              : theme.primary.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
@@ -124,16 +126,17 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
                             provider.isPlanExpired
                                 ? Icons.warning_amber_rounded
                                 : Icons.verified_rounded,
-                            color: provider.isPlanExpired
-                                ? theme.error
-                                : theme.primary,
+                            color:
+                                provider.isPlanExpired
+                                    ? theme.error
+                                    : theme.primary,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             'Current Subscription',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                               color: theme.onSurface,
                             ),
                           ),
@@ -142,22 +145,24 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
                       const SizedBox(height: 12),
                       Text(
                         'Plan: ${provider.currentSubscription!.planName}',
-                        style: TextStyle(
-                          fontSize: 16,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
                           color: theme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Valid until: ${provider.currentSubscription!.endDate.toString().split(' ')[0]}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: provider.isPlanExpired
-                              ? theme.error
-                              : theme.onSurface,
-                          fontWeight: provider.isPlanExpired
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                        'Valid until: ${provider.currentSubscription!.endDate.toDMY}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          color:
+                              provider.isPlanExpired
+                                  ? theme.error
+                                  : theme.onSurface,
+                          fontWeight:
+                              provider.isPlanExpired
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                         ),
                       ),
                       if (provider.isPlanExpired) ...[
@@ -182,9 +187,9 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
                   itemCount: provider.availablePlans.length,
                   itemBuilder: (context, index) {
                     final plan = provider.availablePlans[index];
-                    final isCurrentPlan = 
+                    final isCurrentPlan =
                         provider.currentSubscription?.planId == plan.id;
-                    
+
                     return PlanCard(
                       plan: plan,
                       isCurrentPlan: isCurrentPlan,
@@ -211,66 +216,69 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
     // Show confirmation dialog
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Confirm Subscription',
-          style: TextStyle(color: theme.primary),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'You are about to subscribe to:',
-              style: TextStyle(color: theme.onSurface.withValues(alpha:0.7)),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Confirm Subscription',
+              style: TextStyle(color: theme.primary),
             ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.primaryContainer.withValues(alpha:0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    plan.planName,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: theme.primary,
-                    ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'You are about to subscribe to:',
+                  style: TextStyle(
+                    color: theme.onSurface.withValues(alpha: 0.7),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${Currency.rupeeSymbol}${plan.planRate} • ${plan.validity} days',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: theme.onSurface,
-                    ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.primaryContainer.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        plan.planName,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: theme.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${Currency.rupeeSymbol}${plan.planRate} • ${plan.validity} days',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: theme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text('Cancel', style: TextStyle(color: theme.onSurface)),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel', style: TextStyle(color: theme.onSurface)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.primary,
+                  foregroundColor: theme.onPrimary,
+                ),
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Subscribe'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: theme.primary,
-              foregroundColor: theme.onPrimary,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Subscribe'),
-          ),
-        ],
-      ),
     );
 
     if (confirmed != true || !context.mounted) return;
@@ -330,10 +338,11 @@ class _PlanCardState extends State<PlanCard> {
   Widget build(BuildContext context) {
     final theme = widget.colorScheme;
     final plan = widget.plan;
-    
+
     // Create a list of features from plan activities
     final List<String> features = [
-      if (plan.numberOfServices != null) 'Up to ${plan.numberOfServices} services',
+      if (plan.numberOfServices != null)
+        'Up to ${plan.numberOfServices} services',
       '${plan.validity} days validity',
       plan.profileAccess,
       // Additional features from plan_master_activity table would be added here
@@ -345,12 +354,13 @@ class _PlanCardState extends State<PlanCard> {
       'Service booking calendar',
       'Multiple location support',
     ];
-    
+
     // Determine how many features to show
-    final displayedFeatures = _showAllFeatures 
-        ? features 
-        : features.take(_initialFeatureCount).toList();
-    
+    final displayedFeatures =
+        _showAllFeatures
+            ? features
+            : features.take(_initialFeatureCount).toList();
+
     return Card(
       margin: const EdgeInsets.only(bottom: 20),
       elevation: 4,
@@ -358,9 +368,10 @@ class _PlanCardState extends State<PlanCard> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: widget.isCurrentPlan 
-              ? Border.all(color: theme.primary, width: 2) 
-              : null,
+          border:
+              widget.isCurrentPlan
+                  ? Border.all(color: theme.primary, width: 2)
+                  : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,26 +382,24 @@ class _PlanCardState extends State<PlanCard> {
               width: double.infinity,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    theme.primary,
-                    theme.primary.withBlue(  30),
-                  ],
+                  colors: [theme.primary, theme.primary.withBlue(30)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),
-                image: plan.banner.isNotEmpty
-                    ? DecorationImage(
-                        image: NetworkImage(plan.banner),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(
-                          Colors.black.withValues(alpha:0.3),
-                          BlendMode.darken,
-                        ),
-                      )
-                    : null,
+                image:
+                    plan.banner.isNotEmpty
+                        ? DecorationImage(
+                          image: NetworkImage(plan.banner),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                            Colors.black.withValues(alpha: 0.3),
+                            BlendMode.darken,
+                          ),
+                        )
+                        : null,
               ),
               child: Stack(
                 children: [
@@ -427,7 +436,7 @@ class _PlanCardState extends State<PlanCard> {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha:0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -443,7 +452,7 @@ class _PlanCardState extends State<PlanCard> {
                       ],
                     ),
                   ),
-                  
+
                   // Current plan badge
                   if (widget.isCurrentPlan)
                     Positioned(
@@ -489,7 +498,7 @@ class _PlanCardState extends State<PlanCard> {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha:0.15),
+                        color: Colors.green.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Row(
@@ -523,7 +532,7 @@ class _PlanCardState extends State<PlanCard> {
                       plan.description,
                       style: TextStyle(
                         fontSize: 14,
-                        color: theme.onSurface.withValues(alpha:0.8),
+                        color: theme.onSurface.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -539,14 +548,16 @@ class _PlanCardState extends State<PlanCard> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Features list
-                  ...displayedFeatures.map((feature) => _buildFeatureRow(
-                    Icons.check_circle_outline,
-                    feature,
-                    theme,
-                  )),
-                  
+                  ...displayedFeatures.map(
+                    (feature) => _buildFeatureRow(
+                      Icons.check_circle_outline,
+                      feature,
+                      theme,
+                    ),
+                  ),
+
                   // View more/less button
                   if (features.length > _initialFeatureCount)
                     TextButton(
@@ -587,7 +598,9 @@ class _PlanCardState extends State<PlanCard> {
                     child: PrimaryButton(
                       text: widget.isCurrentPlan ? 'Current Plan' : 'Subscribe',
                       width: double.infinity,
-                      onPressed:()=> widget.isCurrentPlan ? null : widget.onSubscribe,
+                      onPressed:
+                          () =>
+                              widget.isCurrentPlan ? null : widget.onSubscribe,
                     ),
                   ),
                 ],
@@ -605,19 +618,12 @@ class _PlanCardState extends State<PlanCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: theme.primary,
-          ),
+          Icon(icon, size: 18, color: theme.primary),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(
-                fontSize: 14,
-                color: theme.onSurface,
-              ),
+              style: TextStyle(fontSize: 14, color: theme.onSurface),
             ),
           ),
         ],

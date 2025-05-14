@@ -1,27 +1,40 @@
 class ApiConfig {
-  static const String baseUrl = 'https://eazytechno.com/ead_api';
+  // static const String baseUrl = 'https://eazytechno.com/ead_api';
+  static const String baseUrl = 'https://moderndiagnosticcenter.com/ead_api';
+  static const String localBaseUrl = 'http://192.168.1.12/ead_api';
 
-  /// TODO: if second one is not working then uncomment the first one.
-  // static const String authBaseUrl = '$baseUrl/auth/auth.php';
-  static const String authBaseUrl = '$baseUrl/auth/new_auth.php';
-  static const String baseChatUrl = 'http://192.168.1.12:3000';
-  static const String socketUrl = 'http://192.168.1.12:3000';
+  /// TODO: [Auth-Url] ------------------------------------------------------.
+  static const String authBaseUrl = '$baseUrl/auth';
+  static const String login = '/new_login.php';
+  static const String sendOtp = '/new_auth.php/auth/send-otp';
+  static const String reSendOtp = '/new_resend_otp.php';
+  // static const String signUp = '/new_auth.php/auth/signup';
+  static const String signUp = '/new_signup.php';
+  static const String forgotPassword = '/new_forgot_password.php';
+  static const String changePassword = '/new_change_password.php';
+  static const String resetPassword = '/new_reset_password.php';
+  static const String logout = '/new_logout.php';
+  // static const String otp = '/new_auth.php/auth/verify-otp';
+  static const String otp = '/new_verify_otp.php';
 
-  static const String baseLocalUrl = 'http://192.168.1.12/ead_api';
+  /// TODO: [Chat-Url] ------------------------------------------------------.
+  // static const String baseChatUrl = 'http://192.168.1.12:3000';
+  static const String baseChatUrl = 'https://goindiaonline.com';
+  // static const String socketUrl = 'http://192.168.1.12:3000';
+  static const String socketUrl = 'https://goindiaonline.com';
 
-  // ----------------- Image Paths -----------------
+  /// TODO: [Image-Paths] ---------------------------------------------------.
   static String bannersImgPath = '/ead/admin/uploads/banner';
   static String categoryImgPath = '/ead/admin/uploads/category';
-  static String plansImgPath = 'ead/admin/uploads/plans';
-
+  static String subscriptionPlansImgPath = 'ead/admin/uploads/plans';
   static String subCategoryImgPath = '/ead/admin/uploads/category';
   static String serviceImgPath = '/ead/admin/uploads/services';
   static String eadProductImgPath = '/ead/merchant/uploads/service-images';
 
-  // ----------------- API Endpoints -----------------
+  /// TODO: [API-Endpoints] -------------------------------------------------.
 
-  static const String cities = '/get_cities.php';
-  static const String allCities = '/get_all_cities.php';
+  static const String getCitiesEndPoint = '/get_cities.php';
+  static const String getAllCitiesEndPoint = '/get_all_cities.php';
 
   /// Banners API - Handles all CRUD operations for banners
   ///
@@ -32,7 +45,9 @@ class ApiConfig {
   /// POST   /banners.php                - Create a new banner
   /// PUT    /banners.php?id=X           - Update an existing banner
   /// DELETE /banners.php?id=X           - Delete a banner by ID
-  static const String banners = '/get_banners.php';
+  static const String bannersEndPoint = '/get_banners.php';
+  static String bannerByIdEndPoint(String id) => '$bannersEndPoint?id=$id';
+  static String bannerByStatusEndPoint(int x) => '$bannersEndPoint?status=$x';
 
   /// Categories API - Handles all CRUD operations for categories
   ///
@@ -80,14 +95,6 @@ class ApiConfig {
   ///       "password": "string"  // User's password
   ///     }
   ///     ```
-  static const String login = '/auth/login';
-  static const String sendOtp = '/auth/send-otp';
-  static const String signUp = '/auth/signup';
-  static const String forgotPassword = '/auth/forgot-password';
-  static const String changePassword = '/auth/change-password';
-  static const String resetPassword = '/auth/reset-password';
-  static const String logout = '/auth/logout';
-  static const String otp = '/auth/verify-otp';
 
   /// TODO -------------- * [Customer] * APis -------------------
 
@@ -115,14 +122,13 @@ class ApiConfig {
   /// http://localhost/ead_api/api/products.php?category_id=cat1 (filter by category)
   /// Filter params [id], [category_id],[sub_category_id], [service_id], [merchant_id]
   static const String products = '/get_ead_products.php';
+  static const String nearbyProducts = '/nearby_product.php';
 
   /// ------------------------ [Merchant Section] ------------------------------
 
   /// Merchant Login API - Handles merchant authentication and token generation.
   static const String merchantLogin = '/merchant/login.php';
-  // static const String merchantOtp = '/merchant/verify_otp.php';
   static const String merchantOtp = '/merchant/otp.php';
-  // static const String merchantRegister = '/merchant/register.php';
   static const String merchantRegister =
       '/merchant/merchant_registration_new.php';
   static const String merchantVerifyMobile = '/merchant/verify_mobile.php';
@@ -158,4 +164,29 @@ class ApiConfig {
   static const String referralSubmit = '/submit_referral.php';
 
   static const String planMasterActivity = '/get_plan_master_activity.php';
+
+  /// TODO: ---- [Merchant-Reviews] -----------------------------------------
+  static const String getAllReviews = '/merchant/reviews/get_all_reviews.php';
+  static const String getReview = '/merchant/reviews/get_review.php';
+  static const String getMerchantReviews =
+      '/merchant/reviews/get_merchant_reviews.php';
+  static const String submitReview = '/merchant/reviews/submit_reviews.php';
+  static const String updateReview = '/merchant/reviews/update_reviews.php';
+  static const String deleteReview = '/merchant/reviews/delete_review.php';
+  static const String respondToReview = '/merchant/reviews/add_response.php';
+  static const String markReviewHelpful = '/merchant/reviews/mark_helpful.php';
+  static const String getRatingSummery =
+      '/merchant/reviews/get_rating_summery.php';
+  static const String hasUserReviewedItem =
+      '/merchant/reviews/has_user_reviewed_item.php';
+
+  ///------------------------------ [Customer-Visit]----------------------------
+  static const String getCustomerVisits =
+      '/customer_visits/get_customer_visits.php';
+  static const String submitCustomerVisit =
+      '/customer_visits/submit_customer_visit.php';
+  static const String getCustomerVisitById =
+      '/customer_visits/get_customer_visit_by_id.php';
+  static const String updateCustomerVisit =
+      '/customer_visits/update_customer_visit_status.php';
 }

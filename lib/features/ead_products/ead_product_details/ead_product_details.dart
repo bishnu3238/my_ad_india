@@ -2,30 +2,22 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_ad/core/data/api/api_config.dart';
-import 'package:my_ad/features/chat/core/chat_navigator.dart';
-import 'package:my_ad/features/chat/core/chat_navigation.dart';
-import 'package:my_ad/features/chat/services/chat_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pack/auth/custom_auth.dart';
 import 'package:pack/pack.dart';
+import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
-import '../../../core/injector/dependency_injection.dart';
-import '../../../core/services/product_service.dart';
 import '../../../core/data/model/model.dart';
-import '../core/ead_product_view_model.dart';
+import '../../../core/injector/dependency_injection.dart';
+import '../../chat_feature/models/user_status.dart';
+import '../../chat_feature/route/routes.dart';
+import 'body/product_review_section.dart';
 import 'core/ead_product_details_viewmodel.dart';
-import 'widgets/product_image_carousel.dart';
-import 'widgets/product_info_section.dart';
-import 'widgets/merchant_info_card.dart';
-import 'widgets/inquiry_form.dart';
-import 'widgets/similar_products_section.dart';
-import 'widgets/contact_action_buttons.dart';
+import 'body/body.dart';
 
 class EadProductDetails extends StatefulWidget {
-  const EadProductDetails({super.key, required this.provider});
-  final EadProductsViewModel provider;
+  const EadProductDetails({super.key});
 
   @override
   State<EadProductDetails> createState() => _EadProductDetailsState();
@@ -34,20 +26,19 @@ class EadProductDetails extends StatefulWidget {
 class _EadProductDetailsState extends State<EadProductDetails>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late ProductDetailsViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_handleTabChange);
+    _viewModel = context.read<ProductDetailsViewModel>();
   }
 
   void _handleTabChange() {
     if (!_tabController.indexIsChanging) {
-      final viewModel = Provider.of<ProductDetailsViewModel>(
-        context,
-        listen: false,
-      );
+      final viewModel = context.read<ProductDetailsViewModel>();
       viewModel.setSelectedTabIndex(_tabController.index);
     }
   }
@@ -61,212 +52,149 @@ class _EadProductDetailsState extends State<EadProductDetails>
 
   @override
   Widget build(BuildContext context) {
-    final eadProductsViewModel = widget.provider;
-    final product =
-        eadProductsViewModel.products.isNotEmpty
-            ? eadProductsViewModel.products.first
-            : null;
+    final product = _viewModel.product;
 
-    if (product == null) {
+    if (product.isEmpty) {
       return Scaffold(body: Center(child: Text('Product not found')));
     }
 
-    return ChangeNotifierProvider(
-      create:
-          (_) => ProductDetailsViewModel(
-            product: product,
-            productStore: Provider.of(context, listen: false),
-            service: DependencyInjector.get<ProductService>(),
-          ),
-      child: Consumer<ProductDetailsViewModel>(
-        builder: (context, viewModel, _) {
-          final state = viewModel.state;
+    return Consumer<ProductDetailsViewModel>(
+      builder: (context, viewModel, _) {
+        final state = viewModel.state;
 
-          return Scaffold(
-            body: Stack(
-              children: [
-                NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      _buildAppBar(context, product, viewModel),
-                      SliverPersistentHeader(
-                        delegate: _SliverAppBarDelegate(
-                          TabBar(
-                            controller: _tabController,
-                            tabs: const [
-                              Tab(text: 'Overview'),
-                              Tab(text: 'Details'),
-                              Tab(text: 'Offers'),
-                              Tab(text: 'Contact'),
-                            ],
-                            labelColor: Theme.of(context).colorScheme.primary,
-                            unselectedLabelColor:
-                                context.colorScheme.onSurfaceVariant,
-                            indicatorColor: context.colorScheme.primary,
-                            indicatorWeight: 3,
-                            labelStyle: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+        return Scaffold(
+          body: Stack(
+            children: [
+              NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    EadServiceDetailsAppBar(product: product),
+                    SliverPersistentHeader(
+                      delegate: _SliverAppBarDelegate(
+                        TabBar(
+                          controller: _tabController,
+
+                          tabs: const [
+                            Tab(text: 'Overview'),
+                            Tab(text: 'Details'),
+                            Tab(text: 'Offers'),
+                            Tab(text: 'Contact'),
+                          ],
+                          unselectedLabelColor: Colors.grey,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          labelColor: context.colorScheme.primary,
+                          indicatorColor: context.colorScheme.primary,
+                          labelStyle: GoogleFonts.inter(fontSize: 13),
+                        ),
+                      ),
+                      pinned: true,
+                    ),
+                  ];
+                },
+                body: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildOverviewTab(context, product, viewModel),
+                    _buildDetailsTab(context, product, viewModel),
+                    _buildOffersTab(context, product, viewModel),
+                    _buildContactTab(context, product, viewModel),
+                  ],
+                ),
+              ),
+
+              // Error message
+              if (state.errorMessage != null)
+                Positioned(
+                  bottom: 80,
+                  left: 16,
+                  right: 16,
+                  child: Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.red.shade700,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.white),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              state.errorMessage!,
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
-                        ),
-                        pinned: true,
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white),
+                            onPressed: viewModel.clearError,
+                          ),
+                        ],
                       ),
-                    ];
-                  },
-                  body: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildOverviewTab(context, product, viewModel),
-                      _buildDetailsTab(context, product, viewModel),
-                      _buildOffersTab(context, product, viewModel),
-                      _buildContactTab(context, product, viewModel),
-                    ],
+                    ),
                   ),
                 ),
 
-                // Error message
-                if (state.errorMessage != null)
-                  Positioned(
-                    bottom: 80,
-                    left: 16,
-                    right: 16,
-                    child: Material(
-                      elevation: 4,
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.red.shade700,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                state.errorMessage!,
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                              ),
-                              onPressed: viewModel.clearError,
-                            ),
-                          ],
-                        ),
+              // Inquiry form
+              if (state.showInquiryForm)
+                InquiryForm(
+                  viewModel: viewModel,
+                  onClose: viewModel.toggleInquiryForm,
+                ),
+
+              // Inquiry success message
+              if (state.inquirySubmitted)
+                Positioned(
+                  bottom: 80,
+                  left: 16,
+                  right: 16,
+                  child: Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.green.shade700,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
                       ),
-                    ),
-                  ),
-
-                // Inquiry form
-                if (state.showInquiryForm)
-                  InquiryForm(
-                    viewModel: viewModel,
-                    onClose: viewModel.toggleInquiryForm,
-                  ),
-
-                // Inquiry success message
-                if (state.inquirySubmitted)
-                  Positioned(
-                    bottom: 80,
-                    left: 16,
-                    right: 16,
-                    child: Material(
-                      elevation: 4,
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.green.shade700,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.check_circle, color: Colors.white),
-                            const SizedBox(width: 12),
-                            const Expanded(
-                              child: Text(
-                                'Your inquiry has been submitted successfully!',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle, color: Colors.white),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'Your inquiry has been submitted successfully!',
+                              style: TextStyle(color: Colors.white),
                             ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                              ),
-                              onPressed:
-                                  () => viewModel.updateState(
-                                    viewModel.state.copyWith(
-                                      inquirySubmitted: false,
-                                    ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white),
+                            onPressed:
+                                () => viewModel.updateState(
+                                  viewModel.state.copyWith(
+                                    inquirySubmitted: false,
                                   ),
-                            ),
-                          ],
-                        ),
+                                ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-              ],
-            ),
-            bottomNavigationBar: ContactActionButtons(
-              product: product,
-              viewModel: viewModel,
-              onCall: () => _launchPhone(product.merchant.mobile),
-              onWhatsApp: () => _launchWhatsApp(product.merchant.mobile),
-              onChat: () => _navigateToChat(product),
-              onInquiry: viewModel.toggleInquiryForm,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildAppBar(
-    BuildContext context,
-    ProductModel product,
-    ProductDetailsViewModel viewModel,
-  ) {
-    return SliverAppBar(
-      expandedHeight: 240.0,
-      floating: false,
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-        background: ProductImageCarousel(product: product),
-      ),
-      leading: Container(
-        margin: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.black26,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back, color: context.colorScheme.surface),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      actions: [
-        Container(
-          margin: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.black26,
-            borderRadius: BorderRadius.circular(20),
+                ),
+            ],
           ),
-          child: IconButton(
-            icon: Icon(Icons.share, color: context.colorScheme.surface),
-            onPressed: () => _shareProduct(product),
+          bottomNavigationBar: ContactActionButtons(
+            product: product,
+            viewModel: viewModel,
+            onCall: () => _launchPhone(product.merchant.mobile),
+            onWhatsApp: () => _launchWhatsApp(product.merchant.mobile),
+            onChat: () => _navigateToChat(product),
+            onInquiry: viewModel.toggleInquiryForm,
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -275,13 +203,21 @@ class _EadProductDetailsState extends State<EadProductDetails>
     ProductModel product,
     ProductDetailsViewModel viewModel,
   ) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        ProductInfoSection(product: product),
-        const SizedBox(height: 16),
-        SimilarProductsSection(viewModel: viewModel),
-      ],
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        children: [
+          ProductInfoSection(product: product),
+          const SizedBox(height: 16),
+
+          SimilarProductsSection(viewModel: viewModel),
+          const SizedBox(height: 20),
+          ProductReviewSection(product: product),
+
+        ],
+      ),
     );
   }
 
@@ -406,7 +342,7 @@ class _EadProductDetailsState extends State<EadProductDetails>
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            color: theme.colorScheme.primary.withOpacity(0.1),
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -462,7 +398,9 @@ class _EadProductDetailsState extends State<EadProductDetails>
                 Icon(
                   Icons.local_offer_outlined,
                   size: 80,
-                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.3),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(
+                    alpha: 0.3,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -543,71 +481,20 @@ class _EadProductDetailsState extends State<EadProductDetails>
   }
 
   void _navigateToChat(ProductModel product) async {
-    // Debug logging
-    dev.log('Navigate to chat with merchant: ${product.merchant.id}');
-
-    final authProvider = context.read<AuthProviderModel<UserModel>>();
-    final userId = authProvider.user?.id ?? '';
-
-    if (userId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please login to chat with the service provider'),
-        ),
-      );
-      return;
-    }
-
-    final merchantId = product.merchant.id;
-    final merchantName = product.merchant.companyName;
-    final merchantImage = product.merchant.imgUrl;
-
-    final chatManager = Provider.of<ChatManager>(context, listen: false);
-
     try {
-      // Show loading indicator
-      // showDialog(
-      //   context: context,
-      //   barrierDismissible: false,
-      //   builder: (context) => const Center(child: CircularProgressIndicator()),
-      // );
-
-      if (!chatManager.isInitialized) {
-        chatManager.initialize(
-          ApiConfig.baseChatUrl, // Your server URL
-          userId.toString(),
-          'customer',
-        );
-      }
-      dev.log('Customer ID: $userId, Merchant ID: $merchantId');
-
-      String processedImageUrl = '';
-      if (merchantImage.isNotEmpty) {
-        if (merchantImage.startsWith('http://') ||
-            merchantImage.startsWith('https://')) {
-          processedImageUrl = merchantImage;
-        } else {
-          processedImageUrl = 'https://api.myad.com/uploads/$merchantImage';
-        }
-      }
-
-      // Use the ChatNavigation helper to open chat
-      await ChatNavigation.openChatWithMerchant(
+      final receiverId = product.merchant.id.toInt;
+      final senderId =
+          context.read<AuthProviderModel<UserModel>>().user!.id.toInt;
+      final senderType = UserType.customer.name;
+      final receiverName = product.merchant.companyName;
+      ChatFeatureRoutes.goToChatScreen(
         context,
-        chatManager,
-        userId.toString(),
-        merchantId.toString(),
-        merchantName,
-        processedImageUrl,
+        receiverId,
+        senderId,
+        senderType,
+        receiverName,
       );
     } catch (e) {
-      // Close loading dialog if open
-      if (context.mounted && Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-
-      dev.log('Error opening chat: $e');
-
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error opening chat: $e')));
@@ -636,12 +523,6 @@ class _EadProductDetailsState extends State<EadProductDetails>
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     }
-  }
-
-  void _shareProduct(ProductModel product) {
-    final text =
-        'Check out ${product.serviceName} by ${product.merchant.companyName}. Contact them at ${product.merchant.mobile}';
-    Share.share(text);
   }
 }
 

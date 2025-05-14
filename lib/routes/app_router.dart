@@ -3,12 +3,10 @@ import '../core/data/model/user/user_model.dart';
 import 'package:provider/provider.dart';
 
 import '../core/domain/data_store/data_store.dart';
-import '../features/all_category/core/all_category_route.dart';
+import '../core/injector/dependency_injection.dart';
+import '../features/myad_categories/core/all_category_route.dart';
 import '../features/category_services/core/category_service_route.dart';
-import '../features/chat/screens/call_history_screen.dart';
-import '../features/chat/screens/chat_screen.dart';
-import '../features/chat/screens/inquiry_screen.dart';
-import '../features/chat/screens/merchant_chat_screen.dart';
+import '../features/chat_feature/route/routes.dart';
 import '../features/ead_products/core/ead_product_navigator.dart';
 import '../features/error/error_screen.dart';
 import '../features/intro/core/intro_navigator.dart';
@@ -21,13 +19,15 @@ import '../features/merchant/merchant_dashboard/core/merchant_dashboard_route.da
 import '../features/merchant/merchant_notification/core/notification_route.dart';
 import '../features/onboarding/core/onboarding_navigator.dart';
 import '../features/onboarding/core/onboarding_provider.dart';
+import '../features/post_requirement/core/route.dart';
 import '../features/profile/core/profile_navigator.dart';
 import '../features/refer_earn/core/refer_earn_route.dart';
-import '../features/terms/core/terms_and_conditiaons_route.dart';
+import '../features/support/core/support_provider.dart';
+import '../features/support/ui/support_screen.dart';
+import '../features/terms/core/terms_and_conditions_route.dart';
 import '../utils/handler/app_navigation_observer.dart';
 import 'auth/auth_routes.dart';
 import 'package:pack/auth/custom_auth.dart';
-import '../features/chat/core/chat_navigator.dart';
 
 class AppRouter {
   // Singleton instance
@@ -35,7 +35,9 @@ class AppRouter {
   factory AppRouter() => _instance;
   AppRouter._internal();
 
+  /// TODO: uncomment if later for this project uses
   static final initialLocation = '/';
+  // static final initialLocation = '/demo';
 
   static final GoRouter router = GoRouter(
     initialLocation: initialLocation,
@@ -55,46 +57,14 @@ class AppRouter {
       CategoryServicesRoute.page(),
       ProfileNavigator.page(),
       NotificationRoute.page(),
-      ...ChatNavigator.pages(),
-      
-      // Merchant chat routes
+      ...ChatFeatureRoutes.page(),
+      PostRequirementRoute.page(),
       GoRoute(
-        path: '/merchant/chat/:merchantId/:merchantName',
-        builder: (context, state) {
-          final merchantId = state.pathParameters['merchantId'] ?? '';
-          final merchantName = state.pathParameters['merchantName'] ?? '';
-          
-          return MerchantChatScreen(
-            merchantId: merchantId,
-            merchantName: merchantName,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/merchant/chat/conversation/:conversationId/:otherUserName/:otherUserImage/:otherUserType/:otherUserId',
-        builder: (context, state) {
-          final conversationId = state.pathParameters['conversationId'] ?? '';
-          final otherUserName = Uri.decodeComponent(state.pathParameters['otherUserName'] ?? '');
-          final otherUserImage = Uri.decodeComponent(state.pathParameters['otherUserImage'] ?? '');
-          final otherUserType = state.pathParameters['otherUserType'] ?? '';
-          final otherUserId = state.pathParameters['otherUserId'] ?? '';
-          
-          return ChatScreen(
-            conversationId: conversationId,
-            otherUserName: otherUserName,
-            otherUserImage: otherUserImage,
-            otherUserType: otherUserType,
-            otherUserId: otherUserId,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/merchant/chat/inquiries',
-        builder: (context, state) => const InquiryScreen(),
-      ),
-      GoRoute(
-        path: '/merchant/chat/calls',
-        builder: (context, state) => const CallHistoryScreen(),
+        path: '/support',
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (_) => DependencyInjector.get<SupportProvider>(),
+          child: SupportScreen(),
+        ),
       ),
     ],
     observers: [AppNavigationObserver()],

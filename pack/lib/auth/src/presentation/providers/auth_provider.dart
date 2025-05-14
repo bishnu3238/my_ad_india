@@ -10,12 +10,14 @@ import '../blocs/auth_state.dart';
 
 class AuthProviderModel<T extends UserEntity> extends ChangeNotifier {
   T? _user;
+  String? _token;
   bool _isAuthenticated = false;
   String? _errorMessage;
   bool _isLoading = false;
   StreamSubscription? _authSubscription;
 
   T? get user => _user;
+  String? get token => _token;
   bool get isAuthenticated => _isAuthenticated;
   String? get errorMessage => _errorMessage;
   bool get isLoading => _isLoading;
@@ -38,6 +40,7 @@ class AuthProviderModel<T extends UserEntity> extends ChangeNotifier {
 
         if (state is AuthenticatedState<T>) {
           _user = state.authResponse.user;
+          _handleToken(state.authResponse);
           _isAuthenticated = true;
           _errorMessage = null;
         } else if (state is UnauthenticatedState<T>) {
@@ -154,5 +157,26 @@ class AuthProviderModel<T extends UserEntity> extends ChangeNotifier {
   void dispose() {
     _authSubscription?.cancel();
     super.dispose();
+  }
+
+  void _handleToken(AuthResponse<T> authResponse) {
+    switch (authResponse) {
+      case LoginResponse<T> loginResponse:
+        _token = loginResponse.token;
+        break;
+      case SignupResponse<T> signupResponse:
+      case ForgotPasswordResponse<T> forgotPasswordResponse:
+        _token = null;
+        break;
+      case OtpVerifyResponse<T> otpVerifyResponse:
+        _token = otpVerifyResponse.token;
+        break;
+      case ChangePasswordResponse<T> changePasswordResponse:
+        _token = changePasswordResponse.token;
+        break;
+      default:
+        _token = null;
+        break;
+    }
   }
 }

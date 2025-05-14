@@ -1,4 +1,6 @@
 export 'auth_service.dart';
+export 'customer_visit_service.dart';
+export 'review_service.dart';
 export 'banner_service.dart';
 export 'category_service.dart';
 export 'city_service.dart';

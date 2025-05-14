@@ -65,7 +65,6 @@ class MerchantRegistrationPayload {
     required this.categoryId,
     this.subCategoryId,
     required this.serviceId,
-
   });
 
   Map<String, dynamic> toJson() {
@@ -98,9 +97,8 @@ class MerchantRegistrationPayload {
       'end_date': endDate,
       'validity': validity,
       'category_id': categoryId,
-      'sub_category_id': subCategoryId,
+      'sub_category_id': '0', //subCategoryId,
       'service_id': serviceId,
-
     };
   }
 

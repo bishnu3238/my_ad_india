@@ -73,7 +73,13 @@ class SubscriptionPlanRepositoryImpl implements SubscriptionPlanRepository {
     return await _apiCallService
         .request(
           config: config,
-          responseConverter: (data) => MerchantSubscriptionModel.fromJson(data),
+          responseConverter: (data) {
+
+            dev.log('get_merchant_subscription: $data');
+
+            return MerchantSubscriptionModel.fromJson(data)
+            ;
+          },
         )
         .then((value) {
           return value.fold(

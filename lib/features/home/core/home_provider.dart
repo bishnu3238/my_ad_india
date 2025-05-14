@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pack/services/translation_service/easy_localize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../terms/core/terms_and_conditiaons_route.dart';
+// import '../../../utils/translation_service/easy_localize.dart';
+import '../../terms/core/terms_and_conditions_route.dart';
 
-
-class HomeProvider extends ChangeNotifier{
+class HomeProvider extends ChangeNotifier {
   final StatefulNavigationShell shell;
   HomeProvider({required this.shell});
 
-   bool _showPopup = true;
+  bool _showPopup = true;
 
-   bool get showPopup => _showPopup;
+  bool get showPopup => _showPopup;
 
+  Locale _selectedLocale = Locale('en', 'US');
+  Locale get selectedLocale => _selectedLocale;
 
+  Future<void> loadSelectedLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString('selected_locale_code') ?? 'en';
+    final country = prefs.getString('selected_locale_country') ?? 'US';
+    _selectedLocale = Locale(code, country);
+    notifyListeners();
+  }
+
+  Future<void> setSelectedLocale(Locale locale) async {
+    _selectedLocale = locale;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_locale_code', locale.languageCode);
+    await prefs.setString('selected_locale_country', locale.countryCode ?? '');
+    await EasyLocalize().setLocale(locale); // Update EasyLocalize as well
+    notifyListeners();
+  }
 
   Future<void> popupShowed() async {
     final prefs = await SharedPreferences.getInstance();
@@ -114,8 +133,5 @@ class HomeProvider extends ChangeNotifier{
 
   void _navigateToTermsPage(BuildContext context) {
     context.push(TermsRoute.termsAndConditions);
-
   }
-
-
 }

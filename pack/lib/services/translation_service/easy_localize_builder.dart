@@ -7,12 +7,12 @@ class EasyLocalizeBuilder extends StatefulWidget {
   final Widget Function(BuildContext context, Locale locale) builder;
 
   const EasyLocalizeBuilder({
-    Key? key,
+    super.key,
     required this.builder,
-  }) : super(key: key);
+  });
 
   @override
-  _EasyLocalizeBuilderState createState() => _EasyLocalizeBuilderState();
+  State<EasyLocalizeBuilder> createState() => _EasyLocalizeBuilderState();
 }
 
 class _EasyLocalizeBuilderState extends State<EasyLocalizeBuilder> {

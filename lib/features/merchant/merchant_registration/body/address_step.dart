@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../../../core/data/model/model.dart';
 import '../core/form_validators.dart';
 import '../core/registration_theme.dart';
@@ -31,6 +32,16 @@ class _AddressStepState extends State<AddressStep> {
   final TextEditingController _searchController = TextEditingController();
   List<StateModel> _filteredStates = [];
   bool _isSearching = false;
+
+  // Add keys for field-level showcases
+  final GlobalKey _addressFieldKey = GlobalKey();
+  final GlobalKey _pincodeFieldKey = GlobalKey();
+  final GlobalKey _stateFieldKey = GlobalKey();
+
+  void _showFieldShowcase(GlobalKey key) {
+    setState(() {});
+    ShowCaseWidget.of(context).startShowCase([key]);
+  }
 
   @override
   void initState() {
@@ -75,158 +86,242 @@ class _AddressStepState extends State<AddressStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildAddressField(),
+          Showcase(
+            key: _addressFieldKey,
+            description:
+                'Enter your complete address for business correspondence.',
+            child: _buildAddressField(),
+          ),
           const SizedBox(height: 16),
-          _buildPincodeField(),
+          Showcase(
+            key: _pincodeFieldKey,
+            description: 'Enter your area pincode (6 digits).',
+            child: _buildPincodeField(),
+          ),
           const SizedBox(height: 16),
-          _buildStateSelector(context),
+          Showcase(
+            key: _stateFieldKey,
+            description: 'Select your state from the list.',
+            child: _buildStateSelector(context),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildAddressField() {
-    return Material(
-      borderRadius: BorderRadius.circular(8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            child: Icon(
-              CupertinoIcons.home,
-              color: RegistrationTheme.primaryColor,
-            ),
-          ),
-          Expanded(
-            child: CupertinoTextFormFieldRow(
-              controller: widget.addressController,
-              placeholder: 'Your Full Address *',
-              decoration: const BoxDecoration(
-                border: Border.fromBorderSide(BorderSide.none),
+    return Stack(
+      children: [
+        Material(
+          borderRadius: BorderRadius.circular(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+                child: Icon(
+                  CupertinoIcons.home,
+                  color: RegistrationTheme.primaryColor,
+                ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-              validator: FormValidators.requiredValidator,
-              textInputAction: TextInputAction.next,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              style: RegistrationTheme.bodyMedium(context: context),
-              maxLines: 3,
-              minLines: 1,
-            ),
+              Expanded(
+                child: CupertinoTextFormFieldRow(
+                  controller: widget.addressController,
+                  placeholder: 'Your Full Address *',
+                  decoration: const BoxDecoration(
+                    border: Border.fromBorderSide(BorderSide.none),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 12,
+                  ),
+                  validator: FormValidators.requiredValidator,
+                  textInputAction: TextInputAction.next,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: RegistrationTheme.bodyMedium(context: context),
+                  maxLines: 3,
+                  minLines: 1,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Positioned(
+          right: 12,
+          top: 7,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(maxHeight: 32, maxWidth: 32),
+            icon: const Icon(
+              Icons.info_outline,
+              color: Colors.blueGrey,
+              size: 22,
+            ),
+            tooltip: 'What is Address?',
+            onPressed: () => _showFieldShowcase(_addressFieldKey),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildPincodeField() {
-    return Material(
-      borderRadius: BorderRadius.circular(10),
-      child: Row(
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Icon(
-              CupertinoIcons.location_circle,
-              color: RegistrationTheme.primaryColor,
-            ),
-          ),
-          Expanded(
-            child: CupertinoTextFormFieldRow(
-              controller: widget.pincodeController,
-              placeholder: 'Your Pincode *',
-              decoration: const BoxDecoration(
-                border: Border.fromBorderSide(BorderSide.none),
+    return Stack(
+      children: [
+        Material(
+          borderRadius: BorderRadius.circular(10),
+          child: Row(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Icon(
+                  CupertinoIcons.location_circle,
+                  color: RegistrationTheme.primaryColor,
+                ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-              validator: FormValidators.pinCodeValidator,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(6),
-              ],
-              textInputAction: TextInputAction.done,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              style: RegistrationTheme.bodyMedium(context: context),
-            ),
+              Expanded(
+                child: CupertinoTextFormFieldRow(
+                  controller: widget.pincodeController,
+                  placeholder: 'Your Pincode *',
+                  decoration: const BoxDecoration(
+                    border: Border.fromBorderSide(BorderSide.none),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 12,
+                  ),
+                  validator: FormValidators.pinCodeValidator,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(6),
+                  ],
+                  textInputAction: TextInputAction.done,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  style: RegistrationTheme.bodyMedium(context: context),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Positioned(
+          right: 12,
+          top: 7,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(maxHeight: 32, maxWidth: 32),
+            icon: const Icon(
+              Icons.info_outline,
+              color: Colors.blueGrey,
+              size: 22,
+            ),
+            tooltip: 'What is Pincode?',
+            onPressed: () => _showFieldShowcase(_pincodeFieldKey),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildStateSelector(BuildContext context) {
-    return Material(
-      borderRadius: BorderRadius.circular(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, bottom: 8),
-            child: Text(
-              'Select State *',
-              style: RegistrationTheme.bodyMedium(
-                context: context,
-                color: RegistrationTheme.secondaryTextColor,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () => _showSearchableStatePicker(context),
-            child: Container(
-              decoration: BoxDecoration(
-                color: CupertinoColors.systemGrey6,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color:
-                      widget.selectedState.isEmpty
-                          ? RegistrationTheme.errorColor.withValues(alpha: 0.5)
-                          : Colors.transparent,
-                  width: widget.selectedState.isEmpty ? 1 : 0,
+    return Stack(
+      children: [
+        Material(
+          borderRadius: BorderRadius.circular(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 8),
+                child: Text(
+                  'Select State *',
+                  style: RegistrationTheme.bodyMedium(
+                    context: context,
+                    color: RegistrationTheme.secondaryTextColor,
+                  ),
                 ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  const Icon(
-                    CupertinoIcons.map,
-                    color: RegistrationTheme.primaryColor,
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      _getStateName(widget.selectedState),
-                      style: RegistrationTheme.bodyMedium(
-                        context: context,
-                        color:
-                            widget.selectedState.isEmpty
-                                ? RegistrationTheme.secondaryTextColor
-                                : RegistrationTheme.primaryTextColor,
-                      ),
+              GestureDetector(
+                onTap: () => _showSearchableStatePicker(context),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: CupertinoColors.systemGrey6,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color:
+                          widget.selectedState.isEmpty
+                              ? RegistrationTheme.errorColor.withValues(
+                                alpha: 0.5,
+                              )
+                              : Colors.transparent,
+                      width: widget.selectedState.isEmpty ? 1 : 0,
                     ),
                   ),
-                  const Icon(
-                    CupertinoIcons.chevron_down,
-                    color: RegistrationTheme.secondaryTextColor,
-                    size: 16,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
                   ),
-                ],
-              ),
-            ),
-          ),
-          if (widget.selectedState.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0, top: 4.0),
-              child: Text(
-                'Please select a state',
-                style: TextStyle(
-                  color: RegistrationTheme.errorColor,
-                  fontSize: 12,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        CupertinoIcons.map,
+                        color: RegistrationTheme.primaryColor,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          _getStateName(widget.selectedState),
+                          style: RegistrationTheme.bodyMedium(
+                            context: context,
+                            color:
+                                widget.selectedState.isEmpty
+                                    ? RegistrationTheme.secondaryTextColor
+                                    : RegistrationTheme.primaryTextColor,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        CupertinoIcons.chevron_down,
+                        color: RegistrationTheme.secondaryTextColor,
+                        size: 16,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              if (widget.selectedState.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0, top: 4.0),
+                  child: Text(
+                    'Please select a state',
+                    style: TextStyle(
+                      color: RegistrationTheme.errorColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+
+        Positioned(
+          right: 24,
+          top: 5,
+          child: Material(
+            child: InkWell(
+              child: const Icon(
+                Icons.info_outline,
+                color: Colors.blueGrey,
+                size: 20,
+              ),
+              onTap: () => _showFieldShowcase(_stateFieldKey),
             ),
-        ],
-      ),
+          ),
+        ),
+      ],
     );
   }
 

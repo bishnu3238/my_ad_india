@@ -12,7 +12,8 @@ import '../../../ead_products/core/ead_product_navigator.dart';
 import 'search_suggestion.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+  final String query;
+  const SearchScreen({super.key, this.query = ''});
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +53,9 @@ class SearchScreen extends StatelessWidget {
                   onSuggestionTap:
                       (searchable) => onResultTap(searchable, context),
                   isLoading: context.watch<SearchProvider>().isLoading,
-                  query: '',
+                  query: query,
                 ),
+
                 onResultTap: (searchable) => onResultTap(searchable, context),
               );
             },

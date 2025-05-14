@@ -7,10 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/data/model/model.dart';
 import '../../../core/domain/data_store/data_store.dart';
+import '../../../core/services/product_service.dart';
 import 'service_list_state.dart';
 
 class ServiceListViewModel extends ChangeNotifier {
   final ServicesService _service;
+  final ProductService _productService;
   final ServiceStore _serviceStore;
   ServiceListState _state = const ServiceListInitial();
   final Set<String> _favoriteServices = {};
@@ -19,7 +21,7 @@ class ServiceListViewModel extends ChangeNotifier {
   String _selectedCategory = '';
   ShowServicesBy _searchBy = ShowServicesBy.all;
 
-  ServiceListViewModel(this._service, this._serviceStore) {
+  ServiceListViewModel(this._service, this._productService,  this._serviceStore) {
     _loadFavorites();
   }
 

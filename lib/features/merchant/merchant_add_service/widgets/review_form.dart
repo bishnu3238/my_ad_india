@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_ad/features/merchant/merchant_add_service/core/merchant_add_service_provider.dart';
 import 'package:my_ad/features/merchant/merchant_dashboard/core/merchant_dashboard_route.dart';
 import 'package:pack/services/snack_bar_service/notify_service.dart';
@@ -47,10 +49,10 @@ class ReviewForm extends StatelessWidget {
                   'label': 'Category',
                   'value': provider.selectedCategory ?? 'Not selected',
                 },
-                {
-                  'label': 'Subcategory',
-                  'value': provider.selectedSubCategory ?? 'Not selected',
-                },
+                // {
+                //   'label': 'Subcategory',
+                //   'value': provider.selectedSubCategory ?? 'Not selected',
+                // },
                 {
                   'label': 'Service Type',
                   'value': provider.selectedService ?? 'Not selected',
@@ -368,18 +370,21 @@ class ReviewForm extends StatelessWidget {
           SizedBox(
             width: 120,
             child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
+              '$label:',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
                 color: CupertinoColors.systemGrey,
               ),
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              maxLines: 3,
+            child: AutoSizeText(
+              value.trim(),
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),

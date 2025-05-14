@@ -33,4 +33,12 @@ class LogService {
   void error(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     if (enableLogging) _logger.e(message, error: error, stackTrace: stackTrace);
   }
+
+  void exception(dynamic error, [StackTrace? stackTrace]) {
+    if (enableLogging) _logger.e('Exception', error: error, stackTrace: stackTrace);
+  }
+
+  void setLogLevel(Level level) {
+    if (enableLogging) Logger.level = level;
+  }
 }

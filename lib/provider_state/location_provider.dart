@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocationProvider extends ChangeNotifier {
   static const String _prefsKey = 'selectedCity';
   String _currentLocation = 'Kolkata'; // Default city
+  LocationResponse? _locationResponse;
   bool _isLoading = false;
   String? _error;
 

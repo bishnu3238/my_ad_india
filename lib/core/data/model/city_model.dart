@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pack/services/base_services/base_model.dart' show BaseModel;
-
-class CityModel  extends BaseModel<CityModel> {
+import 'package:pack/pack.dart';
+ class CityModel  extends BaseModel<CityModel> {
   final String name, state;
   final IconData? icon;
   final bool isPopular;
@@ -16,15 +16,14 @@ class CityModel  extends BaseModel<CityModel> {
 
   factory CityModel.fromJson(Map<String, dynamic> json) {
     return CityModel(
-      id: json['id'],
-      name: json['city'],
-      state: json['state_id'] ?? '',
-      isPopular: json['is_popular'] == 0 ? false : true,
+      id: json.getString('id'),
+      name: json.getString('city'),
+      state: json.getString('state_id'),
+      isPopular: json.getBool('is_popular') ,
     );
   }
 
-  @override
-  CityModel copyWith() {
+   CityModel copyWith() {
     throw UnimplementedError();
   }
 

@@ -29,19 +29,19 @@ class ApiCallUseCase {
     this._referralService,
   );
 
-  Future fetchCities() async {
+  Future<void> fetchCities() async {
     return _citiesService.fetchCities();
   }
 
-  Future fetchCategories() async {
+  Future<void> fetchCategories() async {
     return await _categoryService.fetchCategories();
   }
 
-  Future fetchSubCategories() async {
+  Future<void> fetchSubCategories() async {
     return await _subCategoryService.fetchSubCategories();
   }
 
-  Future fetchBanners() async {
+  Future<void> fetchBanners() async {
     return await _bannerService.fetchBanners();
   }
 
@@ -67,5 +67,9 @@ class ApiCallUseCase {
 
   Future submitReferralRequest(PostReferralRequest request) async {
     return _referralService.submitReferralRequest(request);
+  }
+
+  Future<List<ProductModel>> fetchNearbyProviders(FetchNearByProductsOfUserPayload payload) async{
+    return await _productService.fetchNearbyProviders(payload);
   }
 }

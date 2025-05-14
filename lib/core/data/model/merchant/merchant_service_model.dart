@@ -149,7 +149,7 @@ class MerchantServiceModel extends Equatable {
       'video_status': videoStatus,
       'business_partner_approve': businessPartnerApprove,
       'photos': servicePhotos.join(','),
-      'merchant_photo': merchantPhoto,
+      'company_logo': merchantPhoto,
     };
   }
 

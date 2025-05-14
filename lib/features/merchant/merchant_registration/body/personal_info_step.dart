@@ -6,8 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pack/extensions/contextx.dart';
+import 'package:pack/pack.dart';
 import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../core/form_validators.dart';
 import '../core/merchant_registration_view_model.dart';
 import '../core/registration_theme.dart';
@@ -39,6 +41,17 @@ class PersonalInfoStep extends StatefulWidget {
 class _PersonalInfoStepState extends State<PersonalInfoStep> {
   final List<String> genders = ['Male', 'Female', 'Other'];
 
+  // Add keys for field-level showcases
+  final GlobalKey _nameFieldKey = GlobalKey();
+  final GlobalKey _emailFieldKey = GlobalKey();
+  final GlobalKey _mobileFieldKey = GlobalKey();
+  final GlobalKey _genderFieldKey = GlobalKey();
+
+  void _showFieldShowcase(GlobalKey key) {
+    setState(() {});
+    ShowCaseWidget.of(context).startShowCase([key]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -46,70 +59,166 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildNameField(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Showcase(
+                  key: _nameFieldKey,
+                  description:
+                      'Enter your full name as per your official documents.',
+                  child: Tooltip(
+                    message: 'Your legal full name.',
+                    child: _buildNameField(),
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
-          _buildEmailField(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Showcase(
+                  key: _emailFieldKey,
+                  description:
+                      'Enter your email address (optional, but useful for notifications).',
+                  child: Tooltip(
+                    message: 'We will send notifications to this email.',
+                    child: _buildEmailField(
+                      () => _showFieldShowcase(_emailFieldKey),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
-          _buildMobileField(context),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Showcase(
+                  key: _mobileFieldKey,
+                  description:
+                      'Enter your 10-digit mobile number. This will be used for verification and communication.',
+                  child: Tooltip(
+                    message: 'Your active mobile number for OTP and updates.',
+                    child: _buildMobileField(context),
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
-          _buildGenderSelector(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Showcase(
+                  key: _genderFieldKey,
+                  description:
+                      'Select your gender. This helps us personalize your experience.',
+                  child: Tooltip(
+                    message: 'Choose your gender.',
+                    child: _buildGenderSelector(),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
   Widget _buildNameField() {
-    return Material(
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-      child: CupertinoFormRow(
-        prefix: const Icon(
-          CupertinoIcons.person_fill,
-          color: RegistrationTheme.primaryColor,
-        ),
-        child: CupertinoTextFormFieldRow(
+    return Stack(
+      children: [
+        Material(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: CupertinoFormRow(
+            prefix: const Icon(
+              CupertinoIcons.person_fill,
+              color: RegistrationTheme.primaryColor,
+            ),
 
-          controller: widget.nameController,
-          placeholder: 'Full Name *',
-          decoration: BoxDecoration(
-            color: CupertinoColors.systemGrey6,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.transparent),
+            child: CupertinoTextFormFieldRow(
+              controller: widget.nameController,
+              placeholder: 'Full Name *',
+              decoration: BoxDecoration(
+                color: CupertinoColors.systemGrey6,
+                borderRadius: BorderRadius.circular(8),
+
+                border: Border.all(color: Colors.transparent),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              validator: FormValidators.requiredValidator,
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.name,
+              textCapitalization: TextCapitalization.words,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              style: RegistrationTheme.bodyMedium(context: context),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          validator: FormValidators.requiredValidator,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.name,
-          textCapitalization: TextCapitalization.words,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          style: RegistrationTheme.bodyMedium(context: context),
         ),
-      ),
+
+        Positioned(
+          right: 25,
+          top: 25,
+          child: GestureDetector(
+            onTap: () => _showFieldShowcase(_nameFieldKey),
+            child: Icon(
+              CupertinoIcons.question_circle,
+              color: RegistrationTheme.secondaryColor,
+              size: 20,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildEmailField() {
-    return Material(
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-      child: CupertinoFormRow(
-        prefix: const Icon(
-          CupertinoIcons.mail_solid,
-          color: RegistrationTheme.primaryColor,
-        ),
-        child: CupertinoTextFormFieldRow(
-          controller: widget.emailController,
-          placeholder: 'Email Address (optional)',
-          decoration: BoxDecoration(
-            color: CupertinoColors.systemGrey6,
-            borderRadius: BorderRadius.circular(8),
+  Widget _buildEmailField(VoidCallback onIconTap) {
+    return Stack(
+      children: [
+        Material(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: CupertinoFormRow(
+            prefix: const Icon(
+              CupertinoIcons.mail_solid,
+              color: RegistrationTheme.primaryColor,
+            ),
+            child: CupertinoTextFormFieldRow(
+              controller: widget.emailController,
+              placeholder: 'Email Address (optional)',
+              decoration: BoxDecoration(
+                color: CupertinoColors.systemGrey6,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              validator: FormValidators.emailValidator,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              style: RegistrationTheme.bodyMedium(context: context),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          validator: FormValidators.emailValidator,
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          style: RegistrationTheme.bodyMedium(context: context),
         ),
-      ),
+        Positioned(
+          right: 25,
+          top: 25,
+          child: GestureDetector(
+            onTap: onIconTap,
+            child: Icon(
+              CupertinoIcons.question_circle,
+              color: RegistrationTheme.secondaryColor,
+              size: 20,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -177,6 +286,21 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                 ],
               ),
             ),
+
+            if (viewModel.formState.mobileController.text.isEmpty)
+              Positioned(
+                right: 25,
+                top: 25,
+                child: GestureDetector(
+                  onTap: () => _showFieldShowcase(_mobileFieldKey),
+                  child: Icon(
+                    CupertinoIcons.info,
+                    color: RegistrationTheme.secondaryTextColor,
+                    size: 20,
+                  ),
+                ),
+              ),
+
             if (viewModel.formState.isVerifyingMobile)
               const Positioned(
                 right: 25,
@@ -245,12 +369,28 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
-            child: Text(
-              'Select Gender *',
-              style: RegistrationTheme.bodyMedium(
-                context: context,
-                color: RegistrationTheme.secondaryTextColor,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  'Select Gender *',
+                  style: RegistrationTheme.bodyMedium(
+                    context: context,
+                    color: RegistrationTheme.secondaryTextColor,
+                  ),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: 24.right,
+                  child: InkWell(
+                    onTap: () => _showFieldShowcase(_genderFieldKey),
+                    child: Icon(
+                      CupertinoIcons.question_circle,
+                      color: RegistrationTheme.secondaryTextColor,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           // Use a segmented control for gender selection

@@ -1,5 +1,5 @@
 // custom_auth.dart - Main package file exposing public API
-library custom_auth;
+library;
 
 import 'dart:developer' as dev;
 import 'package:get_it/get_it.dart';

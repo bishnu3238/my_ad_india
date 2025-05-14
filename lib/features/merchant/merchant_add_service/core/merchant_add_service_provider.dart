@@ -33,9 +33,10 @@ class MerchantAddServiceProvider extends ChangeNotifier {
 
   initializeData(BuildContext context) {
     _categoryId = store.entity!.merchantData.serviceDetails.categoryId.toInt;
-    _subcategoryId = int.parse(
-      store.entity?.merchantData.serviceDetails.subCategoryId ?? '0',
+    dev.log(
+      'CATEGORY: ${store.entity?.merchantData.serviceDetails.subCategoryId}',
     );
+
     _serviceTypeId = store.entity?.merchantData.serviceDetails.serviceId.toInt;
     dev.log('CATEGORY: $_categoryId, SERVICE ID: $_serviceTypeId');
     _selectedCategory =
@@ -142,11 +143,9 @@ class MerchantAddServiceProvider extends ChangeNotifier {
   PlanFeatureManager? get featureManager => _featureManager;
 
   int? _categoryId;
-  int? _subcategoryId;
   int? _serviceTypeId;
 
   int get categoryId => _categoryId ?? 1;
-  int get subCategoryId => _subcategoryId ?? 1;
   int get serviceTypeId => _serviceTypeId ?? 1;
 
   // Getters for plan restrictions
@@ -330,7 +329,6 @@ class MerchantAddServiceProvider extends ChangeNotifier {
 
   void setSubCategory(String subCategory, int id) {
     _selectedSubCategory = subCategory;
-    _subcategoryId = id;
     // Reset dependent fields
     _selectedService = null;
     notifyListeners();
@@ -670,9 +668,9 @@ class MerchantAddServiceProvider extends ChangeNotifier {
                 .serviceDetails
                 .categoryId
                 .toInt, // _categoryId ?? 0,
-        subcategoryId: int.parse(
-          store.entity!.merchantData.serviceDetails.subCategoryId ?? '0',
-        ), //_subcategoryId ?? 0,
+        subcategoryId: 0, // int.parse(
+        // store.entity!.merchantData.serviceDetails.subCategoryId ?? '0',
+        // ), //_subcategoryId ?? 0,
         serviceTypeId:
             store
                 .entity!
@@ -758,7 +756,6 @@ class MerchantAddServiceProvider extends ChangeNotifier {
     _servicePhotos = [];
     _videoPath = null;
     _categoryId = null;
-    _subcategoryId = null;
     _serviceTypeId = null;
 
     serviceNameController.clear();

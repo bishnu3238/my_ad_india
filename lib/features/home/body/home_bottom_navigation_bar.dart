@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+// import 'package:my_ad/utils/translation_service/easy_localize_extensions.dart';
 import 'package:pack/auth/custom_auth.dart';
 import 'package:pack/pack.dart';
+import 'package:pack/services/service.dart';
 import '../../../core/constant/image.dart';
+import '../../../core/constant/trasnlation_key.dart';
 import '../../../core/data/model/model.dart';
 import '../../../provider_state/theme_provider.dart';
 import '../../merchant/core/merchant_auth_provider.dart';
@@ -60,7 +63,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                                   : SvgIcons.homeIcon,
                         ),
 
-                        label: 'Home',
+                        label: context.tr(TranslationKey.home.key),
                       ),
                       BottomNavigationBarItem(
                         icon: SvgIconWidget(
@@ -70,7 +73,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                                   : SvgIcons.searchIcon,
                         ),
 
-                        label: 'Search',
+                        label: context.tr(TranslationKey.search.key),
                       ),
                       BottomNavigationBarItem(
                         icon: Container(
@@ -131,7 +134,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                                   : SvgIcons.categoryIcon,
                         ),
 
-                        label: 'Category',
+                        label: context.tr(TranslationKey.category.key),
                       ),
                       BottomNavigationBarItem(
                         icon: SvgIconWidget(
@@ -141,7 +144,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                                   : SvgIcons.settingIcon,
                         ),
 
-                        label: 'Settings',
+                        label: context.tr(TranslationKey.settings.key),
                       ),
                     ],
                   )

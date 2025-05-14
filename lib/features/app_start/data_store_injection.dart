@@ -6,7 +6,7 @@ import '../../core/injector/dependency_injection.dart';
 import 'app_providers.dart';
 
 class DataStoreInjection extends StatelessWidget {
-  const DataStoreInjection({super.key});
+    const DataStoreInjection({super.key});
 
   @override
   Widget build(BuildContext context) {

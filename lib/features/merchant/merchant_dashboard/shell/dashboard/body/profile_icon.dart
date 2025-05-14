@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +48,7 @@ class ProfileIcon extends StatelessWidget {
                 Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: theme.primary.withOpacity(0.1),
+                      backgroundColor: theme.primary.withValues(alpha: 0.1),
                       radius: 24,
                       child: SvgIconWidget(
                         iconPath: SvgIcons.profileIcon,
@@ -177,7 +179,11 @@ class ProfileIcon extends StatelessWidget {
     return Consumer<MerchantDashboardStore>(
       builder: (context, store, _) {
         final username = store.entity?.merchantData.merchant.username ?? 'User';
-
+        final profilePic =
+            store.entity?.merchantData.merchant.companyLogo!.trim();
+        dev.log(
+          'Profile Icon: ${store.entity?.merchantData.merchant.companyLogo}',
+        );
         return InkWell(
           onTap: () => _showProfileMenu(context, username),
           borderRadius: BorderRadius.circular(10),
@@ -186,12 +192,24 @@ class ProfileIcon extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16 / 2),
             child: Row(
               children: [
-                SvgIconWidget(
-                  iconPath: SvgIcons.profileIcon,
-                  height: 20,
-                  package: 'pack',
-                  colorFilter: ColorFilter.mode(theme.primary, BlendMode.srcIn),
-                ),
+                if (profilePic == null || profilePic == '') ...[
+                  SvgIconWidget(
+                    iconPath: SvgIcons.profileIcon,
+                    height: 20,
+                    package: 'pack',
+                    colorFilter: ColorFilter.mode(
+                      theme.primary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ] else if (profilePic.isNotEmpty &&
+                    profilePic.contains('http://'))
+                  ImageView(
+                    source: ImageSource.network,
+                    path: profilePic,
+                    height: 20,
+                    width: 20,
+                  ),
                 Icon(Icons.keyboard_arrow_down, color: theme.primary, size: 24),
               ],
             ),

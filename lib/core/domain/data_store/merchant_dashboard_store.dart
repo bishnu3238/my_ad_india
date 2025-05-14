@@ -13,6 +13,8 @@ class MerchantDashboardStore extends EntityStore<MerchantDashboardModel>
     return expiry == null || DateTime.now().isAfter(expiry);
   }
 
+  int get merchantId   => entity!.merchantData.merchant.id!.toInt();
+
 
 
 

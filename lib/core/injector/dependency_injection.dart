@@ -1,8 +1,6 @@
 import 'package:get_it/get_it.dart';
-import '../../features/chat/core/chat_viewmodel.dart';
- import '../../features/chat/repository/chat_repository.dart';
-import '../../features/chat/services/chat_service.dart';
-import '../../features/chat/services/i_chat_service.dart';
+
+import '../../features/chat_feature/core/services/socket_services.dart';
 import '../../features/settings/core/settings_view_model.dart';
 import '../../features/home/shell/profile_settings_screen/settings/core/setting_view_model.dart';
 import '../../features/onboarding/core/onboarding_provider.dart';
@@ -14,9 +12,10 @@ import '../../features/merchant/merchant_dashboard/shell/merchant_services/core/
 import '../../features/merchant/merchant_login/core/merchant_login_viewmodel.dart';
 import '../../features/merchant/merchant_registration/core/merchant_registration_view_model.dart';
 import '../../features/merchant/subscription/core/subscription_plan_provider.dart';
+import '../../features/support/core/support_provider.dart';
 import '../../provider_state/local_notification_provider.dart';
 
-import '../../features/all_category/core/all_category_view_modal.dart';
+import '../../features/myad_categories/core/all_category_view_modal.dart';
 import '../../features/home/shell/profile_settings_screen/settings/core/local.dart';
 import '../../features/intro/core/intro_provider.dart';
 
@@ -25,6 +24,7 @@ import '../../features/location/core/location_view_model.dart';
 import '../../provider_state/location_provider.dart';
 import '../../provider_state/scroll_visibility_provider.dart';
 import '../../provider_state/theme_provider.dart';
+
 import '../data/api/api_config.dart';
 import '../data/model/model.dart';
 import '../data/repository/repository.dart';
@@ -56,7 +56,7 @@ class DependencyInjector {
     _getIt.registerLazySingleton<NotifyService>(() => NotifyService());
 
     _getIt.registerLazySingleton<ApiCallService>(
-      () => ApiCallService(baseUrl: ApiConfig.baseLocalUrl),
+      () => ApiCallService(baseUrl: ApiConfig.localBaseUrl),
     );
 
     _getIt.registerLazySingleton<ConnectivityService>(
@@ -70,8 +70,6 @@ class DependencyInjector {
     ///
     ///
     /// TODO:---- [Service-Start] ----------------------------------------------
-    _getIt.registerLazySingleton<IChatService>(() => ChatService());
-
     ///
     ///
     ///
@@ -113,6 +111,12 @@ class DependencyInjector {
         _getIt.get<CitiesStore>(),
       ),
     );
+    _getIt.registerLazySingleton<CustomerVisitRepository>(
+      () => CustomerVisitRepositoryImpl(
+        apiService: _getIt.get<ApiCallService>(),
+        baseUrl: ApiConfig.baseUrl,
+      ),
+    );
     _getIt.registerLazySingleton<LocationRepository>(
       () => LocationRepositoryImpl(),
     );
@@ -150,10 +154,6 @@ class DependencyInjector {
       () => UserRepositoryImpl(_getIt.get<ApiCallService>()),
     );
 
-    _getIt.registerLazySingleton<ChatRepository>(
-      () => ChatRepository(_getIt.get<IChatService>()),
-    );
-
     ///
     /// TODO:---- [Repository-End] ---------------------------------------------
     ///
@@ -180,6 +180,11 @@ class DependencyInjector {
         _getIt.get<CitiesRepository>(),
       ),
     );
+
+    _getIt.registerLazySingleton(
+      () => CustomerVisitService(_getIt.get<CustomerVisitRepository>()),
+    );
+
     _getIt.registerLazySingleton<MerchantAuthService>(
       () => MerchantAuthService(
         _getIt.get<MerchantDashboardStore>(),
@@ -205,6 +210,9 @@ class DependencyInjector {
         _getIt.get<ReferralStore>(),
         _getIt.get<ReferralRepository>(),
       ),
+    );
+    _getIt.registerLazySingleton<ReviewService>(
+      () => ReviewServiceImpl(baseUrl: ApiConfig.baseUrl),
     );
     _getIt.registerLazySingleton(
       () => ServicesService(
@@ -361,7 +369,7 @@ class DependencyInjector {
       () => SubscriptionPlanProvider(
         merchantStore: _getIt.get<MerchantDashboardStore>(),
         repository: _getIt.get<SubscriptionPlanRepository>(),
-        planRestrictionService: _getIt.get<MerchantDashboardService>(),
+        dashboardStore: _getIt.get<MerchantDashboardStore>(),
       ),
     );
 
@@ -372,7 +380,11 @@ class DependencyInjector {
     );
 
     _getIt.registerLazySingleton(
-      () => DashboardProvider(_getIt.get<MerchantDashboardService>()),
+      () => DashboardProvider(
+        _getIt.get<MerchantDashboardService>(),
+        _getIt.get<MerchantDashboardStore>(),
+        _getIt.get<CustomerVisitService>(),
+      ),
     );
     _getIt.registerLazySingleton<ProfileProviderModel>(
       () => ProfileProviderModel(_getIt.get<UserRepository>()),
@@ -385,14 +397,18 @@ class DependencyInjector {
       ),
     );
 
-    _getIt.registerLazySingleton<ChatViewModel>(
-      () => ChatViewModel(_getIt.get<ChatRepository>()),
-    );
     _getIt.registerLazySingleton<FeedbackSupportProvider>(
       () => FeedbackSupportProvider(),
     );
 
-    // -------------------------- End Screen Providers ---------------------------
+    /// TODO: -------------------------- [Chat Providers] -----------------------------
+    _getIt.registerLazySingleton<SocketService>(() => SocketService());
+
+    _getIt.registerFactory<SupportProvider>(
+      () => SupportProvider(),
+    );
+
+    /// TODO: -------------------------- End Screen Providers ---------------------------
   }
 
   // Helper method to get services

@@ -36,4 +36,9 @@ class UploadImageResponse {
     'message': message,
     'timestamp': timestamp,
   };
+
+  @override
+  String toString() {
+    return 'UploadImageResponse{success: $success, imageUrl: $imageUrl, message: $message, timestamp: $timestamp}';
+  }
 }

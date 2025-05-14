@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:my_ad/core/domain/data_store/merchant_dashboard_store.dart';
+
 import 'package:provider/provider.dart';
+import '../../../core/domain/data_store/data_store.dart';
 import '../../../utils/handler/back_gesture_handler.dart';
 import '../../home/core/home_navigator.dart';
 import '../../../core/data/model/model.dart';
-import '../../chat/core/merchant_chat_navigation.dart';
 import 'body/bottom_navigation_bar.dart';
 import 'body/merchant_app_drawer.dart';
 
@@ -32,12 +32,7 @@ class MerchantDashboardShell extends StatelessWidget {
             final merchantName =
                 authProvider.entity!.merchantData.merchant.username;
 
-            // Navigate to merchant chat screen
-            MerchantChatNavigation.navigateToMerchantChat(
-              context,
-              merchantId,
-              merchantName,
-            );
+            /// TODO:  Navigate to merchant chat screen
           },
           icon: const Icon(Icons.chat),
           label: const Text('Messages & Inquiries'),
@@ -49,21 +44,33 @@ class MerchantDashboardShell extends StatelessWidget {
     );
   }
 
+  onPopInvokedWithResult(didPop, result, BuildContext context) async {
+    var navigator = Navigator.of(context);
+    if (didPop) return;
+    final shouldPop = await BackGestureHandler.handleMerchant(
+      context,
+      navigationShell,
+    );
+    if (shouldPop && context.mounted) context.go(HomeRoute.home);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (didPop) return;
-        final shouldPop = await BackGestureHandler.handleMerchant(context);
-        if (shouldPop && context.mounted) context.go(HomeRoute.home);
-      },
+      onPopInvokedWithResult:
+          (didPop, result) => onPopInvokedWithResult(
+            didPop,
+            result,
+            context,
+          ), // (didPop, result) async {
+      // if (didPop) return;
+      // final shouldPop = await BackGestureHandler.handleMerchant(context);
+      // if (shouldPop && context.mounted) context.go(HomeRoute.home);
+      // },
       child: Scaffold(
         drawer: AppDrawer(),
-        appBar: AppBar(
-          title: const Text('Merchant Dashboard'),
-          actions: [_buildChatButton(context)],
-        ),
+
         body: navigationShell,
         bottomNavigationBar: CustomFloatingNavBar(
           currentIndex: navigationShell.currentIndex,

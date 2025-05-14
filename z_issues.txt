@@ -1,3 +1,7 @@
+12-05-2025
+1.
+
+
 22-04-2025
 Merchant login details
 Select category – (repair) == done
@@ -53,3 +57,56 @@ service_details: {id: 1, merchant_id: 13, category_id: 2,
 sub_category_id: 0,  service_id: 22, status: 1,
 date: 2025-04-22 17:26:27}}, timestamp: 2025-04-22T17:26:47+00:00}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+//
+
+function loadBillsHistory(page = 1) {
+    const searchTerm = $('#searchInput').val();
+    $('.loading').show();
+
+    $.get('ajax/get_bills_history.php', { search: searchTerm, page: page }, function(response) {
+        try {
+            // Create a temporary container and insert the response
+            const $temp = $('<div>').html(response);
+
+            // Find table rows inside the table-rows div
+            const tableContent = $temp.find('.table-rows').html();
+
+            if (tableContent && tableContent.trim()) {
+                $('#bills-history-data').html(tableContent);
+            } else {
+                $('#bills-history-data').html('<tr><td colspan="11" class="text-center">No records found</td></tr>');
+            }
+
+            // Handle pagination
+            const paginationContent = $temp.find('.pagination-nav');
+            if (paginationContent.length) {
+                $('#pagination-container').html(paginationContent);
+            } else {
+                $('#pagination-container').empty();
+            }
+
+            // Debug
+            console.log('Table content found:', !!tableContent);
+            console.log('Pagination found:', paginationContent.length > 0);
+
+        } catch (err) {
+            console.error('Error processing response:', err);
+            $('#bills-history-data').html('<tr><td colspan="11" class="text-center">Error processing data</td></tr>');
+        }
+
+        $('.loading').hide();
+    }).fail(function(xhr, status, error) {
+        console.error('AJAX Error:', xhr.responseText);
+        $('#bills-history-data').html('<tr><td colspan="11" class="text-center">Error loading data</td></tr>');
+        $('.loading').hide();
+        showSnackbar('Failed to load data: ' + error, 'error');
+    });
+}
+
+// Update changePage to use the same logic
+function changePage(page) {
+    loadBillsHistory(page);
+}

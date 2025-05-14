@@ -14,6 +14,8 @@ class WebSocketService {
   final AuthService _authService;
   final StreamController<dynamic> _messagesController =
       StreamController.broadcast();
+  final StreamController<WebSocketConnectionState> _stateController =
+      StreamController.broadcast();
   Timer? _reconnectTimer;
   Timer? _pingTimer;
   bool _reconnectEnabled = false;
@@ -28,6 +30,7 @@ class WebSocketService {
 
   bool get isConnected => _channel != null;
   Stream<dynamic> get messagesStream => _messagesController.stream;
+  Stream<WebSocketConnectionState> get connectionStateStream => _stateController.stream;
 
   Future<Either<NetworkFailure, bool>> connect(
     String url, {
@@ -35,6 +38,8 @@ class WebSocketService {
     bool addAuthToken = false,
     bool enableReconnect = true,
     bool enablePing = true,
+    void Function()? onConnect,
+    void Function()? onDisconnect,
   }) async {
     // Clean up any existing connection
     await disconnect();
@@ -44,7 +49,13 @@ class WebSocketService {
     _lastHeaders = headers;
     _reconnectAttempts = 0;
 
-    return _connect(url, headers, addAuthToken, enablePing);
+    _stateController.add(WebSocketConnectionState.connecting);
+
+    final result = await _connect(url, headers, addAuthToken, enablePing, onConnect, onDisconnect);
+    if (result.isLeft()) {
+      _stateController.add(WebSocketConnectionState.disconnected);
+    }
+    return result;
   }
 
   Future<Either<NetworkFailure, bool>> _connect(
@@ -52,6 +63,8 @@ class WebSocketService {
     Map<String, dynamic>? headers,
     bool addAuthToken,
     bool enablePing,
+   [ void Function()? onConnect,
+    void Function()? onDisconnect,]
   ) async {
     try {
       _logger.info('Connecting to WebSocket: $url');
@@ -74,11 +87,11 @@ class WebSocketService {
         },
         onError: (error, stackTrace) {
           _logger.error('WebSocket error', error, stackTrace);
-          _handleDisconnect();
+          _handleDisconnect(onDisconnect: onDisconnect);
         },
         onDone: () {
           _logger.info('WebSocket connection closed');
-          _handleDisconnect();
+          _handleDisconnect(onDisconnect: onDisconnect);
         },
       );
 
@@ -87,11 +100,17 @@ class WebSocketService {
         _setupPingTimer();
       }
 
+      _stateController.add(WebSocketConnectionState.connected);
+      if (onConnect != null) onConnect();
+
       _logger.info('WebSocket connected successfully');
       return right(true);
     } catch (e, stack) {
       _logger.error('Failed to connect to WebSocket', e, stack);
-      _handleDisconnect();
+      _handleDisconnect(onDisconnect: onDisconnect);
+
+      _stateController.add(WebSocketConnectionState.disconnected);
+      if (onDisconnect != null) onDisconnect();
 
       return left(
         NetworkFailure(
@@ -103,23 +122,29 @@ class WebSocketService {
     }
   }
 
-  void _handleDisconnect() {
+  void _handleDisconnect({int? code, String? reason, void Function()? onDisconnect}) {
     // Cancel ping timer
     _pingTimer?.cancel();
     _pingTimer = null;
 
-    // Attempt reconnect if enabled
+    _stateController.add(WebSocketConnectionState.disconnected);
+    if (onDisconnect != null) onDisconnect();
+
+    // Exponential backoff for reconnect
     if (_reconnectEnabled &&
         _lastUrl != null &&
         _reconnectAttempts < _maxReconnectAttempts) {
+      final delay = Duration(
+        seconds: _reconnectDelay.inSeconds * (1 << (_reconnectAttempts - 1)).clamp(1, 32),
+      );
       _reconnectAttempts++;
 
       _logger.info(
-        'Scheduling WebSocket reconnect attempt $_reconnectAttempts/$_maxReconnectAttempts',
+        'Scheduling WebSocket reconnect attempt $_reconnectAttempts/$_maxReconnectAttempts in ${delay.inSeconds}s',
       );
 
       _reconnectTimer?.cancel();
-      _reconnectTimer = Timer(_reconnectDelay, () {
+      _reconnectTimer = Timer(delay, () {
         _connect(_lastUrl!, _lastHeaders, true, true);
       });
     }
@@ -172,7 +197,7 @@ class WebSocketService {
     }
   }
 
-  Future<void> disconnect() async {
+  Future<void> disconnect({int code = 1000, String reason = 'Client disconnected'}) async {
     _reconnectEnabled = false;
 
     _reconnectTimer?.cancel();
@@ -184,8 +209,9 @@ class WebSocketService {
     if (_channel != null) {
       try {
         _logger.info('Closing WebSocket connection');
-        await _channel!.sink.close(1000, 'Client disconnected');
+        await _channel!.sink.close(code, reason);
         _channel = null;
+        _stateController.add(WebSocketConnectionState.disconnected);
       } catch (e) {
         _logger.error('Error closing WebSocket connection', e);
       }
@@ -195,6 +221,10 @@ class WebSocketService {
   Future<void> dispose() async {
     await disconnect();
     await _messagesController.close();
+    await _stateController.close();
     _logger.debug('Disposed WebSocketService');
   }
 }
+
+// WebSocket connection state enum
+enum WebSocketConnectionState { connecting, connected, disconnected }

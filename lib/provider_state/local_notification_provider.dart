@@ -28,7 +28,7 @@ class LocalNotificationProvider extends ChangeNotifier{
   }
 
   Future<void> checkPermissions() async {
-     final status = await _localNotificationService.checkAndRequestPermission();
+     final status = await _localNotificationService.getPermissionStatus();
     if (status != PermissionStatus.granted) {
       // Handle denial (e.g., show a dialog)
       print('Notification permissions denied');
