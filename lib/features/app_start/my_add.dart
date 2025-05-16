@@ -32,9 +32,7 @@ class MyAdd extends StatelessWidget {
                 router: AppRouter.router,
                 translationsPath: 'assets/translations',
                 defaultLocale: Locale('en', 'US'),
-                themeProvider: themeProvider
-
-                ,
+                themeProvider: themeProvider,
                 child: const SizedBox.shrink(),
               ),
         );
@@ -42,9 +40,3 @@ class MyAdd extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
