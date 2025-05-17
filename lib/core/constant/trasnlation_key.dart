@@ -139,6 +139,16 @@ enum TranslationKey {
   location('location'),
   locationPermission('location_permission'),
   reset('reset'),
+  referEarnReward('refer_earn_reward'),
+  inviteFriends('invite_friends'),
+  earnMoney('earn_money'),
+  andUnlockExclusiveBenefits('and_unlock_excluesive_benefits'),
+  startYourJourney('start_your_journey'),
+  asAnAgentToday('as_an_agent_today'),
+  earnForEveryFriendWhoJoins('earn_for_every_friend_who_joins'),
+  unlockScecialAgentStatus('unload_scecial_agent_status'),
+  maybeLater('maybe_later'),
+  knowMore('know_more'),
 
   locationPermissionMessage('location_permission_message');
 

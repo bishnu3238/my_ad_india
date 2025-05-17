@@ -47,4 +47,12 @@ abstract class MerchantDashboardRepository implements IRepository {
     required File imageFile,
     Function(int p1, int p2)? onSendProgress,
   }) ;
+
+  /// Edit merchant profile (call edit profile API)
+  Future<Either<Failure, bool>> editMerchantProfile({
+    required int merchantId,
+    required Map<String, String> payload,
+    File? imageFile,
+    Function(int, int)? onSendProgress,
+  });
 }

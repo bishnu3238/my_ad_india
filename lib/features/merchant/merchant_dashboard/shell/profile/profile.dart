@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_ad/features/chat_feature/widgets/chat_widgets.dart';
 import 'package:pack/extensions/numx.dart';
+import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 import 'merchant_profile_provider.dart';
 import 'profile_header.dart';
@@ -50,66 +52,71 @@ class MerchantProfileScreen extends StatelessWidget {
           return Scaffold(
             extendBodyBehindAppBar: true,
 
-            body: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFe0eafc), Color(0xFFcfdef3)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+            body: OverlayLoader(
+              isLoading: provider.isLoading,
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFe0eafc), Color(0xFFcfdef3)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
-              ),
-              child: SingleChildScrollView(
-                padding: 20.symmetricVH(12),
-                child: Column(
-                  children: [
-                    ProfileHeader(
-                      profile: profile,
-                      onEdit: provider.onEditProfile,
-                    ),
-                    const SizedBox(height: 28),
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                child: SingleChildScrollView(
+                  padding: 20.symmetricVH(12),
+                  child: Column(
+                    children: [
+                      ProfileHeader(
+                        profile: profile,
+                        onEdit: () => provider.onEditProfile(context),
                       ),
-                      child: Column(
-                        children: [
-                          ProfileOptionTile(
-                            title: 'Account Settings',
-                            icon: Icons.settings,
-                            onTap: provider.onAccountSettings,
-                          ),
-                          ProfileOptionTile(
-                            title: 'Business Information',
-                            icon: Icons.business,
-                            onTap: provider.onBusinessInfo,
-                          ),
-                          ProfileOptionTile(
-                            title: 'Subscription & Billing',
-                            icon: Icons.subscriptions,
-                            onTap: provider.onSubscription,
-                          ),
-                          ProfileOptionTile(
-                            title: 'Notifications',
-                            icon: Icons.notifications,
-                            onTap: provider.onNotifications,
-                          ),
-                          ProfileOptionTile(
-                            title: 'Help & Support',
-                            icon: Icons.help,
-                            onTap: provider.onHelp,
-                          ),
-                          ProfileOptionTile(
-                            title: 'Privacy & Security',
-                            icon: Icons.security,
-                            onTap: provider.onPrivacy,
-                          ),
-                        ],
+                      const SizedBox(height: 28),
+                      Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            ProfileOptionTile(
+                              title: 'Account Settings',
+                              icon: Icons.settings,
+                              onTap: provider.onAccountSettings,
+                            ),
+                            ProfileOptionTile(
+                              title: 'Business Information',
+                              icon: Icons.business,
+                              onTap: provider.onBusinessInfo,
+                            ),
+                            ProfileOptionTile(
+                              title: 'Subscription & Billing',
+                              icon: Icons.subscriptions,
+                              onTap: provider.onSubscription,
+                            ),
+                            ProfileOptionTile(
+                              title: 'Notifications',
+                              icon: Icons.notifications,
+                              onTap: () => provider.onNotifications(context),
+                            ),
+                            ProfileOptionTile(
+                              title: 'Help & Support',
+                              icon: Icons.help,
+                              onTap: () => provider.onHelp(context),
+                            ),
+                            ProfileOptionTile(
+                              title: 'Privacy & Security',
+                              icon: Icons.security,
+                              onTap: () => provider.onPrivacy(context),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                    ProfileLogoutButton(onLogout: provider.onLogout),
-                  ],
+                      const SizedBox(height: 32),
+                      ProfileLogoutButton(
+                        onLogout: () => provider.onLogout(context),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

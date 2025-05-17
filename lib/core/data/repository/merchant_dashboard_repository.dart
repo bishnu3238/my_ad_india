@@ -238,8 +238,8 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
     );
 
     return response.fold((failure) => Left(failure), (result) {
-      if (!result.data!.success!) {
-        return Left(NetworkFailure(message: result.data!.message!));
+      if (!result.data!.success) {
+        return Left(NetworkFailure(message: result.data!.message));
       }
       return Right(result.data!);
     });
@@ -365,7 +365,11 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
   }
 
   @override
-  Future<Either<Failure, UploadImageResponse>> uploadMerchantBusinessImage({required int merchantId, required File imageFile, Function(int p1, int p2)? onSendProgress}) async{
+  Future<Either<Failure, UploadImageResponse>> uploadMerchantBusinessImage({
+    required int merchantId,
+    required File imageFile,
+    Function(int p1, int p2)? onSendProgress,
+  }) async {
     final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
     if (![
       'image/jpeg',
@@ -404,6 +408,52 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
     } catch (e) {
       dev.log('Error uploading image: $e');
       return Left(NetworkFailure(message: 'Unexpected error: $e'));
+    }
+  }
+
+  @override
+  /// Edit merchant profile (call edit profile API)
+  Future<Either<Failure, bool>> editMerchantProfile({
+    required int merchantId,
+    required Map<String, String> payload,
+    File? imageFile,
+    Function(int, int)? onSendProgress,
+  }) async {
+    try {
+      final config = RequestConfig.forFileUpload(
+        baseUrl: ApiConfig.baseUrl,
+        endpoint: ApiConfig.editMerchantProfile,
+        method: RequestMethod.post,
+        fields: payload,
+        onSendProgress: onSendProgress,
+        files: {'company_logo': imageFile},
+      );
+
+      final response = await _apiService.request(
+        config: config,
+        responseConverter: (data) => data,
+      );
+
+      return response.fold(
+        (failure) {
+          dev.log('Error: $failure');
+          return Left(NetworkFailure(message: 'Failed to update profile'));
+        },
+        (result) {
+          dev.log('Response: ${result.data}');
+          if (result.data['status'] == 'success') {
+            return Right(true);
+          } else {
+            return Left(
+              NetworkFailure(
+                message: result.data['message'] ?? 'Failed to update profile',
+              ),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      return Left(NetworkFailure(message: 'Error updating profile: $e'));
     }
   }
 }

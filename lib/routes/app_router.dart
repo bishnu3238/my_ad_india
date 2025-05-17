@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../core/domain/data_store/data_store.dart';
 import '../core/injector/dependency_injection.dart';
+import '../features/merchant/merchant_profile_edit/core/edit_profile_navigator.dart';
 import '../features/myad_categories/core/all_category_route.dart';
 import '../features/category_services/core/category_service_route.dart';
 import '../features/chat_feature/route/routes.dart';
@@ -59,13 +60,8 @@ class AppRouter {
       NotificationRoute.page(),
       ...ChatFeatureRoutes.page(),
       PostRequirementRoute.page(),
-      GoRoute(
-        path: '/support',
-        builder: (context, state) => ChangeNotifierProvider(
-          create: (_) => DependencyInjector.get<SupportProvider>(),
-          child: SupportScreen(),
-        ),
-      ),
+      EditMerchantProfileNavigator.page(),
+      SupportNavigator.page(),
     ],
     observers: [AppNavigationObserver()],
     errorBuilder: (context, state) => ErrorScreen(error: state.error),

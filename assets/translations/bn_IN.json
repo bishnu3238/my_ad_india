@@ -140,5 +140,18 @@
   "location": "অবস্থান",
   "location_permission": "অবস্থান অনুমতি",
   "reset": "রিসেট করুন",
-  "location_permission_message": "অবস্থান অনুমতি প্রয়োজন।"
+  "location_permission_message": "অবস্থান অনুমতি প্রয়োজন।",
+
+
+  "refer_earn_reward": "রেফার করুন এবং পুরস্কার পান",
+  "invite_friends": "বন্ধুদের আমন্ত্রণ জানান",
+  "earn_money": "টাকা উপার্জন করুন",
+  "and_unlock_excluesive_benefits": "এবং এক্সক্লুসিভ সুবিধা আনলক করুন",
+  "start_your_journey": "আপনার যাত্রা শুরু করুন",
+  "as_an_agent_today": "আজই একজন এজেন্ট হিসেবে শুরু করুন",
+  "earn_for_every_friend_who_joins": "যে কোনো বন্ধুর জন্য উপার্জন করুন যে যোগদান করে",
+  "unload_scecial_agent_status": "বিশেষ এজেন্ট স্ট্যাটাস আনলক করুন",
+  "maybe_later": "শायद পরে",
+  "refer_your_friends": "আপনার বন্ধুদের রেফার করুন",
+  "know_more": "আরও জানুন"
 }

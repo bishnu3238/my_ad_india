@@ -1,12 +1,16 @@
 import 'dart:developer' as dev;
 import 'dart:math' as math;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_ad/core/constant/image.dart';
 import 'package:pack/pack.dart';
+import 'package:pack/services/service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/constant/trasnlation_key.dart';
 
 // First-time popup handler
 class FirstTimePopupManager {
@@ -267,12 +271,12 @@ class _AnimatedReferralPopupState extends State<AnimatedReferralPopup>
                             children: [
                               // Title with bouncing animation
                               TitleWithBounceAnimation(
-                                title: "Refer & Earn Rewards!",
+                                title: TranslationKey.referEarnReward.key,
                               ),
                               const SizedBox(height: 16),
                               // Description
-                              Text(
-                                "Invite friends, earn money, and unlock exclusive benefits. Start your journey as an agent today!",
+                              AutoSizeText(
+                                '${context.tr(TranslationKey.inviteFriends.key)}, ${context.tr(TranslationKey.earnMoney.key)}, ${context.tr(TranslationKey.andUnlockExclusiveBenefits.key)}',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.9),
@@ -284,12 +288,19 @@ class _AnimatedReferralPopupState extends State<AnimatedReferralPopup>
                               // Benefit points
                               ReferralBenefitPoint(
                                 icon: Icons.monetization_on_rounded,
-                                text: "Earn for every friend who joins",
+                                text:
+                                    TranslationKey
+                                        .earnForEveryFriendWhoJoins
+                                        .key,
+                                //"Earn for every friend who joins",
                               ),
                               const SizedBox(height: 8),
                               ReferralBenefitPoint(
                                 icon: Icons.upgrade_rounded,
-                                text: "Unlock special agent status",
+                                text:
+                                    TranslationKey
+                                        .unlockScecialAgentStatus
+                                        .key, //"Unlock special agent status",
                               ),
                               const SizedBox(height: 24),
                               // Buttons
@@ -313,7 +324,9 @@ class _AnimatedReferralPopupState extends State<AnimatedReferralPopup>
                                         ),
                                       ),
                                       child: Text(
-                                        "Maybe Later",
+                                        context.tr(
+                                          TranslationKey.maybeLater.key,
+                                        ),
                                         style: TextStyle(
                                           color: Colors.white.withValues(
                                             alpha: 0.7,
@@ -333,16 +346,14 @@ class _AnimatedReferralPopupState extends State<AnimatedReferralPopup>
                                           '/terms-and-conditions',
                                         );
                                       },
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 16,
-                                      ),
+                                      padding: 16.symmetricVH(0),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       color: Colors.orange.shade500,
                                       elevation: 0,
-                                      child: const Text(
-                                        "Know More",
+                                      child:   Text(
+                                        context.tr(TranslationKey.knowMore.key),
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600,
@@ -373,8 +384,7 @@ class _AnimatedReferralPopupState extends State<AnimatedReferralPopup>
 class TitleWithBounceAnimation extends StatefulWidget {
   final String title;
 
-  const TitleWithBounceAnimation({Key? key, required this.title})
-    : super(key: key);
+  const TitleWithBounceAnimation({super.key, required this.title});
 
   @override
   State<TitleWithBounceAnimation> createState() =>
@@ -428,7 +438,7 @@ class _TitleWithBounceAnimationState extends State<TitleWithBounceAnimation>
           ).createShader(bounds);
         },
         child: Text(
-          widget.title,
+          context.tr(widget.title),
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: Colors.white,
@@ -447,8 +457,11 @@ class ReferralBenefitPoint extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const ReferralBenefitPoint({Key? key, required this.icon, required this.text})
-    : super(key: key);
+  const ReferralBenefitPoint({
+    super.key,
+    required this.icon,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +478,7 @@ class ReferralBenefitPoint extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Text(
-            text,
+            context.tr(text),
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.9),
               fontSize: 14,

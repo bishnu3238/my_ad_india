@@ -140,5 +140,27 @@
   "location": "Location",
   "location_permission": "Location Permission",
   "reset": "Reset",
-  "location_permission_message": "Location permission is required."
+  "location_permission_message": "Location permission is required.",
+
+
+  "refer_earn_reward": "Refer & Earn Rewards",
+  "and_unlock_excluesive_benefits":  "And unlock exclusive benefits",
+  "start_your_journey": "Start your journey",
+  "earn_for_every_friend_who_joins": "Earn for every friend who joins",
+  "unload_scecial_agent_status": "Unlock special agent status",
+
+  "refer_friend": "Refer a Friend",
+  "earn_money": "Earn Money",
+  "invite_friends": "Invite Friends",
+  "share_link": "Share Link",
+  "copy_link": "Copy Link",
+  "reward_points": "Reward Points",
+  "redeem": "Redeem",
+  "redeem_now": "Redeem Now",
+  "redeem_success": "Redeem Successful",
+  "redeem_failed": "Redeem Failed",
+  "refer_success": "Referral Successful",
+  "refer_failed": "Referral Failed",
+  "maybe_later":"Maybe Later",
+  "know_more": "Know More"
 }

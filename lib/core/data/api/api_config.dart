@@ -142,6 +142,7 @@ class ApiConfig {
   static const String merchantServiceImageUpload = '/merchant/upload_image.php';
 
   static const String merchantDashboard = '/merchant/merchant_dashboard.php';
+  static const String editMerchantProfile = '/merchant/update_merchant_profile.php';
 
   /// Method: [POST] = 'action' : 'get_merchant_plan_access'
   ///               ||[merchant_id] : merchant.id.toString(),;

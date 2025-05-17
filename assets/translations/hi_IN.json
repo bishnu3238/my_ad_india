@@ -140,5 +140,15 @@
   "location": "स्थान",
   "location_permission": "स्थान अनुमति",
   "reset": "रीसेट करें",
-  "location_permission_message": "स्थान अनुमति आवश्यक है।"
+  "location_permission_message": "स्थान अनुमति आवश्यक है।",
+
+  "refer_earn_reward": "रेफर करें और पुरस्कार अर्जित करें",
+  "invite_friends": "मित्रों को आमंत्रित करें",
+  "earn_money": "पुरस्कार अर्जित करें",
+  "and_unlock_excluesive_benefits": "और विशेष लाभ अनलॉक करें",
+  "earn_for_every_friend_who_joins": "हर मित्र के लिए कमाएँ जो शामिल होता है",
+  "unload_scecial_agent_status": "विशेष एजेंट स्थिति अनलॉक करें",
+  "maybe_later": "शायद बाद में",
+  "refer_your_friends": "अपने दोस्तों को रेफर करें",
+  "know_more": "और जानें"
 }

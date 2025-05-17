@@ -18,12 +18,18 @@ class MerchantServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
         title: const Text('My Services'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black87,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<MerchantServicesProvider>().refresh(),
+            tooltip: 'Refresh',
           ),
         ],
       ),
@@ -31,13 +37,14 @@ class MerchantServicesScreen extends StatelessWidget {
       floatingActionButton: Consumer<MerchantServicesProvider>(
         builder: (context, provider, _) {
           return provider.canAddMoreServices
-              ? FloatingActionButton(
-                onPressed:
-                    () => context
-                        .push(MerchantDashboardRoute.addService)
-                        .then((_) => provider.refresh()),
-                child: const Icon(Icons.add),
-              )
+              ? FloatingActionButton.extended(
+                  onPressed: () => context
+                      .push(MerchantDashboardRoute.addService)
+                      .then((_) => provider.refresh()),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add Service'),
+                  backgroundColor: Colors.blueAccent,
+                )
               : const SizedBox.shrink();
         },
       ),
@@ -65,14 +72,21 @@ class _ServicesScreenBody extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const SizedBox(height: 12),
                 Text(
                   'Error: ${provider.error?.message}',
                   textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16, color: Colors.red),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: service.refresh,
-                  child: const Text('Retry'),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Retry'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                  ),
                 ),
               ],
             ),
@@ -84,46 +98,50 @@ class _ServicesScreenBody extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Icon(Icons.info_outline, size: 48, color: Colors.blueGrey),
+                const SizedBox(height: 12),
                 const Text(
                   'You haven\'t added any services yet.',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 16),
                 if (service.canAddMoreServices)
-                  ElevatedButton(
-                    onPressed:
-                        () =>
-                            context.read<MerchantServicesProvider>().refresh(),
-                    child: const Text('Add Your First Service'),
+                  ElevatedButton.icon(
+                    onPressed: () =>
+                        context.read<MerchantServicesProvider>().refresh(),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Your First Service'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                    ),
                   ),
                 if (!service.canAddMoreServices)
                   const Text(
                     'Your plan doesn\'t allow adding services.',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
                   ),
               ],
             ),
           );
         }
 
-        return RefreshIndicator(
-          onRefresh: () async => service.refresh(),
-          child: ListView(
-            // itemCount: 3,
-            padding: const EdgeInsets.all(16),
-            // itemBuilder:
-            //     (BuildContext context, int index) =>
-            children: [
-              ServiceStatsCard(
-                totalServices: provider.entity!.services.length,
-                remainingServices:
-                    provider.entity!.planAccess.remainingServices,
-                remainingUpdates: provider.entity!.planAccess.remainingUpdates,
-                validUntil: provider.entity!.planAccess.validUntil!,
-              ),
-              const SizedBox(height: 16),
-              ServiceListView(services: provider.entity!.services),
-            ],
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24 + kToolbarHeight, 16, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ServiceStatsCard(
+                  totalServices: provider.entity!.services.length,
+                  remainingServices: provider.entity!.planAccess.remainingServices,
+                  remainingUpdates: provider.entity!.planAccess.remainingUpdates,
+                  validUntil: provider.entity!.planAccess.validUntil!,
+                ),
+                const SizedBox(height: 24),
+                ServiceListView(services: provider.entity!.services),
+              ],
+            ),
           ),
         );
       },

@@ -9,6 +9,7 @@ export 'src/http_api_client.dart';
 export 'src/log_service.dart';
 export 'src/request_config.dart';
 export 'src/web_socket_service.dart';
+export 'package:dio/dio.dart' show FormData;
 
 
 

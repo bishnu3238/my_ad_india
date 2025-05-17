@@ -19,34 +19,46 @@ class ServiceStatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd MMM yyyy');
     final isExpired = validUntil.isBefore(DateTime.now());
-    
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blueAccent.shade100, Colors.blueAccent.shade200],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueAccent.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(22.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                const Icon(Icons.info_outline, color: Colors.blue),
-                const SizedBox(width: 8),
+                const Icon(Icons.info_outline, color: Colors.white),
+                const SizedBox(width: 10),
                 const Text(
                   'Service Plan Status',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 19,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: isExpired ? Colors.red : Colors.green,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   child: Text(
                     isExpired ? 'Expired' : 'Active',
@@ -58,31 +70,36 @@ class ServiceStatsCard extends StatelessWidget {
                 ),
               ],
             ),
-            const Divider(),
+            const SizedBox(height: 10),
+            Divider(color: Colors.white.withOpacity(0.5)),
             _buildStatRow(
               'Total Services',
               '$totalServices',
               Icons.business_center,
+              color: Colors.white,
             ),
             _buildStatRow(
               'Remaining Services',
               '$remainingServices',
               Icons.add_circle_outline,
               isWarning: remainingServices == 0,
+              color: Colors.white,
             ),
             _buildStatRow(
               'Remaining Updates',
               '$remainingUpdates',
               Icons.update,
               isWarning: remainingUpdates == 0,
+              color: Colors.white,
             ),
             _buildStatRow(
               'Valid Until',
               dateFormat.format(validUntil),
               Icons.calendar_today,
               isWarning: isExpired,
+              color: Colors.white,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             if (isExpired)
               const Text(
                 'Your plan has expired. Please renew to add or update services.',
@@ -91,7 +108,7 @@ class ServiceStatsCard extends StatelessWidget {
             if (remainingServices == 0 && !isExpired)
               const Text(
                 'You\'ve reached your service limit. Upgrade your plan to add more services.',
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w600),
               ),
           ],
         ),
@@ -99,16 +116,17 @@ class ServiceStatsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatRow(String label, String value, IconData icon, {bool isWarning = false}) {
+  Widget _buildStatRow(String label, String value, IconData icon,
+      {bool isWarning = false, Color color = Colors.black87}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Row(
         children: [
-          Icon(icon, color: isWarning ? Colors.red : Colors.blue, size: 20),
+          Icon(icon, color: isWarning ? Colors.red : color, size: 20),
           const SizedBox(width: 12),
           Text(
             label,
-            style: const TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15, color: color),
           ),
           const Spacer(),
           Text(
@@ -116,7 +134,7 @@ class ServiceStatsCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: isWarning ? Colors.red : Colors.black87,
+              color: isWarning ? Colors.red : color,
             ),
           ),
         ],
