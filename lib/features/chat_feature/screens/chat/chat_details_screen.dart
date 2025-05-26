@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -238,7 +239,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
         return Scaffold(
           appBar: _AdvancedChatAppBar(
             merchantName: widget.receiverName.capitalized,
-            merchantImage: chat.currentConversation?.merchantImage,
+            merchantImage:
+                widget.senderType == 'merchant'
+                    ? chat.currentConversation != null
+                        ? chat.currentConversation?.customerImage
+                        : chat.currentConversation?.merchantImage
+                    : chat.currentConversation?.merchantImage,
             isOnline: true, // TODO: Bind to real online status
             onDelete: _deleteChat,
             onShare: _shareChat,
@@ -334,6 +340,7 @@ class _AdvancedChatAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    dev.log('Merchatn Image $merchantImage');
     return AppBar(
       leadingWidth: 60,
       leading: Padding(

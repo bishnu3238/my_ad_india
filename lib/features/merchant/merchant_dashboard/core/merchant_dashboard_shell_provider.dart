@@ -28,6 +28,10 @@ class MerchantDashboardShellProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  StatefulNavigationShell get  shell =>_shell;
+
+
   onLogout(BuildContext context) async {
     final route = GoRouter.of(context);
     isLoading = true;

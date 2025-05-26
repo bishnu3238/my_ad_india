@@ -6,6 +6,8 @@ import '../../../../../../utils/widgets/svg_icon_widget.dart';
 import 'package:pack/pack.dart';
 import '../../../../../../core/data/model/model.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../favorites/core/favorites_route.dart';
+import '../../../../../profile/core/profile_navigator.dart';
 import '../../../../../refer_earn/core/refer_earn_route.dart';
 import '../body/settings_items.dart';
 import '../core/setting_view_model.dart';
@@ -124,7 +126,7 @@ class LoggedInSettingsPage extends StatelessWidget {
                     context,
                     icon: FontAwesomeIcons.penToSquare,
                     title: 'Edit Profile',
-                    onTap: () => context.push('/edit_profile'),
+                    onTap: () => context.push(ProfileNavigator.editProfile),
                   ),
 
                   _buildSettingsTile(
@@ -133,12 +135,12 @@ class LoggedInSettingsPage extends StatelessWidget {
                     title: 'Refer & Earn',
                     onTap: () => context.push(ReferEarnRoute.referAndEarn),
                   ),
-                  _buildSettingsTile(
-                    context,
-                    icon: Icons.local_activity_outlined,
-                    title: 'Activities',
-                    onTap: () => context.push('/activities'),
-                  ),
+                  // _buildSettingsTile(
+                  //   context,
+                  //   icon: Icons.local_activity_outlined,
+                  //   title: 'Activities',
+                  //   onTap: () => context.push('/activities'),
+                  // ),
                   const Divider(),
                   _buildSettingsTile(
                     context,
@@ -152,17 +154,17 @@ class LoggedInSettingsPage extends StatelessWidget {
                   //   title: 'Language',
                   //   onTap: () => context.push(LanguageNavigator.languagePath),
                   // ),
-                  _buildSettingsTile(
-                    context,
-                    icon: Icons.trending_up_outlined,
-                    title: 'Level',
-                    onTap: () => context.push('/level'),
-                  ),
+                  // _buildSettingsTile(
+                  //   context,
+                  //   icon: Icons.trending_up_outlined,
+                  //   title: 'Level',
+                  //   onTap: () => context.push('/level'),
+                  // ),
                   _buildSettingsTile(
                     context,
                     icon: Icons.favorite_border_outlined,
                     title: 'Favorites',
-                    onTap: () => context.push('/favorites'),
+                    onTap: () => FavoritesRoute.openPage(context),
                   ),
 
                   const Divider(),

@@ -4,6 +4,10 @@ import 'package:provider/provider.dart';
 
 import '../core/domain/data_store/data_store.dart';
 import '../core/injector/dependency_injection.dart';
+import '../features/favorites/core/favorites_route.dart';
+import '../features/merchant/customer_inquiries/core/customer_inquiry_route.dart';
+import '../features/merchant/merchant_dashboard/shell/merchant_edit_service/core/merchant_service_edit_route.dart';
+import '../features/merchant/merchant_dashboard/shell/merchant_settings/core/merchant_settings_route.dart';
 import '../features/merchant/merchant_profile_edit/core/edit_profile_navigator.dart';
 import '../features/myad_categories/core/all_category_route.dart';
 import '../features/category_services/core/category_service_route.dart';
@@ -62,6 +66,10 @@ class AppRouter {
       PostRequirementRoute.page(),
       EditMerchantProfileNavigator.page(),
       SupportNavigator.page(),
+      MerchantSettingsRoute.page(),
+      MerchantServiceEditRoute.page(),
+      FavoritesRoute.page(),
+      CustomerInquiryRoute.page(),
     ],
     observers: [AppNavigationObserver()],
     errorBuilder: (context, state) => ErrorScreen(error: state.error),

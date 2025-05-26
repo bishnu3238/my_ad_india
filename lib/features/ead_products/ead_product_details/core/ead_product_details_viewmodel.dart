@@ -1,10 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ad/core/data/model/model.dart';
 import 'package:my_ad/core/services/service.dart';
+import 'package:my_ad/features/chat_feature/core/services/api_client.dart';
+import 'package:pack/auth/custom_auth.dart';
+import 'package:pack/extensions/extensions.dart';
 import 'package:pack/services/service.dart';
 
+import '../../../../core/data/api/api_config.dart';
 import '../../../../core/domain/data_store/product_store.dart';
 import '../../../../core/domain/use_cases/api_call_use_cases.dart';
 import 'ead_product_details_state.dart';
@@ -12,10 +17,12 @@ import 'ead_product_details_state.dart';
 class ProductDetailsViewModel extends ChangeNotifier {
   final ProductModel product;
   final ProductService _service;
+  final ApiClient _apiClient; //(baseUrl: ApiConfig.baseChatUrl)
 
   ProductDetailsState _state = ProductDetailsState();
 
-  ProductDetailsViewModel({
+  ProductDetailsViewModel(
+    this._apiClient, {
     required this.product,
     required ProductService service,
   }) : _service = service {
@@ -81,8 +88,25 @@ class ProductDetailsViewModel extends ChangeNotifier {
     updateState(_state.copyWith(showInquiryForm: !_state.showInquiryForm));
   }
 
-  Future<void> submitInquiry() async {
+  Future<void> submitInquiry(BuildContext context) async {
     if (!_state.inquiryFormKey.currentState!.validate()) {
+      // If the form is not valid, return early
+      final customerId = context.read<AuthProviderModel<UserModel>>().user!.id;
+      final merchantId = product.merchant.id;
+      final conversationId = await _apiClient.createConversation(
+        customerId.toInt,
+        merchantId.toInt,
+      );
+      final data = SubmitInquiryPayload(
+        conversationId: conversationId,
+        customerType: 'customer', //customerType,
+        customerId: customerId.toInt,
+        merchantType: 'merchant', //merchantType,
+        merchantId: merchantId.toInt,
+        subject: 'Inquiry about ${product.serviceName}',
+        message: state.inquiryController.text,
+      );
+      _apiClient.submitInquiry(data.toJson());
       return;
     }
 
@@ -91,13 +115,24 @@ class ProductDetailsViewModel extends ChangeNotifier {
     try {
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
-
-      // Here you would call an actual API to submit the inquiry
-      // await _service.submitInquiry(
-      //   merchantId: product.merchant.id,
-      //   productId: product.id,
-      //   message: _state.inquiryController.text,
+      // If the form is not valid, return early
+      final customerId = context.read<AuthProviderModel<UserModel>>().user!.id;
+      final merchantId = product.merchant.id;
+      // final conversationId = await _apiClient.createConversation(
+      //   customerId.toInt,
+      //   merchantId.toInt,
       // );
+      final data = SubmitInquiryPayload(
+        conversationId: 1,
+        customerType: 'customer', //customerType,
+        customerId: customerId.toInt,
+        merchantType: 'merchant', //merchantType,
+        merchantId: merchantId.toInt,
+        subject: 'Inquiry about ${product.serviceName}',
+        message: state.inquiryController.text,
+      );
+      // Here you would call an actual API to submit the inquiry
+      await _service.submitInquiry(payload: data);
 
       updateState(
         _state.copyWith(

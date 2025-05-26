@@ -1,6 +1,6 @@
 class ApiConfig {
-  // static const String baseUrl = 'https://eazytechno.com/ead_api';
-  static const String baseUrl = 'https://moderndiagnosticcenter.com/ead_api';
+  static const String baseUrl = 'https://eazytechno.com/ead_api';
+  // static const String baseUrl = 'https://moderndiagnosticcenter.com/ead_api';
   static const String localBaseUrl = 'http://192.168.1.12/ead_api';
 
   /// TODO: [Auth-Url] ------------------------------------------------------.
@@ -18,10 +18,10 @@ class ApiConfig {
   static const String otp = '/new_verify_otp.php';
 
   /// TODO: [Chat-Url] ------------------------------------------------------.
-  // static const String baseChatUrl = 'http://192.168.1.12:3000';
-  static const String baseChatUrl = 'https://goindiaonline.com';
-  // static const String socketUrl = 'http://192.168.1.12:3000';
-  static const String socketUrl = 'https://goindiaonline.com';
+  // static const String baseChatUrl = 'http://192.168.1.13:3000';
+  static const String baseChatUrl = 'https://moderndiagnosticcenter.com';
+  // static const String socketUrl = 'http://192.168.1.13:3000';
+  static const String socketUrl = 'https://moderndiagnosticcenter.com';
 
   /// TODO: [Image-Paths] ---------------------------------------------------.
   static String bannersImgPath = '/ead/admin/uploads/banner';
@@ -120,7 +120,7 @@ class ApiConfig {
   /// http://localhost/ead_api/api/products.php (all products)
   /// http://localhost/ead_api/api/products.php?id=1 (filter by product ID)
   /// http://localhost/ead_api/api/products.php?category_id=cat1 (filter by category)
-  /// Filter params [id], [category_id],[sub_category_id], [service_id], [merchant_id]
+  /// Filter params [serviceId], [category_id],[sub_category_id], [service_id], [merchant_id]
   static const String products = '/get_ead_products.php';
   static const String nearbyProducts = '/nearby_product.php';
 
@@ -142,7 +142,8 @@ class ApiConfig {
   static const String merchantServiceImageUpload = '/merchant/upload_image.php';
 
   static const String merchantDashboard = '/merchant/merchant_dashboard.php';
-  static const String editMerchantProfile = '/merchant/update_merchant_profile.php';
+  static const String editMerchantProfile =
+      '/merchant/update_merchant_profile.php';
 
   /// Method: [POST] = 'action' : 'get_merchant_plan_access'
   ///               ||[merchant_id] : merchant.id.toString(),;
@@ -175,7 +176,7 @@ class ApiConfig {
   static const String updateReview = '/merchant/reviews/update_reviews.php';
   static const String deleteReview = '/merchant/reviews/delete_review.php';
   static const String respondToReview = '/merchant/reviews/add_response.php';
-  static const String markReviewHelpful = '/merchant/reviews/mark_helpful.php';
+  static const String markReviewHelpful = '/merchant/reviews/mark_helpfull.php';
   static const String getRatingSummery =
       '/merchant/reviews/get_rating_summery.php';
   static const String hasUserReviewedItem =
@@ -190,4 +191,14 @@ class ApiConfig {
       '/customer_visits/get_customer_visit_by_id.php';
   static const String updateCustomerVisit =
       '/customer_visits/update_customer_visit_status.php';
+
+  /// ------------------------------- [Inquiry] --------------------------------
+  static const String saveInquries = '/inquiry/save_inquiry.php';
+  static const String getInquiries = '/inquiry/get_inquiries.php';
+  static const String getInquiryById = '/inquiry/get_inquiry_by_id.php';
+  static const String updateInquiryStatus =
+      '/inquiry/update_inquiry_status.php';
+  static const String deleteInquiry = '/inquiry/delete_inquiry.php';
+  static const String getMerchantInquiry =
+      '/inquiry/get_merchant_inquiries.php';
 }

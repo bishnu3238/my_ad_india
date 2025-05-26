@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:my_ad/core/data/api/api_config.dart';
+import 'package:pack/constant/constant.dart';
+import 'package:pack/extensions/extensions.dart';
 import 'package:pack/services/service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -82,6 +84,7 @@ class ReviewServiceImpl implements ReviewService {
             ),
           );
     } catch (e) {
+      dev.log('GET MESSAGE ERROR : $e');
       throw Exception('Failed to get reviews: $e');
     }
   }
@@ -124,7 +127,7 @@ class ReviewServiceImpl implements ReviewService {
               fields: {
                 'merchant_id': review.itemId,
                 'customer_id': review.userId,
-                'service_name': 'Item Rating', // Add if needed
+                'service_name': review.serviceName, // Add if needed
                 'review_title': review.title ?? '',
                 'review_content': review.content,
                 'rating': review.rating.toString(),
@@ -142,7 +145,7 @@ class ReviewServiceImpl implements ReviewService {
               body: {
                 'merchant_id': review.itemId,
                 'customer_id': review.userId,
-                'service_name': 'fdsf', // Add if needed
+                'service_name': review.serviceName, // Add if needed
                 'review_title': review.title ?? '',
                 'review_content': review.content,
                 'rating': review.rating,
@@ -152,17 +155,28 @@ class ReviewServiceImpl implements ReviewService {
               },
               requiresAuth: true,
             );
-    final result = await _apiService.request<Map<String, dynamic>>(
+    final result = await _apiService.request<Review>(
       config: config,
       responseConverter: (data) {
         dev.log('SUBMIT REVIEW DATA : $data');
-        return data as Map<String, dynamic>;
+        return Review(
+          id: data['data']['id'],
+          userId: review.userId,
+          userName: review.userName,
+          userImageUrl: review.userImageUrl,
+          itemId: review.itemId,
+          rating: review.rating,
+          content: review.content,
+          createdAt: DateTime.now().firstDayOfWeek,
+        );
       },
     );
-    return result.fold(
-      (failure) => throw Exception(failure.message),
-      (response) => Review.fromJson(response.data!),
-    );
+    return result.fold((failure) => throw Exception(failure.message), (
+      response,
+    ) {
+      dev.log('RESPONSE : ${response.data}');
+      return response.data ?? Review.empty;
+    });
   }
 
   @override
@@ -287,7 +301,10 @@ class ReviewServiceImpl implements ReviewService {
       );
       final result = await _apiService.request<Map<String, dynamic>>(
         config: config,
-        responseConverter: (data) => data as Map<String, dynamic>,
+        responseConverter: (data) {
+          dev.log('message $data');
+          return data as Map<String, dynamic>;
+        },
       );
       return result.fold(
         (failure) => false,
@@ -336,11 +353,14 @@ class ReviewServiceImpl implements ReviewService {
       );
       final result = await _apiService.request<Map<String, dynamic>>(
         config: config,
-        responseConverter: (data) => data as Map<String, dynamic>,
+        responseConverter: (data) {
+          dev.log('has_user_reviewed_item: $data');
+          return data as Map<String, dynamic>;
+        },
       );
       return result.fold(
         (failure) => false,
-        (response) => response.data?['hasReviewed'] == true,
+        (response) => response.data!.getMap('data').getBool('hasReviewed'),
       );
     } catch (e) {
       throw Exception('Failed to check if user has reviewed item: $e');

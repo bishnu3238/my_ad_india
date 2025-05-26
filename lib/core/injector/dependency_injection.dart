@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../../features/chat_feature/core/services/socket_services.dart';
+import '../../features/merchant/customer_inquiries/core/customer_inquiry_provider.dart';
 import '../../features/settings/core/settings_view_model.dart';
 import '../../features/home/shell/profile_settings_screen/settings/core/setting_view_model.dart';
 import '../../features/onboarding/core/onboarding_provider.dart';
@@ -400,6 +401,13 @@ class DependencyInjector {
     _getIt.registerLazySingleton<FeedbackSupportProvider>(
       () => FeedbackSupportProvider(),
     );
+    _getIt.registerFactoryParam<CustomerInquiriesProvider, MerchantDashboardStore, dynamic>((param1, param2) => CustomerInquiriesProvider(
+
+      _getIt.get<CustomerVisitService>(),
+      _getIt.get<ProductService>(),
+      param1,
+
+    ));
 
     /// TODO: -------------------------- [Chat Providers] -----------------------------
     _getIt.registerLazySingleton<SocketService>(() => SocketService());

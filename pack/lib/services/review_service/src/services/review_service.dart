@@ -1,3 +1,4 @@
+import 'package:pack/extensions/extensions.dart';
 import 'package:pack/services/review_service/src/services/review_service.dart';
 import 'dart:developer' as dev;
 import '../models/review.dart';
@@ -70,8 +71,8 @@ abstract class ReviewService {
 class ReviewData {
   final String userId;
   final String userName;
-  final String? serviceName, serviceId;
-  final String? userImageUrl;
+  final String serviceName, serviceId;
+  final String userImageUrl;
   final String itemId;
   final double rating;
   final String? title;
@@ -81,9 +82,9 @@ class ReviewData {
   const ReviewData({
     required this.userId,
     required this.userName,
-    this.serviceName,
-    this.serviceId,
-    this.userImageUrl,
+    required this.serviceName,
+    required this.serviceId,
+    required this.userImageUrl,
     required this.itemId,
     required this.rating,
     this.title,
@@ -166,10 +167,10 @@ class ReviewsResult {
     final json = data['data']['pagination'] as Map<String, dynamic>;
     return ReviewsResult(
       reviews: reviews,
-      totalCount: json['total'],
-      page: json['page'],
-      limit: json['limit'],
-      totalPages: json['pages'],
+      totalCount: json.getInt('total'),
+      page: json.getInt('page'),
+      limit: json.getInt('limit'),
+      totalPages: json.getInt('pages'),
     );
   }
 }

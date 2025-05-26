@@ -1,12 +1,16 @@
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_ad/features/merchant/merchant_dashboard/core/merchant_dashboard_route.dart';
+import 'package:my_ad/features/merchant/merchant_dashboard/shell/merchant_add_service/core/merchant_add_service_route.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../core/domain/data_store/merchant_dashboard_store.dart';
 import '../../../../../../utils/widgets/svg_icon_widget.dart';
 import '../../../core/merchant_dashboard_shell_provider.dart';
+import '../../merchant_settings/core/merchant_settings_route.dart';
 
 class ProfileIcon extends StatelessWidget {
   const ProfileIcon({super.key});
@@ -90,6 +94,10 @@ class ProfileIcon extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                     // Navigate to profile edit page
+                    context
+                        .read<MerchantDashboardShellProvider>()
+                        .shell
+                        .goBranch(4);
                   },
                   style: OutlinedButton.styleFrom(
                     minimumSize: Size(double.infinity, 36),
@@ -107,18 +115,21 @@ class ProfileIcon extends StatelessWidget {
             ),
           ),
         ),
-        _buildMenuItem(
-          context,
-          "Add New Service",
-          Icons.add_circle_outline,
-          () {
-            // Handle add new service
-            Navigator.pop(context);
-          },
-        ),
+        if (context.read<MerchantDashboardStore>().entity!.services.isEmpty)
+          _buildMenuItem(
+            context,
+            "Add New Service",
+            Icons.add_circle_outline,
+            () {
+              // Handle add new service
+              Navigator.pop(context);
+              context.push(MerchantDashboardRoute.addService);
+            },
+          ),
         _buildMenuItem(context, "Settings", Icons.settings_outlined, () {
           // Handle settings
           Navigator.pop(context);
+          context.push(MerchantSettingsRoute.settings);
         }),
         _buildMenuItem(
           context,

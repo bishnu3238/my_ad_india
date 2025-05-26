@@ -1,8 +1,10 @@
 export 'post_merchant_change_password.dart';
+export 'delete_merchant_service_payload.dart';
 export 'fetch_near_by_products_of_user_payload.dart';
 export 'upload_merchant_service_video_request.dart';
 export 'post_merchant_forgor_password.dart';
 export 'post_merchant_login.dart';
+export 'submit_inquiry_payload.dart';
 export 'post_merchant_otp_varification.dart';
 export 'merchant_registration_payload.dart';
 export 'post_merchant_resend_otp.dart';

@@ -11,6 +11,7 @@ import '../../../merchant_profile_edit/core/edit_profile_navigator.dart';
 import '../../../../../core/data/model/merchant/merchant_model.dart';
 import '../../../../../core/injector/dependency_injection.dart';
 import '../../core/merchant_dashboard_shell_provider.dart';
+import '../merchant_settings/core/merchant_settings_route.dart';
 
 class MerchantProfileProvider extends ChangeNotifier {
   MerchantModel? profile;
@@ -39,7 +40,9 @@ class MerchantProfileProvider extends ChangeNotifier {
     context.push(EditMerchantProfileNavigator.editPath);
   }
 
-  void onAccountSettings() {
+  void onAccountSettings(BuildContext context) {
+    context.push(MerchantSettingsRoute.settings);
+
     // TODO: Implement account settings navigation
   }
 

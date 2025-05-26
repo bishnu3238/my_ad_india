@@ -7,8 +7,10 @@ import 'package:my_ad/core/domain/data_store/data_store.dart';
 import 'package:my_ad/features/merchant/merchant_dashboard/core/merchant_dashboard_shell_provider.dart';
 import 'package:pack/services/service.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 // import '../../../../utils/translation_service/easy_localize.dart';
+import '../../../../utils/widgets/language_selection_row.dart';
 import '../../../terms/core/terms_and_conditions_route.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -20,7 +22,7 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   late EasyLocalize _easyLocalize;
-late MerchantDashboardShellProvider _dashboardShellProvider;
+  late MerchantDashboardShellProvider _dashboardShellProvider;
   late ThemeData theme;
 
   @override
@@ -335,20 +337,44 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
             ),
           ),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: [
-              _buildLanguageButton("English", const Locale('en', 'US'), true),
-              _buildLanguageButton("हिंदी", const Locale('hi', 'IN'), false),
-              _buildLanguageButton("தமிழ்", const Locale('ta', 'IN'), false),
-              _buildLanguageButton("ಕನ್ನಡ", const Locale('kn', 'IN'), false),
-            ],
-          ),
-        ),
+
+        _buildLanguagesSelector(context),
+        // SingleChildScrollView(
+        //   scrollDirection: Axis.horizontal,
+        //   padding: const EdgeInsets.symmetric(horizontal: 12),
+        //   child: Row(
+        //     children: [
+        //       _buildLanguageButton("English", const Locale('en', 'US'), true),
+        //       _buildLanguageButton("हिंदी", const Locale('hi', 'IN'), false),
+        //       _buildLanguageButton("தமிழ்", const Locale('ta', 'IN'), false),
+        //       _buildLanguageButton("ಕನ್ನಡ", const Locale('kn', 'IN'), false),
+        //     ],
+        //   ),
+        // ),
         const SizedBox(height: 16),
       ],
+    );
+  }
+
+  Widget _buildLanguagesSelector(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: LanguageSelectorRow(
+        languageNames: {
+          Locale('en', 'US'): 'English',
+          Locale('hi', 'IN'): 'हिंदी',
+          Locale('bn', 'IN'): 'বাংলা',
+          Locale('ta', 'IN'): 'தமிழ்',
+          Locale('kn', 'IN'): 'ಕನ್ನಡ',
+        },
+
+        onLocaleChanged: (locale) {
+          context.setLocale(locale);
+          // context.read<HomeProvider>().setSelectedLocale(locale);
+          setState(() {});
+          // Optionally handle analytics or provider updates here
+        },
+      ),
     );
   }
 
@@ -390,16 +416,32 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
   Widget _buildSettingsSection() {
     return Column(
       children: [
-        _buildMenuItem(icon: Icons.settings, title: "Settings", onTap: () {}),
+        _buildMenuItem(
+          icon: Icons.settings,
+          title: "Settings",
+          onTap: () {
+            context.pop();
+            context.read<MerchantDashboardShellProvider>().shell.goBranch(4);
+          },
+        ),
         _buildMenuItem(
           icon: Icons.chat_bubble_outline,
           title: "App Feedback",
           onTap: () {
             Navigator.pop(context);
-            context.push(TermsRoute.feedback);
+            context.push(TermsRoute.appSupport);
           },
         ),
-        _buildMenuItem(icon: Icons.share, title: "Share App", onTap: () {}),
+        _buildMenuItem(
+          icon: Icons.share,
+          title: "Share App",
+          onTap: () {
+            Share.share(
+              "Check out this amazing app: https://play.google.com/store/apps/details?id=com.eazytechno.my_ad",
+              subject: "MyAd App",
+            );
+          },
+        ),
       ],
     );
   }
@@ -424,7 +466,7 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
           title: "Privacy Policy",
           onTap: () {
             Navigator.pop(context);
-            context.push(TermsRoute.appSupport);
+            context.push(TermsRoute.privacyPolicy);
           },
         ),
         _buildMenuItem(
@@ -432,7 +474,7 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
           title: "Terms of Use",
           onTap: () {
             Navigator.pop(context);
-            context.push(TermsRoute.termsAndConditions);
+            context.push(TermsRoute.appTermsAndConditions);
           },
         ),
         // _buildMenuItem(
@@ -448,10 +490,14 @@ late MerchantDashboardShellProvider _dashboardShellProvider;
             context.push(TermsRoute.whatsNew);
           },
         ),
-        _buildMenuItem(icon: Icons.more_horiz, title: "About Us", onTap: () {
-          Navigator.pop(context);
-          context.push(TermsRoute.aboutUs);
-        }),
+        _buildMenuItem(
+          icon: Icons.more_horiz,
+          title: "About Us",
+          onTap: () {
+            Navigator.pop(context);
+            context.push(TermsRoute.aboutUs);
+          },
+        ),
         _buildMenuItem(
           icon: Icons.logout,
           title: "Logout",

@@ -121,10 +121,10 @@ class ChatProvider with ChangeNotifier {
 
     dev.log('Optimistic message: $optimisticMessage');
     try {
-      final message = await apiClient.sendMessage(data);
-      // Replace optimistic message with real one
-      final idx = messages.indexWhere((m) => m.id == optimisticMessage.id);
-      if (idx != -1) messages[idx] = message;
+      // final message = await apiClient.sendMessage(data);
+      // // Replace optimistic message with real one
+      // final idx = messages.indexWhere((m) => m.id == optimisticMessage.id);
+      // if (idx != -1) messages[idx] = message;
       socketService.sendMessage(data);
       error = null;
     } catch (e) {

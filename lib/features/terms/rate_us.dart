@@ -52,11 +52,7 @@ class _RateUsPageState extends State<RateUsPage> {
                 color: theme.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(60),
               ),
-              child: Icon(
-                Icons.star,
-                size: 70,
-                color: theme.primaryColor,
-              ),
+              child: Icon(Icons.star, size: 70, color: theme.primaryColor),
             ),
             const SizedBox(height: 30),
             Text(
@@ -81,13 +77,11 @@ class _RateUsPageState extends State<RateUsPage> {
               direction: Axis.horizontal,
               allowHalfRating: false,
               itemCount: 5,
-              itemSize: 50,
+              itemSize: 40,
               unratedColor: Colors.grey[300],
               itemPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-              itemBuilder: (context, _) => Icon(
-                Icons.star,
-                color: theme.primaryColor,
-              ),
+              itemBuilder:
+                  (context, _) => Icon(Icons.star, color: theme.primaryColor),
               onRatingUpdate: (rating) {
                 setState(() {
                   _rating = rating;
@@ -155,10 +149,7 @@ class _RateUsPageState extends State<RateUsPage> {
                 ),
                 child: const Text(
                   'Submit',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -229,10 +220,7 @@ class _RateUsPageState extends State<RateUsPage> {
                 ),
                 child: const Text(
                   'Back to Home',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -269,7 +257,9 @@ class _RateUsPageState extends State<RateUsPage> {
   void _openAppStore() async {
     // Replace with actual app store URLs
     final appStoreUrl = Uri.parse('https://apps.apple.com/app/yourapp');
-    final playStoreUrl = Uri.parse('https://play.google.com/store/apps/details?id=your.app.id');
+    final playStoreUrl = Uri.parse(
+      'https://play.google.com/store/apps/details?id=your.app.id',
+    );
 
     try {
       if (Theme.of(context).platform == TargetPlatform.iOS) {
@@ -278,15 +268,9 @@ class _RateUsPageState extends State<RateUsPage> {
         await launchUrl(playStoreUrl);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open app store')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Could not open app store')));
     }
   }
 }
-
-
-
-
-
-

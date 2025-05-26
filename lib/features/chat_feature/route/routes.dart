@@ -1,3 +1,7 @@
+// --- Update ChatFeatureRoutes ---
+
+import 'dart:developer' as dev;
+
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_ad/core/data/api/api_config.dart';
@@ -16,11 +20,16 @@ import 'package:provider/provider.dart';
 
 import '../screens/chat/chat_details_screen.dart';
 import '../screens/chat/chat_screen.dart';
-import '../screens/demo_screen.dart';
+import '../screens/demo/call_demo.dart';
+import '../screens/demo/chat_demo.dart';
+import '../screens/demo/demo_screen.dart';
 import '../screens/chat/chat_list_screen.dart';
 
 class ChatFeatureRoutes {
   static const String demo = '/demo';
+  static const String demoChat = '/demo-chat';
+  static const String demoCall = '/demo-call';
+
   static const String chat = '/chat';
   static const String chatList = '/chat-list';
   static const String call = '/call-screen';
@@ -29,6 +38,8 @@ class ChatFeatureRoutes {
 
   static List<GoRoute> page() => [
     GoRoute(path: demo, builder: (ctx, state) => DemoScreen()),
+    GoRoute(path: demoChat, builder: (ctx, state) => ChatHomeScreen()),
+    GoRoute(path: demoCall, builder: (ctx, state) => CallExampleScreen()),
     GoRoute(
       path: '$chat/:receiverId/:senderId/:senderType/:receiverName',
       builder: (ctx, state) {
@@ -111,6 +122,7 @@ class ChatFeatureRoutes {
   }
 
   static void goToCallScreen(BuildContext context, Map<String, String?> data) {
+    dev.log('Call data: $data');
     GoRouter.of(context).push('$call/false', extra: data);
   }
 }

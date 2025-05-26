@@ -46,7 +46,7 @@ abstract class MerchantDashboardRepository implements IRepository {
     required int merchantId,
     required File imageFile,
     Function(int p1, int p2)? onSendProgress,
-  }) ;
+  });
 
   /// Edit merchant profile (call edit profile API)
   Future<Either<Failure, bool>> editMerchantProfile({
@@ -55,4 +55,8 @@ abstract class MerchantDashboardRepository implements IRepository {
     File? imageFile,
     Function(int, int)? onSendProgress,
   });
+
+  Future<Either<Failure, bool>> deleteMerchantService(
+    DeleteMerchantServicePayload payload,
+   );
 }

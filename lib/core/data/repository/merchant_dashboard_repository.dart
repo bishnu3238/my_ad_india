@@ -456,4 +456,30 @@ class MerchantDashboardRepositoryImpl implements MerchantDashboardRepository {
       return Left(NetworkFailure(message: 'Error updating profile: $e'));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> deleteMerchantService(
+    DeleteMerchantServicePayload payload,
+  ) async {
+    final response = await _apiService.request(
+      config: RequestConfig(
+        baseUrl: ApiConfig.baseUrl,
+        endpoint: ApiConfig.merchantService,
+        queryParameters: {'action': 'submit_service_request'},
+        method: RequestMethod.post,
+        body: payload.toJson(),
+      ),
+      responseConverter: (data) {
+        dev.log('IS WE GET RESPONSE FOR SUBMIT SERVICE REQUEST ?: $data');
+        return SubmitServiceResponse.fromJson(data);
+      },
+    );
+
+    return response.fold((failure) => Left(failure), (result) {
+      if (!result.data!.success) {
+        return Left(NetworkFailure(message: result.data!.message));
+      }
+      return Right(true);
+    });
+  }
 }

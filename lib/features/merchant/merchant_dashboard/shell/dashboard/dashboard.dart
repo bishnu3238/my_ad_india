@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:my_ad/core/domain/data_store/data_store.dart';
+import 'package:my_ad/utils/widgets/header_section.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 import '../../core/merchant_dashboard_shell_provider.dart';
@@ -95,6 +96,7 @@ class _MerchantDashboardHomeState extends State<MerchantDashboardHome> {
                               child: const MerchantServicesPage(),
                             ),
                           ),
+
                           // Recent Inquiry
                           SliverToBoxAdapter(
                             child: Padding(

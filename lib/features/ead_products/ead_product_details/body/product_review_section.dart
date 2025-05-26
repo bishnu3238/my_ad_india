@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_ad/core/constant/image.dart';
 import 'package:my_ad/core/data/model/product/products_model.dart';
 import 'package:pack/auth/custom_auth.dart';
 import 'package:pack/extensions/contextx.dart';
@@ -33,7 +34,12 @@ class ProductReviewSection extends StatelessWidget {
 
             currentUserId: user.id,
             currentUserName: user.name,
-            currentUserImageUrl: user.profileImage,
+            currentUserImageUrl:
+                (user.profileImage == '' || user.profileImage == null)
+                    ? AppImage.defaultNetworkImage
+                    : user.profileImage!,
+            serviceId: product.id,
+            serviceName: product.serviceName,
             allowImageUploads: false,
 
             reviewService: DependencyInjector.get<ReviewService>(),

@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pack/extensions/mapx.dart';
 import '../all_services.dart';
 
-enum ShowServicesBy { category, subCategory,  all, merchant }
+enum ShowServicesBy { category, subCategory, all, merchant }
 
 class AllServicesRoute {
   static const String allServices = '/all-services';
@@ -28,4 +29,24 @@ class AllServicesRoute {
       );
     },
   );
+
+  static void openPage(
+    BuildContext context, {
+    String? categoryId,
+    required ShowServicesBy showServiceBy,
+  }) {
+    assert(
+      (showServiceBy == ShowServicesBy.all &&
+              (categoryId == null || categoryId.isEmpty)) ||
+          (showServiceBy != ShowServicesBy.all &&
+              categoryId != null &&
+              categoryId.isNotEmpty),
+      'Invalid parameters: categoryId must be null or empty when showServiceBy is all, '
+      'and non-null and non-empty otherwise.',
+    );
+
+    // Construct the route, using empty string for null categoryId
+    final route = '$allServices/${categoryId ?? ' '}/${showServiceBy.name}';
+    context.push(route);
+  }
 }

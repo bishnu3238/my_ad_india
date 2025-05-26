@@ -79,6 +79,7 @@ class ApiClient {
   }
 
   Future<int> createConversation(int customerId, int merchantId) async {
+    dev.log('CREATE-CONVERSATION: $customerId $merchantId');
     final response = await http.post(
       Uri.parse('$baseUrl/api/conversations'),
       headers: _headers,

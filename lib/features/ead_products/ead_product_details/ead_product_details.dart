@@ -190,7 +190,11 @@ class _EadProductDetailsState extends State<EadProductDetails>
             viewModel: viewModel,
             onCall: () => _launchPhone(product.merchant.mobile),
             onWhatsApp: () => _launchWhatsApp(product.merchant.mobile),
-            onChat: () => _navigateToChat(product),
+            onChat:
+                () =>
+                // context.push(ChatFeatureRoutes.demoCall),
+                //
+                _navigateToChat(product),
             onInquiry: viewModel.toggleInquiryForm,
           ),
         );
@@ -215,7 +219,6 @@ class _EadProductDetailsState extends State<EadProductDetails>
           SimilarProductsSection(viewModel: viewModel),
           const SizedBox(height: 20),
           ProductReviewSection(product: product),
-
         ],
       ),
     );
@@ -482,9 +485,9 @@ class _EadProductDetailsState extends State<EadProductDetails>
 
   void _navigateToChat(ProductModel product) async {
     try {
-      final receiverId = product.merchant.id.toInt;
-      final senderId =
-          context.read<AuthProviderModel<UserModel>>().user!.id.toInt;
+      final receiverId = 2;//product.merchant.id.toInt;
+      final senderId =1;
+          // context.read<AuthProviderModel<UserModel>>().user!.id.toInt;
       final senderType = UserType.customer.name;
       final receiverName = product.merchant.companyName;
       ChatFeatureRoutes.goToChatScreen(

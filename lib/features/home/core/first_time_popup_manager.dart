@@ -352,7 +352,7 @@ class _AnimatedReferralPopupState extends State<AnimatedReferralPopup>
                                       ),
                                       color: Colors.orange.shade500,
                                       elevation: 0,
-                                      child:   Text(
+                                      child: Text(
                                         context.tr(TranslationKey.knowMore.key),
                                         style: TextStyle(
                                           color: Colors.white,

@@ -214,7 +214,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     // Implement call initiation via socket
     chatProvider.socketService.initiateCall(data);
     _showSnackBar(video ? 'Video call started...' : 'Audio call started...');
-    ChatFeatureRoutes.goToCallScreen(context, data);
+    // ChatFeatureRoutes.goToChatSdkScreen(  context: context);
   }
 
   @override

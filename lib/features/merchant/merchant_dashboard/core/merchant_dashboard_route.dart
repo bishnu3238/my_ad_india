@@ -8,6 +8,7 @@ import 'package:my_ad/core/services/merchant_auth_service.dart';
 import 'package:my_ad/features/chat_feature/core/services/socket_services.dart';
 import 'package:my_ad/features/chat_feature/route/routes.dart';
 import 'package:my_ad/features/merchant/merchant_add_service/merchant_add_service_screen.dart';
+import 'package:my_ad/features/merchant/merchant_dashboard/shell/review/merchant_reviews.dart';
 import 'package:pack/extensions/extensions.dart';
 // import 'package:my_ad/features/chat/screens/chat_screen.dart';
 // import 'package:my_ad/features/chat/screens/conversation_list_screen.dart';
@@ -19,6 +20,7 @@ import '../../../chat_feature/screens/chat/chat_list_screen.dart';
 import '../../../../core/injector/dependency_injection.dart';
 import '../../../../core/services/merchant_dashboard_service.dart';
 // import '../../../chat/screens/inquiry_screen.dart';
+import '../../customer_inquiries/customer_inquiries.dart';
 import '../../subscription/core/subscription_plan_route.dart';
 import '../merchant_dashboard_shell.dart';
 import '../shell/dashboard/dashboard.dart';
@@ -28,6 +30,7 @@ import '../shell/merchant_services/core/merchant_services_route.dart';
 import '../shell/merchant_services/merchant_services_screen.dart';
 import '../shell/profile/profile.dart';
 import '../shell/report/report.dart';
+import '../shell/review/core/merchant_review_provider.dart';
 import 'merchant_dashboard_shell_provider.dart';
 import '../../../chat_feature/screens/chat/chat_list_screen.dart';
 import '../../../../core/data/api/api_config.dart';
@@ -40,6 +43,7 @@ class MerchantDashboardRoute {
   static const String dashboard = '/merchant/dashboard';
   static const String plans = '/merchant/plans';
   static const String chatList = '/chat-list';
+  static const String recentInquiries  = '/recent-inquiries';
 
   static const String chatScreen = '/merchant/chatScreen';
 
@@ -79,8 +83,21 @@ class MerchantDashboardRoute {
       routes: [
         GoRoute(
           path: reports,
-          // builder: (context, state) => const InquiryScreen(),
-          builder: (context, state) => const MerchantReportsScreen(),
+          builder: (context, state) {
+            final merchantId =
+                context.read<MerchantDashboardStore>().entity!.id;
+
+            return ChangeNotifierProvider(
+              create:
+                  (ctx) => MerchantReviewProvider(
+                    DependencyInjector.get<ReviewService>(),
+                    merchantId: merchantId,
+                  ),
+
+              child: const MerchantReviews(),
+            );
+          },
+          // builder: (context, state) => const MerchantReportsScreen(),
         ),
       ],
     ),
@@ -93,6 +110,15 @@ class MerchantDashboardRoute {
         ),
       ],
     ),
+/// TODO: comment this and uncomment ChatListScreen when the chat service is ready
+//     StatefulShellBranch(
+//       routes: [
+//         GoRoute(
+//           path: recentInquiries,
+//           builder: (context, state) => const CustomerInquiriesPage(),
+//         ),
+//       ],
+//     ),
     StatefulShellBranch(
       routes: [
         GoRoute(

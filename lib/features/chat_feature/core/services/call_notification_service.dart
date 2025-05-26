@@ -42,17 +42,17 @@ class CallNotificationService {
   }
 
   void _handleIncomingCall(Map<String, dynamic> data) async {
-    final callId = data['callId'];
-    final conversationId = data['conversationId'];
-    final callerType = data['callerType'];
-    final callerId = data['callerId'];
-    final callType = data['callType'];
-    final callerName = data['callerName'] ?? 'Unknown';
-    final callerImage = data['callerImage'] ?? '';
+    final callId = data['callId']?.toString() ?? '0';
+    final conversationId = data['conversationId']?.toString() ?? '0';
+    final callerType = data['callerType']?.toString() ?? '';
+    final callerId = data['callerId']?.toString() ?? '';
+    final callType = data['callType']?.toString() ?? '';
+    final callerName = data['callerName']?.toString() ?? 'Unknown';
+    final callerImage = data['callerImage']?.toString() ?? '';
 
     // Show notification for incoming call
     await _showCallNotification(
-      callId: callId.toString(),
+      callId: callId,
       conversationId: conversationId,
       callerType: callerType,
       callerId: callerId,
@@ -68,17 +68,16 @@ class CallNotificationService {
         context,
         MaterialPageRoute(
           builder: (context) => CallScreen(
-            // isOutgoing: false,
-            // callType: callType,
-            // otherUserName: callerName,
-            // otherUserImage: callerImage,
-            // otherUserType: callerType,
-            // otherUserId: callerId,
-            // conversationId: conversationId,
-            // callId: callId,
-            // callerType: callerType,
-            // callerId: callerId,
-            isIncoming: false, callData: {} ,
+            isIncoming: true,
+            callData: {
+              'callId': callId,
+              'conversationId': conversationId,
+              'callerType': callerType,
+              'callerId': callerId,
+              'callType': callType,
+              'callerName': callerName,
+              'callerImage': callerImage,
+            },
           ),
         ),
       );
@@ -143,16 +142,6 @@ class CallNotificationService {
             context,
             MaterialPageRoute(
               builder: (context) => CallScreen(
-                // isOutgoing: false,
-                // callType: callType,
-                // otherUserName: callerName,
-                // otherUserImage: callerImage,
-                // otherUserType: callerType,
-                // otherUserId: callerId,
-                // conversationId: conversationId,
-                // callId: callId,
-                // callerType: callerType,
-                // callerId: callerId,
                 isIncoming: false, callData: {} ,
 
               ),
@@ -170,6 +159,8 @@ class CallNotificationService {
 
 extension StringExtension on String {
   String capitalize() {
+    if (isEmpty) return '';
     return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
+

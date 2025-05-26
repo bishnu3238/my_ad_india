@@ -258,4 +258,30 @@ class MerchantDashboardService {
       onSendProgress: onSendProgress,
     );
   }
+
+  Future<Either<Failure, bool>> deleteMerchantService(
+    DeleteMerchantServicePayload payload,
+  ) async {
+    _store.setStatus(DataStoreStatus.loading);
+    // Check if the network is available
+    final isConnected = await _connectivityService.hasActiveInternet();
+    if (!isConnected) {
+      _store.setError(OperationFailure(message: 'No internet connection.'));
+      return left(_store.error!);
+    }
+    // Check if the merchant ID is available
+    if (_store.entity?.merchantData.merchant.id == null) {
+      _store.setError(
+        OperationFailure(message: 'Merchant ID is not available.'),
+      );
+      return left(_store.error!);
+    }
+    return await _repository
+        .deleteMerchantService(payload)
+        .then((value) => value.fold((failure) => left(failure), (response) {
+          _store.entity!.services.removeWhere((element) => element.id.toString() == payload.serviceId);
+          _store.setEntity(_store.entity);
+          return right(response);
+    }));
+  }
 }

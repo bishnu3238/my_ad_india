@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import '../models/review.dart';
 import '../services/review_service.dart';
@@ -14,6 +16,12 @@ class ReviewSystem extends StatefulWidget {
   /// The review service to use
   final ReviewService reviewService;
 
+  ///
+  final String serviceName;
+
+  ///
+  final String serviceId;
+
   /// The current user's ID (required for submitting reviews)
   final String? currentUserId;
 
@@ -21,7 +29,7 @@ class ReviewSystem extends StatefulWidget {
   final String? currentUserName;
 
   /// The current user's profile image URL (optional)
-  final String? currentUserImageUrl;
+  final String currentUserImageUrl;
 
   /// Whether the current user is an admin (can respond to reviews)
   final bool isAdmin;
@@ -89,7 +97,9 @@ class ReviewSystem extends StatefulWidget {
     required this.reviewService,
     this.currentUserId,
     this.currentUserName,
-    this.currentUserImageUrl,
+    required this.currentUserImageUrl,
+    required this.serviceName,
+    required this.serviceId,
     this.isAdmin = false,
     this.showReviewForm = true,
     this.allowImageUploads = true,
@@ -154,6 +164,8 @@ class _ReviewSystemState extends State<ReviewSystem>
           widget.itemId,
           widget.currentUserId!,
         );
+
+        dev.log("hasReviewed: Function Result : $hasReviewed");
 
         setState(() {
           _userHasReviewed = hasReviewed;
@@ -360,6 +372,8 @@ class _ReviewSystemState extends State<ReviewSystem>
                           reviewService: widget.reviewService,
                           userId: widget.currentUserId!,
                           userName: widget.currentUserName!,
+                          serviceName: widget.serviceName,
+                          serviceId: widget.serviceId,
                           userImageUrl: widget.currentUserImageUrl,
                           existingReview:
                               _reviewToEdit != null

@@ -5,11 +5,8 @@ class InquiryForm extends StatelessWidget {
   final ProductDetailsViewModel viewModel;
   final VoidCallback onClose;
 
-  const InquiryForm({
-    Key? key,
-    required this.viewModel,
-    required this.onClose,
-  }) : super(key: key);
+  const InquiryForm({Key? key, required this.viewModel, required this.onClose})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +80,10 @@ class InquiryForm extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: state.isSubmittingInquiry
-                          ? null
-                          : viewModel.submitInquiry,
+                      onPressed:
+                          state.isSubmittingInquiry
+                              ? null
+                              : () => viewModel.submitInquiry(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.primary,
                         foregroundColor: Colors.white,
@@ -94,18 +92,20 @@ class InquiryForm extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: state.isSubmittingInquiry
-                          ? const CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            )
-                          : const Text(
-                              'Submit Inquiry',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                      child:
+                          state.isSubmittingInquiry
+                              ? const CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              )
+                              : const Text(
+                                'Submit Inquiry',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
                     ),
                   ),
                 ],

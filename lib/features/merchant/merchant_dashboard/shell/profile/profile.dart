@@ -81,7 +81,7 @@ class MerchantProfileScreen extends StatelessWidget {
                             ProfileOptionTile(
                               title: 'Account Settings',
                               icon: Icons.settings,
-                              onTap: provider.onAccountSettings,
+                              onTap: () => provider.onAccountSettings(context),
                             ),
                             ProfileOptionTile(
                               title: 'Business Information',

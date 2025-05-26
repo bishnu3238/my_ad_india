@@ -3,6 +3,8 @@ class AppImage {
   static const String _baseLogo = 'assets/logos';
   static const String _baseSvg = 'assets/images/svg/';
 
+  static const String defaultNetworkImage = 'https://eazytechno.com/ead_api/ead/merchant/uploads/service-images/service_3_1747483424.jpg';
+
   static const String appInitialBanner = '$_baseImg/app_initial_banner.png';
 
   static const String placeholder = '$_baseImg/placeholder.png';

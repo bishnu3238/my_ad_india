@@ -1,9 +1,9 @@
+import 'dart:developer' as dev;
 
 import 'package:pack/pack.dart';
 import '../product/products_model.dart';
 
 class EadProductResponse {
-
   final String status;
   final List<ProductModel> products;
   final int count;
@@ -15,11 +15,16 @@ class EadProductResponse {
   });
 
   factory EadProductResponse.fromJson(Map<String, dynamic> json) {
+    dev.log("EadProductResponse.fromJson: $json");
+
     return EadProductResponse(
       status: json.getString('status'),
-      products: (json.get('data', []))
-          .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      products:
+          (json.get('data', []))
+              .map(
+                (item) => ProductModel.fromJson(item as Map<String, dynamic>),
+              )
+              .toList(),
       count: json.getInt('count'),
     );
   }

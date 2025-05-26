@@ -5,6 +5,7 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:my_ad/features/all_services/core/all_services_route.dart';
+import 'package:my_ad/features/favorites/core/favorites_route.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 
@@ -76,9 +77,7 @@ class _AllServicesScreenState extends State<AllServicesScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite_border, color: Colors.black),
-            onPressed: () {
-              // Navigate to favorites screen
-            },
+            onPressed: () => FavoritesRoute.openPage(context),
           ),
         ],
         elevation: 0,

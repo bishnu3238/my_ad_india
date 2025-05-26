@@ -117,7 +117,7 @@ class _NearbyProvidersSectionState extends State<NearbyProvidersSection> {
   ) async {
     if (!await AuthCheckService.checkAuthAndShowPopupIfNeeded(context)) return;
     if (context.mounted) {
-      EadProductRoute.goToEadProductDetails(context, product);
+      EadProductRoute.openEadProductDetails(context, product);
       // context.push(
       //   '${EadProductRoute.eadServices}/${product.id}/${ProductSearchBy.product.name}${EadProductRoute.eadServiceDetails}',
       //   extra: product,

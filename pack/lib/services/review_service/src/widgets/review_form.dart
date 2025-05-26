@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,47 +9,55 @@ import 'rating_bar.dart';
 class ReviewForm extends StatefulWidget {
   /// The ID of the item being reviewed
   final String itemId;
-  
+
   /// The review service to use for submitting the review
   final ReviewService reviewService;
-  
+
   /// The current user's ID
   final String userId;
-  
+
   /// The current user's name
   final String userName;
-  
+
   /// The current user's profile image URL (optional)
-  final String? userImageUrl;
-  
+  final String userImageUrl;
+
   /// The existing review to edit (null for new reviews)
   final ReviewData? existingReview;
-  
+
+  /// Service Name
+  final String serviceName;
+
+  /// service Id
+  final String serviceId;
+
   /// Callback when the review is submitted successfully
   final Function(bool isEdit)? onReviewSubmitted;
-  
+
   /// Whether to allow image uploads
   final bool allowImageUploads;
-  
+
   /// Maximum number of images that can be uploaded
   final int maxImages;
-  
+
   /// Custom style for the form
   final ReviewFormStyle? style;
 
   const ReviewForm({
-    Key? key,
+    super.key,
     required this.itemId,
     required this.reviewService,
     required this.userId,
     required this.userName,
-    this.userImageUrl,
+    required this.userImageUrl,
+    required this.serviceName,
+    required this.serviceId,
     this.existingReview,
     this.onReviewSubmitted,
     this.allowImageUploads = true,
     this.maxImages = 5,
     this.style,
-  }) : super(key: key);
+  });
 
   @override
   State<ReviewForm> createState() => _ReviewFormState();
@@ -58,18 +67,18 @@ class _ReviewFormState extends State<ReviewForm> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-  
+
   double _rating = 0;
   bool _isSubmitting = false;
   String? _errorMessage;
-  
+
   final List<File> _selectedImages = [];
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    
+
     // Pre-fill form if editing an existing review
     if (widget.existingReview != null) {
       _titleController.text = widget.existingReview!.title ?? '';
@@ -133,27 +142,30 @@ class _ReviewFormState extends State<ReviewForm> {
           userId: widget.userId,
           userName: widget.userName,
           userImageUrl: widget.userImageUrl,
+          serviceName: widget.serviceName,
+          serviceId: widget.serviceId,
           itemId: widget.itemId,
           rating: _rating,
-          title: _titleController.text.isNotEmpty ? _titleController.text : null,
+          title:
+              _titleController.text.isNotEmpty ? _titleController.text : null,
           content: _contentController.text,
-
         );
 
         if (widget.existingReview != null) {
           // Update existing review
           await widget.reviewService.updateReview(
-            widget.existingReview!.itemId, 
-            reviewData, 
+            widget.existingReview!.itemId,
+            reviewData,
             _selectedImages.isNotEmpty ? _selectedImages : null,
           );
           widget.onReviewSubmitted?.call(true);
         } else {
           // Submit new review
-          await widget.reviewService.submitReview(
-            reviewData, 
+          var review = await widget.reviewService.submitReview(
+            reviewData,
             _selectedImages.isNotEmpty ? _selectedImages : null,
           );
+          dev.log('helllo $review');
           widget.onReviewSubmitted?.call(false);
         }
 
@@ -185,7 +197,7 @@ class _ReviewFormState extends State<ReviewForm> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final formStyle = widget.style ?? ReviewFormStyle.fromTheme(theme);
-    
+
     return Form(
       key: _formKey,
       child: Column(
@@ -193,20 +205,19 @@ class _ReviewFormState extends State<ReviewForm> {
         children: [
           // Form title
           Text(
-            widget.existingReview != null ? 'Edit Your Review' : 'Write a Review',
+            widget.existingReview != null
+                ? 'Edit Your Review'
+                : 'Write a Review',
             style: formStyle.titleStyle,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Rating selector
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Rating',
-                style: formStyle.labelStyle,
-              ),
+              Text('Rating', style: formStyle.labelStyle),
               const SizedBox(height: 8),
               RatingBarSelector(
                 initialRating: _rating,
@@ -232,9 +243,9 @@ class _ReviewFormState extends State<ReviewForm> {
                 ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Review title field (optional)
           TextFormField(
             controller: _titleController,
@@ -242,16 +253,18 @@ class _ReviewFormState extends State<ReviewForm> {
               labelText: 'Title (optional)',
               hintText: 'Summarize your experience',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(formStyle.inputBorderRadius),
+                borderRadius: BorderRadius.circular(
+                  formStyle.inputBorderRadius,
+                ),
               ),
               filled: formStyle.filledInputs,
               fillColor: formStyle.inputFillColor,
             ),
             maxLength: 100,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Review content field
           TextFormField(
             controller: _contentController,
@@ -259,7 +272,9 @@ class _ReviewFormState extends State<ReviewForm> {
               labelText: 'Review',
               hintText: 'Share your experience with this item',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(formStyle.inputBorderRadius),
+                borderRadius: BorderRadius.circular(
+                  formStyle.inputBorderRadius,
+                ),
               ),
               filled: formStyle.filledInputs,
               fillColor: formStyle.inputFillColor,
@@ -276,28 +291,25 @@ class _ReviewFormState extends State<ReviewForm> {
               return null;
             },
           ),
-          
+
           // Image upload section
           if (widget.allowImageUploads)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                
-                Text(
-                  'Add Photos (optional)',
-                  style: formStyle.labelStyle,
-                ),
-                
+
+                Text('Add Photos (optional)', style: formStyle.labelStyle),
+
                 const SizedBox(height: 8),
-                
+
                 Text(
                   'You can add up to ${widget.maxImages} images',
                   style: formStyle.hintStyle,
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 // Selected images preview
                 if (_selectedImages.isNotEmpty)
                   Container(
@@ -345,7 +357,7 @@ class _ReviewFormState extends State<ReviewForm> {
                       },
                     ),
                   ),
-                
+
                 // Add image button
                 if (_selectedImages.length < widget.maxImages)
                   ElevatedButton.icon(
@@ -356,28 +368,27 @@ class _ReviewFormState extends State<ReviewForm> {
                       backgroundColor: formStyle.buttonColor,
                       foregroundColor: formStyle.buttonTextColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(formStyle.buttonBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                          formStyle.buttonBorderRadius,
+                        ),
                       ),
                     ),
                   ),
               ],
             ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Error message
           if (_errorMessage != null && _rating > 0)
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Text(
                 _errorMessage!,
-                style: TextStyle(
-                  color: theme.colorScheme.error,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: theme.colorScheme.error, fontSize: 14),
               ),
             ),
-          
+
           // Submit button
           SizedBox(
             width: double.infinity,
@@ -388,25 +399,32 @@ class _ReviewFormState extends State<ReviewForm> {
                 foregroundColor: formStyle.submitButtonTextColor,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(formStyle.buttonBorderRadius),
+                  borderRadius: BorderRadius.circular(
+                    formStyle.buttonBorderRadius,
+                  ),
                 ),
               ),
-              child: _isSubmitting
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              child:
+                  _isSubmitting
+                      ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      )
+                      : Text(
+                        widget.existingReview != null
+                            ? 'Update Review'
+                            : 'Submit Review',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    )
-                  : Text(
-                      widget.existingReview != null ? 'Update Review' : 'Submit Review',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
             ),
           ),
         ],
@@ -498,7 +516,8 @@ class ReviewFormStyle {
       buttonColor: buttonColor ?? this.buttonColor,
       buttonTextColor: buttonTextColor ?? this.buttonTextColor,
       submitButtonColor: submitButtonColor ?? this.submitButtonColor,
-      submitButtonTextColor: submitButtonTextColor ?? this.submitButtonTextColor,
+      submitButtonTextColor:
+          submitButtonTextColor ?? this.submitButtonTextColor,
     );
   }
 }

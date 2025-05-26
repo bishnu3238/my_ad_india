@@ -7,7 +7,7 @@ class Review {
   final String id;
   final String userId; // customer_id in DB
   final String userName;
-  final String? userImageUrl;
+  final String userImageUrl;
   final String itemId; // merchant_id in DB
   final String? serviceName; // service_name in DB
   final double rating;
@@ -21,11 +21,22 @@ class Review {
   final int helpfulCount;
   final Map<String, dynamic>? metadata;
 
+  static Review empty = Review(
+    id: 'id',
+    userId: 'userId',
+    userName: 'userName',
+    userImageUrl: 'userImageUrl',
+    itemId: 'itemId',
+    rating: 0,
+    content: 'content',
+    createdAt: DateTime(2025),
+  );
+
   const Review({
     required this.id,
     required this.userId,
     required this.userName,
-    this.userImageUrl,
+    required this.userImageUrl,
     required this.itemId,
     this.serviceName,
     required this.rating,
@@ -42,15 +53,15 @@ class Review {
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
-      id: json['id'] as String,
-      userId: json['customer_id'] as String,
-      userName: json['user_name'] ?? '', // PHP: user_name
-      userImageUrl: json['user_image_url'],
-      itemId: json['merchant_id'] as String,
-      serviceName: json['service_name'],
-      rating: (json['rating'] as num).toDouble(),
-      title: json['review_title'],
-      content: json['review_content'],
+      id: json.getString('id'),
+      userId: json.getString('customer_id'),
+      userName: json.getString('customer_name'), // PHP: user_name
+      userImageUrl: json.getString('customer_image'),
+      itemId: json.getString('merchant_id'),
+      serviceName: json.getString('service_name'),
+      rating: json.getDouble('rating'),
+      title: json.getString('review_title'),
+      content: json.getString('review_content'),
       imageUrls:
           (json['image_urls'] is List)
               ? List<String>.from(json['image_urls'])
@@ -64,7 +75,7 @@ class Review {
           json['updated_at'] != null
               ? DateTime.parse(json['updated_at'])
               : null,
-      isVerified: json['is_verified'] == 1 || json['is_verified'] == true,
+      isVerified: json.getBool('is_verified'),
       responses:
           (json['responses'] is List)
               ? (json['responses'] as List)
@@ -77,11 +88,8 @@ class Review {
                 jsonDecode(json['responses']),
               ).map((e) => ReviewResponse.fromJson(e)).toList())
               : [],
-      helpfulCount:
-          json['helpful_count'] is int
-              ? json['helpful_count']
-              : int.tryParse(json['helpful_count']?.toString() ?? '0') ?? 0,
-      metadata: json.getMap('metadata'),
+      helpfulCount: json.getInt('helpful_count'),
+      metadata: {'metadata': json['metadata']},
       // is Map<String, dynamic>
       //     ? json['metadata']
       //     : (json['metadata'] is String && json['metadata'].isNotEmpty)

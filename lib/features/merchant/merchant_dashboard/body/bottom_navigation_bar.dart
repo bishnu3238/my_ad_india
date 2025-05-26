@@ -62,8 +62,8 @@ class CustomFloatingNavBar extends StatelessWidget {
               _buildNavItem(
                 context,
                 1,
-                SvgIcons.chartIcon,
-                'Reports',
+                SvgIcons.reportChart,
+                'Reviews',
                 primaryGradientStart,
                 primaryGradientEnd,
                 secondaryColor,

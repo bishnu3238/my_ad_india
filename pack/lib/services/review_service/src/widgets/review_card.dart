@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/review.dart';
@@ -9,25 +11,25 @@ import 'review_response_card.dart';
 class ReviewCard extends StatelessWidget {
   /// The review to display
   final Review review;
-  
+
   /// Callback when the helpful button is pressed
   final Function(bool isHelpful)? onHelpfulPressed;
-  
+
   /// Callback when the report button is pressed
   final VoidCallback? onReportPressed;
-  
+
   /// Callback when the respond button is pressed
   final VoidCallback? onRespondPressed;
-  
+
   /// Whether to show the respond button
   final bool showRespondButton;
-  
+
   /// Whether to show the helpful button
   final bool showHelpfulButton;
-  
+
   /// Whether to show the report button
   final bool showReportButton;
-  
+
   /// Custom style for the card
   final ReviewCardStyle? style;
 
@@ -48,7 +50,7 @@ class ReviewCard extends StatelessWidget {
     final theme = Theme.of(context);
     final cardStyle = style ?? ReviewCardStyle.fromTheme(theme);
     final dateFormat = DateFormat('MMM d, yyyy');
-    
+    dev.log("dfsdfdsfsd${review.userName}");
     return Card(
       margin: cardStyle.margin,
       elevation: cardStyle.elevation,
@@ -65,17 +67,20 @@ class ReviewCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // User avatar
-                if (review.userImageUrl != null)
+                if (review.userImageUrl.isNotEmpty)
                   CircleAvatar(
                     radius: 20,
-                    backgroundImage: NetworkImage(review.userImageUrl!),
+                    child: Text(review.userName.substring(1, 2)),
+                    // backgroundImage: NetworkImage(review.userImageUrl),
                   )
                 else
                   CircleAvatar(
                     radius: 20,
                     backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
                     child: Text(
-                      review.userName.isNotEmpty ? review.userName[0].toUpperCase() : '?',
+                      review.userName.isNotEmpty
+                          ? review.userName[0].toUpperCase()
+                          : '?',
                       style: TextStyle(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.bold,
@@ -83,16 +88,13 @@ class ReviewCard extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(width: 12),
-                
+
                 // User name and date
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        review.userName,
-                        style: cardStyle.userNameStyle,
-                      ),
+                      Text(review.userName, style: cardStyle.userNameStyle),
                       Text(
                         dateFormat.format(review.createdAt),
                         style: cardStyle.dateStyle,
@@ -100,7 +102,7 @@ class ReviewCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 // Rating
                 RatingBar(
                   rating: review.rating,
@@ -109,7 +111,7 @@ class ReviewCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             // Verified badge
             if (review.isVerified)
               Padding(
@@ -133,26 +135,20 @@ class ReviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-            
+
             // Review title
             if (review.title != null && review.title!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
-                child: Text(
-                  review.title!,
-                  style: cardStyle.titleStyle,
-                ),
+                child: Text(review.title!, style: cardStyle.titleStyle),
               ),
-            
+
             // Review content
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                review.content,
-                style: cardStyle.contentStyle,
-              ),
+              child: Text(review.content, style: cardStyle.contentStyle),
             ),
-            
+
             // Review images
             if (review.imageUrls.isNotEmpty)
               Padding(
@@ -162,7 +158,7 @@ class ReviewCard extends StatelessWidget {
                   height: 120,
                 ),
               ),
-            
+
             // Action buttons
             if (showHelpfulButton || showReportButton || showRespondButton)
               Padding(
@@ -177,12 +173,13 @@ class ReviewCard extends StatelessWidget {
                         icon: const Icon(Icons.thumb_up_outlined, size: 16),
                         label: Text('Helpful (${review.helpfulCount})'),
                         style: TextButton.styleFrom(
-                          foregroundColor: theme.colorScheme.onSurface.withOpacity(0.7),
+                          foregroundColor: theme.colorScheme.onSurface
+                              .withOpacity(0.7),
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           minimumSize: const Size(0, 36),
                         ),
                       ),
-                    
+
                     Row(
                       children: [
                         // Report button
@@ -191,12 +188,15 @@ class ReviewCard extends StatelessWidget {
                             onPressed: onReportPressed,
                             child: const Text('Report'),
                             style: TextButton.styleFrom(
-                              foregroundColor: theme.colorScheme.onSurface.withOpacity(0.7),
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              foregroundColor: theme.colorScheme.onSurface
+                                  .withOpacity(0.7),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               minimumSize: const Size(0, 36),
                             ),
                           ),
-                        
+
                         // Respond button
                         if (showRespondButton)
                           TextButton.icon(
@@ -205,7 +205,9 @@ class ReviewCard extends StatelessWidget {
                             label: const Text('Respond'),
                             style: TextButton.styleFrom(
                               foregroundColor: theme.colorScheme.primary,
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               minimumSize: const Size(0, 36),
                             ),
                           ),
@@ -214,7 +216,7 @@ class ReviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-            
+
             // Responses
             if (review.responses.isNotEmpty)
               Padding(
@@ -223,13 +225,15 @@ class ReviewCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Divider(),
-                    ...review.responses.map((response) => Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: ReviewResponseCard(
-                        response: response,
-                        style: cardStyle.responseCardStyle,
+                    ...review.responses.map(
+                      (response) => Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: ReviewResponseCard(
+                          response: response,
+                          style: cardStyle.responseCardStyle,
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 ),
               ),

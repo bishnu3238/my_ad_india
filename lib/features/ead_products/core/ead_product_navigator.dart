@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:my_ad/core/data/api/api_config.dart';
 import 'package:my_ad/core/data/model/model.dart';
+import 'package:my_ad/features/chat_feature/core/services/api_client.dart';
 import 'package:pack/pack.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +61,7 @@ class EadProductRoute {
           return ChangeNotifierProvider(
             create:
                 (ctx) => ProductDetailsViewModel(
+                  ApiClient(baseUrl: ApiConfig.baseChatUrl),
                   product: product,
                   service: DependencyInjector.get<ProductService>(),
                 ),
@@ -69,10 +72,18 @@ class EadProductRoute {
     ],
   );
 
-  static goToEadProductDetails(BuildContext context, ProductModel product) {
+  static openEadProductDetails(BuildContext context, ProductModel product) {
     context.push(
       '${EadProductRoute.eadServices}/${product.id}/${ProductSearchBy.product.name}${EadProductRoute.eadServiceDetails}',
       extra: product,
     );
   }
+
+  static openEadProducts(
+    BuildContext context,
+    String serviceId,
+    ProductSearchBy searchThrough,
+  ) => context.push(
+    '${EadProductRoute.eadServices}/$serviceId/${searchThrough.name}',
+  );
 }
